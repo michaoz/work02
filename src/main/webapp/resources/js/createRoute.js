@@ -6,24 +6,45 @@ const createRoute = (function () {
 	const DEFAULT_ADDRESS = "6 Southwark St, London SE1 1TQ Ingland";
 	const LATITUDE = 51.505;
 	const LONGITUDE = -0.09;
-	const VIEW_ZOOM_LEVEL = 14;
+	const VIEW_ZOOM_LEVEL = 15;
+	
+	const HIDE_SORT_TRUE = true;
+	const CLEAR_ROUTE_TRUE = true;
+	
+	/* delimiter */
+	// colon for:
+	// - search no. and place id
+	const DELIMITER_COLON = ':';
+	
 	
 	// -- spot-list recode number count
-	//let spotListRecordNo = 1;
+	// let spotListRecordNo = 1;
 	let spotCntNo = 0;
 	// map
 	var map = L.map('mapContainer');
 	// current geoJson layerGroup on the map
-	var geoLayerGroup = new L.layerGroup();	
+	// var searchedPointGeoLayerGroup = new L.layerGroup();
+	var pointGeoLayerGroup = new L.layerGroup();	
+	var lineGeoLayerGroup = new L.layerGroup();
+	// targeted geoLayer map
+	var searchedGeoLayerMap = new Map();
+	// var routeGeoLayerList = new Array();
 
 	/** global variable end****************/
 	
 	// create the searched-result records
 	const createSearchResultRecord = (function(jsonResultData, recordNum) {
+		var searchedLeafletId = searchedGeoLayerMap.get(jsonResultData["place_id"])._leaflet_id + 1;
+		var pointLeafletId = Object.keys(pointGeoLayerGroup._layers)[recordNum - 1];
+		if (pointLeafletId == undefined) {
+			pointLeafletId = searchedLeafletId;
+		}
+		
 		let tdNo = '<td class="js-search-result-record-no' + jsonResultData["place_id"] + '-' + recordNum 
 		           + ' css-search-result-record-no">' + recordNum + '</td>';
 		let tdAddress = '<td class="js-search-result-address">' + jsonResultData["display_name"] + '</td>';
 		let tdLatLon = '<td style="display: none" class="js-search-result-lanlon">' + jsonResultData["lat"] + '_' + jsonResultData["lon"] + '</td>';
+		let tdLeafletId = '<td style="display: none" class="js-search-result-leafletid">' + searchedLeafletId + '_' + pointLeafletId + '</td>';
 		/*
 		let tdCheckbock = '<td class="css-search-result-checkbox-td">'
      	    + '<input type="checkbox" class="js-search-result-checkbox-'
@@ -45,6 +66,7 @@ const createRoute = (function () {
 		        + tdNo
 			    + tdAddress
 			    + tdLatLon
+			    + tdLeafletId
 		     /* + tdCheckbock */
 			    + tdAddButton
 			    + '</tr>'
@@ -53,8 +75,14 @@ const createRoute = (function () {
 	});
 
 	// 	create spot list records
-	const createSpotListRecord = (function(recordNum, addressText, placeId, latLon) {		
+	const createSpotListRecord = (function(recordNum, addressText, placeId, latLonText, pointLeafletId) {
 		recordNum++;
+
+		var searchedLeafletId = searchedGeoLayerMap.get(Number(placeId.split(DELIMITER_COLON)[1]))._leaflet_id + 1;
+		if (pointLeafletId == undefined || pointLeafletId == null) {
+			pointLeafletId = searchedLeafletId;
+		}
+		
 		//let addressNumPattern = /^\d{3}-\d{4}/;
 		const addressNumPattern = /^\d+$|^\d+-\d+/;
 		let addressNumIdx = 0;
@@ -91,16 +119,18 @@ const createRoute = (function () {
 		}	
 		//alert(spotName + "||" + city + "||" + address);
 		
-		var tdSortLeader = '<td><span></span>' + '</td>';
 		var tdNo = '<td id="spot-list-record-no-' + placeId + '" >' + recordNum + '</td>';
+		var tdSortLeader = '<td><span></span>' + '</td>';
 		var tdSpotName = '<td id="spot-list-record-content-spotName-' + placeId + '">' 
 		                 + spotName + '</td>';
 		var tdCity = '<td id="spot-list-record-content-city-' + placeId + '">'
 		             + city + '</td>';
 		var tdAddress = '<td id="spot-list-record-content-address-' + placeId + '">'
                         + address + '</td>';
+//		var latLon = '<td style="display: none" id="spot-list-record-content-latLon-' + searchedLeafletId + '">'
 		var latLon = '<td style="display: none" id="spot-list-record-content-latLon-' + placeId + '">'
-                     + latLon + '</td>';
+                     + latLonText + '</td>';
+		var tdLeafletId = '<td style="display: none" id="spot-list-record-content-leafletid">' + searchedLeafletId + '_' + pointLeafletId + '_' + placeId + '</td>';		
         var tdEmitChbox = '<td>' + '<input type="checkbox" id="spot-list-record-content-emit-' + placeId + '" '
                           + 'class="css-list-chbox" value=' + placeId + '>'
                           + '<label for="spot-list-record-content-emit-' + placeId + '" class="css-list-chbox-label">✓</label>'
@@ -114,20 +144,27 @@ const createRoute = (function () {
 			+ tdCity 
 			+ tdAddress
 			+ latLon
+			+ tdLeafletId
 			+ '</tr>';
 
 		return tr;
 	});
 
 	// create delete list records
-	const createDeleteListRecord = (function(recordNum, target, placeId) {
+	const createDeleteListRecord = (function(recordNum, target, placeId, pLeafletId) {
 		recordNum++;
-				
+
+		var searchedLeafletId = searchedGeoLayerMap.get(Number(placeId.split(DELIMITER_COLON)[1]))._leaflet_id + 1;
+//		var pointLeafletId = Object.keys(pointGeoLayerGroup._layers)[recordNum - 1];
+		if (pLeafletId == undefined) {
+			pLeafletId = searchedLeafletId;
+		}
+		
 		var spotName = target.children('td[id^="spot-list-record-content-spotName-"]')[0].textContent;
 		var city = target.children('td[id^="spot-list-record-content-city-"]')[0].textContent;
 		var address = target.children('td[id^="spot-list-record-content-address-"]')[0].textContent;
 		var latLon = target.children('td[id^="spot-list-record-content-latLon-"]')[0].textContent;
-		
+
 		var tdNo = '<td id="delete-list-record-no-' + placeId + '" >' + recordNum + '</td>';
         /*
 		var tdSpotName = '<td>' + '<input type="text" id="delete-list-record-content-spotName-' + recordNum 
@@ -143,6 +180,7 @@ const createRoute = (function () {
                         + address + '</td>';
         var tdLatLon = '<td style="display: none" id="delete-list-record-content-latLon-' + placeId + '">'
                         + latLon + '</td>';
+		var tdLeafletId = '<td style="display: none" id="delete-list-record-content-leafletid">' + searchedLeafletId + '_' + pLeafletId + '_' + placeId + '</td>';
 		var tdAddChbox = '<td>' + '<input type="checkbox" id="delete-list-record-content-emit-' + placeId + '" '
 		            + 'class="css-list-chbox" value=' + placeId + '>'
 	                + '<label for="delete-list-record-content-emit-' + placeId + '" class="css-list-chbox-label">✓</label>'
@@ -155,6 +193,7 @@ const createRoute = (function () {
 			+ tdCity
 			+ tdAddress
 			+ tdLatLon
+			+ tdLeafletId
 			+ '</tbody>';
 		
 		return tbody;
@@ -177,17 +216,18 @@ const createRoute = (function () {
 	// send the checked recode to the delete list when the button's clicked
 	const sendToDeleteList = (function() {
 		$('.js-to-delete-list').click(function() {
-			hideSortSpotList();
+			// hide the sort pane and clear the route on map
+			commonClear(HIDE_SORT_TRUE, CLEAR_ROUTE_TRUE);
 			
 			var emitRecodeList = $('[id^="spot-list-record-content-emit-"]');
-			var deleteList = new Array();
+			var deleteTrList = new Array();
 			emitRecodeList.each(function() {
 				if($(this).prop('checked')) {
 					var targetTr = $(this).closest('tr');
-					deleteList.push(targetTr);
+					deleteTrList.push(targetTr);
 				}
 			});
-			$.each(deleteList, function(idx, deleteTargetTr) {
+			$.each(deleteTrList, function(idx, deleteTargetTr) {
 				var deletedTarget = delHtml(deleteTargetTr);
 				delHtml(deleteTargetTr.closest('tbody'));
 				
@@ -202,8 +242,9 @@ const createRoute = (function () {
 						deletedTd[0].id.lastIndexOf('-', deletedTd[0].id.length) + 1
 						, deletedTd[0].id.length
 						);  // id part=placeId
+				var pLeafletId = deletedTds.filter(tdElm => tdElm.id.startsWith('spot-list-record-content-leafletid'))[0].textContent.split('_')[1];
 				
-				var tbody = createDeleteListRecord(deleteListRecordNo, deletedTarget, placeId);
+				var tbody = createDeleteListRecord(deleteListRecordNo, deletedTarget, placeId, pLeafletId);
 				addHtml($('#delete-list-table'), tbody);
 			});
 			
@@ -223,9 +264,71 @@ const createRoute = (function () {
 				td.textContent = idx + 1;
 				td.parentElement.id = td.textContent;
 			});
+			
+			// remove its marker from the map
+			var newLayersFeatureList = new Array();  // a list for new layers' features
+			var pointGeoLayers = $.extend({}, pointGeoLayerGroup._layers);
+			pointGeoLayerGroup.clearLayers();
+			
+			for (var pLeafletId in pointGeoLayers) {
+				var newLayerFlg = true;  // creating a new layer: true / false
+				
+				// get info of pointGeoLayer
+				var pointGeoLayer = pointGeoLayers[pLeafletId];
+				
+				var lat = pointGeoLayer._layers[pLeafletId - 1]._latlng.lat;
+				var lon = pointGeoLayer._layers[pLeafletId - 1]._latlng.lng;
+					
+				// get info of deleted layer
+				for (let i = 0; i < deleteTrList.length; i++) {
+					var targetDeleteTd = deleteTrList[i].children('[id^="spot-list-record-content-latLon-"]');
+					var deleteLat = targetDeleteTd[0].textContent.split("_")[0];
+					var deleteLon = targetDeleteTd[0].textContent.split("_")[1];
+					var deleteLeafletId = deleteTrList[i].children('[id^="spot-list-record-content-leafletid"]').text();
+					deleteLeafletId = deleteLeafletId.split('_')[1];
+					
+					// remove the layer if it's the deleting target
+					if (lat == Number(deleteLat) && lon == Number(deleteLon) && pLeafletId == Number(deleteLeafletId)) {
+						newLayerFlg = false;
+						break;
+					}
+					
+//					for (let key of searchedGeoLayerMap.keys()) {
+//						if (lat == Number(deleteLat) && lon == Number(deleteLon) && pLeafletId == Number(deleteLeafletId)) {
+//							newLayerFlg = false;
+//						} else {
+//							newLayerFlg 
+//						}
+//					}
+					
+//					if (newLayerFlg) {
+//						newLayersFeatureList.push(pointGeoLayer._layers[pLeafletId - 1]);				
+//					}
+				}
+				if (newLayerFlg) {
+//					newLayersFeatureList.push(pointGeoLayer._layers[pLeafletId - 1].feature);				
+					newLayersFeatureList.push(pointGeoLayer._layers[pLeafletId - 1]);				
+				}
+			}
+			if (newLayersFeatureList.length > 0) {
+				var a = null;
+				newLayersFeatureList.forEach(newLayer => a = newLayer);
+				// register a new layers
+				newLayersFeatureList.forEach(newLayer => controlGeoInfo(newLayer.feature, null, null, null, newLayer._leaflet_id))				
+			}			
 		});
 	});
 	
+	// Sync PointGeoLayer leaflet_id on HTML when the layers on map were edited
+	const syncPLeafletIdOnHtml = (function(pLeafletId, geoLayer) {
+		$('[id = "spot-list-record-content-leafletid"]').each(function() {
+			var leafletIdText = $(this).text();
+			if (leafletIdText.split('_')[1] == (pLeafletId + 1)) {
+				$(this).text(leafletIdText.split('_')[0] + '_' + geoLayer._leaflet_id + '_' + leafletIdText.split('_')[2]);
+			}
+		});
+	});
+		
 	// sort numbers
 	const sortNumber = (function(targetList) {
 		targetList.sort(function(a, b) {
@@ -239,6 +342,8 @@ const createRoute = (function () {
 	
 	// display sort pane of Spot List
 	const dsiplaySortSpotList = (function() {
+		commonClear(null, CLEAR_ROUTE_TRUE);
+		
 		$('#spot-list-table').find('#header-table').children('th').first().css("display", "table-cell"); /* or .show() */
 		$('#spot-list-table').find('tr').each(function() {
 			$(this).find('td').first().fadeIn(200);
@@ -271,19 +376,20 @@ const createRoute = (function () {
 	// send the checked recode back to the spot list when the button's clicked
 	const sendBackToSpotList = (function() {
 		$('.js-back-to-recode').click(function() {
-			hideSortSpotList();
+			// hide the sort pane and clear the route on map
+			commonClear(HIDE_SORT_TRUE, CLEAR_ROUTE_TRUE);
 			
 			var backToRecodeList = $('[id^="delete-list-record-content-emit-"]');
-			var spotList = new Array();
+			var backToSpotList = new Array();
 			backToRecodeList.each(function() {
 				if($(this).prop('checked')) {
-					spotList.push($(this).closest('tr'));
+					backToSpotList.push($(this).closest('tr'));
 				}
 			});
-			$.each(spotList, function(idx, backToTarget) {
+			$.each(backToSpotList, function(idx, backToTarget) {
 				var backedToTarget = delHtml(backToTarget);	
 				delHtml(backToTarget.closest('tbody'));		
-				var addressText = backedToTarget.children('td[id^="delete-list-record-content-address-"]')[0].textContent;				
+				var addressText = backedToTarget.children('td[id^="delete-list-record-content-address-"]')[0].textContent;			
 				
 				// placeIdの取得
 				var backedTds = Array.from(backedToTarget[0].children);  // HTMLCOllectionを配列に変換
@@ -299,9 +405,10 @@ const createRoute = (function () {
 					spotListRecordNo = 0;
 				}
 				
-				var latLon = backedTds.filter(tdElm => tdElm.id.startsWith('delete-list-record-content-latLon-'));
+				var latLonText = backedTds.filter(tdElm => tdElm.id.startsWith('delete-list-record-content-latLon-'))[0].textContent;
+				var pointLeafletId = backedTds.filter(tdElm => tdElm.id.startsWith('delete-list-record-content-leafletid'))[0].textContent.split('_')[1];
 				
-				var tr = createSpotListRecord(spotListRecordNo, addressText, placeId, latLon);
+				var tr = createSpotListRecord(spotListRecordNo, addressText, placeId, latLonText, pointLeafletId);
 				addHtml($('#spot-list-table'), tr);
 				
 			});
@@ -318,12 +425,49 @@ const createRoute = (function () {
 			$.each(deleteRecodeNums, function(idx, num) {
 				num.textContent = idx + 1;
 			});
+			
+			
+			// add its marker back to the map
+			var newLayersFeatureList = new Array();  // a list for new layers' features
+			var pointGeoLayers = $.extend({}, pointGeoLayerGroup._layers);
+//			pointGeoLayerGroup.clearLayers();
+			/*
+			for (let pLeafletId in pointGeoLayers) {
+				var newLayerFlg = true;  // creating a new layer: true / false
+				
+				// get info of pointGeoLayer
+				var pointGeoLayer = pointGeoLayers[pLeafletId];
+				var id = pointGeoLayer._leaflet_id;
+				var lat = pointGeoLayer._layers[id - 1]._latlng.lat;
+				var lon = pointGeoLayer._layers[id - 1]._latlng.lng;
+					
+				// get info of deleted layer
+				var deleteLat, deleteLon;
+				*/
+				backToSpotList.forEach(function(backedToTarget) {
+					var spotLat = backedToTarget.children('[id^="delete-list-record-content-latLon-"]')[0].textContent.split('_')[0];
+					var spotLon = backedToTarget.children('[id^="delete-list-record-content-latLon-"]')[0].textContent.split('_')[1];
+					var addressText = backedToTarget.children('td[id^="delete-list-record-content-address-"]')[0].textContent;
+					var pLeafletId = backedToTarget.children('td[id="delete-list-record-content-leafletid"]').text().split('_')[1];
+
+					controlGeoInfo(null, spotLat, spotLon, addressText, Number(pLeafletId) - 1);
+				});
+				/*
+				if (newLayerFlg) {
+					newLayersFeatureList.push(pointGeoLayer._layers[id - 1].feature);				
+				}
+			}
+			if (newLayersFeatureList.length > 0) {
+				// register a new layers
+				newLayersFeatureList.forEach(newLayerFeature => controlGeoInfo(newLayerFeature, null, null, null))				
+			}*/
 		});
 	});
 	
 	// add HTML element to the htmlElm
 	const addHtml = (function(htmlElm, target) {
 		htmlElm.append(target);
+		return target;
 	});
 	
 	// remove HTML element
@@ -337,22 +481,57 @@ const createRoute = (function () {
 		// add to list
 		$(document).off('click.name1', '[class^="js-search-result-button-"]');
 		$(document).on('click.name1', '[class^="js-search-result-button-"]', function(){
-			hideSortSpotList();
+			// hide the sort pane and clear the route on map
+			commonClear(HIDE_SORT_TRUE, CLEAR_ROUTE_TRUE);
 			
 			// get data from search results
 			var address = $(this).parent().prevAll('.js-search-result-address').text();
 			var placeId = spotCntNo + ':' + $(this).attr('name');
-			var latLon = $(this).parent().prevAll('.js-search-result-lanlon').text();
-			
+			var latLonText = $(this).parent().prevAll('.js-search-result-lanlon').text();
+			var sLeafletId = $(this).parent().prevAll('.js-search-result-leafletid').text().split("_")[0];			
 			var spotListRecordNo = $('td[id^="spot-list-record-no"]').last().text();
 			if (!spotListRecordNo) {
 				spotListRecordNo = 0;
 			}
-			var tr = createSpotListRecord(spotListRecordNo, address, placeId, latLon);
+
+			/** create spot list record */
+			var pointLeafletId = Object.keys(pointGeoLayerGroup._layers)[spotListRecordNo];
+			var tr = createSpotListRecord(spotListRecordNo, address, placeId, latLonText, pointLeafletId);
 			addHtml($('#spot-list-table'), tr);  //$('#spot-list-table').append(tbody);  // $('table[id="spot-list-table"]').append(tbody);
 			
 			// spotCntNoを更新
 			spotCntNo++;
+			
+			/** create layers */
+			// copy pointGeoLayerGroup._layers to a new object 
+			var pointGeoLayers = $.extend({}, pointGeoLayerGroup._layers);
+			if (pointGeoLayers != null && pointGeoLayers.length != 0) {
+				// clear the pointGeoLayerGroup if there's no records at spot list
+				if ($('#spot-list-table').find('tr').length <= 2) {
+					pointGeoLayerGroup.clearLayers();					
+				}
+			}
+
+			var lat = latLonText.split("_")[0];
+			var lon = latLonText.split("_")[1];
+			for (let key of searchedGeoLayerMap.keys()) {
+				var searchedLat = searchedGeoLayerMap.get(key)._latlng.lat;
+				var searchedLon = searchedGeoLayerMap.get(key)._latlng.lng;
+				var searchedLeafletId = searchedGeoLayerMap.get(key)._leaflet_id + 1;		
+				var pLeafletId = searchedGeoLayerMap.get(key)._leaflet_id;
+
+				if (searchedLat.toString() == lat && searchedLon.toString() == lon && searchedLeafletId.toString() == sLeafletId) {
+					controlGeoInfo(searchedGeoLayerMap.get(key).feature, searchedLat, searchedLon, null, pLeafletId);
+				}
+			}
+			
+//			/** create spot list record */
+//			var pointLeafletId = Object.keys(pointGeoLayerGroup._layers)[spotListRecordNo - 1];
+//			var tr = createSpotListRecord(spotListRecordNo, address, placeId, latLonText, pointLeafletId);
+//			addHtml($('#spot-list-table'), tr);  //$('#spot-list-table').append(tbody);  // $('table[id="spot-list-table"]').append(tbody);
+//			
+//			// spotCntNoを更新
+//			spotCntNo++;
 		});
 	});
 
@@ -439,8 +618,8 @@ const createRoute = (function () {
 					});
 					
 					if (resultPlaceIdList.length != 0) {
-						displayResult(jsonResultDataList, resultPlaceIdList);
 						showOnMap(jsonResultDataList);
+						displayResult(jsonResultDataList, resultPlaceIdList);
 					}
 					// add an event of add-to-spot-list event
 					addToSpotList();
@@ -460,10 +639,10 @@ const createRoute = (function () {
 	// display the result of the search
 	const displayResult = (function(jsonResultDataList, resultPlaceIdList) {		
 		var searchResultTbodies = null;
-		var recordNum = 0;
+		var displayRecordNum = 0;
 		$.each(jsonResultDataList, function(idx, jsonResultData) {
-			recordNum++;
-			searchResultTbodies = searchResultTbodies + createSearchResultRecord(jsonResultData, recordNum)
+			displayRecordNum++;
+			searchResultTbodies = searchResultTbodies + createSearchResultRecord(jsonResultData, displayRecordNum)
 		});
 		$('#search-result-table').append(searchResultTbodies);
 	});	
@@ -475,6 +654,12 @@ const createRoute = (function () {
 	// handle the sort pane of Spot List
 	const handleSortPane = (function() {
 		$('[class^="js-to-sort-spot-list"]').click(function() {
+			if ($('div[class^="js-draw-route"]').children('input[name="check"]').prop('checked')) {
+				// clear the route on map
+				$('.js-draw-route').trigger('click');				
+			}
+
+			
 			if ($('#spot-list-table').find('#header-table').children('th').first().is(':hidden')) {
 				dsiplaySortSpotList();
 			} else {
@@ -495,88 +680,163 @@ const createRoute = (function () {
 	  /* add a marker <- ordinary way if you don't use geoJson */
 	  // L.marker([35.69, 139.69]).addTo(map); // Tokyo'S lat, lon
 
-	  controlGeoInfo(map, latitude, longitude, address);
+	  controlGeoInfo(null, latitude, longitude, address, null);
 	});
 		
 	// show geo data on map
-	const showOnMap = (function(jsonResultDataList) {		
-		// remove old layers/markers
-		geoLayerGroup.clearLayers();
+	const showOnMap = (function(jsonResultDataList) {
+		// remove old layers/markers on map
+		pointGeoLayerGroup.clearLayers();			
+		searchedGeoLayerMap = new Map();
 		
 		$.each(jsonResultDataList, function(idx, data) {
 			map.setView([data.lat, data.lon], VIEW_ZOOM_LEVEL);
-			controlGeoInfo(map, data.lat, data.lon, data.display_name)
+			var geoLayer = controlGeoInfo(null, data.lat, data.lon, data.display_name, null);
+			//searchedGeoLayerMap.set(geoLayer._leaflet_id - 1, geoLayer._layers[geoLayer._leaflet_id - 1]);
+			searchedGeoLayerMap.set(data.place_id, geoLayer._layers[geoLayer._leaflet_id - 1]);
 		})
 	});
 	
 	// add a marker of the geoJson format
-	const controlGeoInfo = (function(map, latitude, longitude, address) {
-		var geojsonFeature = [{
-			"type": "Feature",
-			"geometry": {
-			    "type": "Point",
-			    "coordinates": [longitude, latitude]     // [longtitude, latitude]
-			},
-			"properties": {
-			 "popupContent": address
-			}
-		}];
+	const controlGeoInfo = (function(feature, latitude, longitude, address, pLeafletId) {
+		var geojsonFeature;
+		
+		if (feature == null) {
+			geojsonFeature = [{
+				"type": "Feature",
+				"geometry": {
+				    "type": "Point",
+				    "coordinates": [longitude, latitude]     // [longtitude, latitude]
+				},
+				"properties": {
+				 "popupContent": address
+				}
+			}];			
+		} else {
+			geojsonFeature = feature;
+		}
 
-		geoLayer = L.geoJson(geojsonFeature, {
+		var geoLayer = L.geoJson(geojsonFeature, {
 			onEachFeature: function(feature, layer) {
 				if (feature && feature.properties && feature.properties.popupContent) {
 				  	layer.bindPopup(feature.properties.popupContent);			
 				}
 		    }
 		});
-		geoLayerGroup.addTo(map);  // make a geoLayer group
-		geoLayerGroup.addLayer(geoLayer);
+		
+		pointGeoLayerGroup.addTo(map);  // make a point geoLayer group
+		pointGeoLayerGroup.addLayer(geoLayer);
+		
+		// 引数のpLeafletIdは以前のleafletIdなので、これとhtmlを突き合わせて合うものに対して適切な最新のleaflet_idを再付与する
+		syncPLeafletIdOnHtml(pLeafletId, geoLayer);
+		
+		return geoLayer;
 	});
 
-	// draw a route on map
+	// draw route: draw a route on map
 	const drawRoute = (function() {
 		$('.js-draw-route').click(function() {
-			var latLonList = new Array();
-			var coordinates = new Array();
-			// todo 
-			// https://www.key-p.com/blog/staff/archives/104043
-			$('[id^="spot-list-record-content-latLon-"]').each(function(idx, latLonTd) {
-				var latlonText = latLonTd.textContent;
-				latLonList.push(
-						{
-							latitude: latlonText.substring(0, latlonText.indexOf('_')), 
-							longitude: latlonText.substring(latlonText.indexOf('_') + 1, latlonText.len)
-						}
-				)
-			});
+			// hide sort pane
+			commonClear(HIDE_SORT_TRUE, null);			
 			
-			latLonList.forEach(latLon => coordinates.push([latLon.longitude, latLon.latitude]));
-			var lines = {
-					"type": "FeatureCollection",
-					"features": [
-						{
-							"type": "Feature",
-							"properties:": {
-								"popupContent": "<p>route</p>"
-							},
-							"geometry": {
-								"type": "LineString",
-								"coordinates": [
-									coordinates
-								]
+			$('.js-draw-route').toggleClass('checked');
+			if(!$(this).children('input[name="check"]').prop("checked")) {
+				$(".js-draw-route input").prop("checked", true);
+				
+				var latLonList = new Array();
+				var coordinates = new Array();
+				
+				$('[id^="spot-list-record-content-latLon-"]').each(function(idx, latLonTd) {
+					latLonList.push(
+							{
+								latitude: latLonTd.textContent.split("_")[0], 
+								longitude: latLonTd.textContent.split("_")[1]
 							}
-						}
-					]
+					)
+				});
+				
+				latLonList.forEach(latLon => coordinates.push([Number(latLon.longitude), Number(latLon.latitude)]));
+				addLineGeoLayerGroup(coordinates);
+			} else {
+				$(".js-draw-route input").prop("checked", false);
+				
+				lineGeoLayerGroup.clearLayers();
 			}
-			
-			L.geoJSON(lines, {
-				onEachFeature: function onEachFeature(feature, layer) {
-					if(feature.properties && feature.properties.popupContent) {
-				          layer.bindPopup(feature.properties.popupContent);
-				    }
-				}
-			}).addTo(map);
 		})
+	});
+	
+	const addLineGeoLayerGroup = (function(coordinates) {
+		var lines = {
+				"type": "FeatureCollection",
+				"features": [
+					{
+						"type": "Feature",
+						"properties:": {
+							"popupContent": "<p>route</p>"
+						},
+						"geometry": {
+							"type": "LineString",
+							"coordinates": coordinates
+						}
+					}
+				]
+		}
+		
+		var lineLayer = L.geoJSON(lines, {
+			onEachFeature: function onEachFeature(feature, layer) {
+				if(feature.properties && feature.properties.popupContent) {
+			          layer.bindPopup(feature.properties.popupContent);
+			    }
+			}
+		})
+ 		lineGeoLayerGroup.addTo(map);  // make a line geoLayer group
+		lineGeoLayerGroup.addLayer(lineLayer);
+	});
+	
+	const commonClear = (function(hideSortFlg, clearRouteFlg) {
+		if (hideSortFlg) {
+			hideSortSpotList();			
+		}
+		if (clearRouteFlg) {
+			if ($('div[class^="js-draw-route"]').children('input[name="check"]').prop('checked')) {
+				// clear the route on map
+				$('.js-draw-route').trigger('click');				
+			}					
+		}
+	})
+	
+	/* confirm the created route */
+	const confirm = (function() {
+		$('.js-confirm').click(function() {
+			// manipulate the toggle
+			$(this).toggleClass('active');
+			
+			$('.body-make-new-plans').slideToggle();
+			$('.map-search-results').slideToggle();
+			
+			// when the class is 'active', copy spot list to the created route
+			if ($(this).attr('class').endsWith('active')) {
+				// clear the table
+				delHtml($('.body-create-route tbody'));
+				
+				// copy spot list to the created route
+				$.each($('#spot-list-table tbody').children('tr'), function() {
+					// add a new tr
+					var newTr = '<tr id="' + $(this).attr('id') + '"></tr>';
+					var editTable = $('.body-create-route table').append(newTr);
+					
+					// create the copy source and edit its ids
+					var copySource = $(this).children('[id^="spot-list-record-"]').slice(0, 4).clone();
+					copySource.each(function() {
+						var replaced = $(this).attr('id').replace('spot-list-record', 'created-route');
+						$(this).attr('id', replaced);
+					})
+					
+					// copy spot list and add to the new tr
+					editTable.find('#' + $(this).attr('id')).append(copySource);				
+				});
+			}			
+		});
 	});
 	
 	const setEvent = (function() {
@@ -585,7 +845,8 @@ const createRoute = (function () {
 		sendBackToSpotList();
 		searchPlace();
 		handleSortPane();
-		//drawRoute();
+		drawRoute();
+		confirm();
 	});
 	
 	$(function(){
@@ -607,6 +868,12 @@ const createRoute = (function () {
 */
 /* TODO
 1 検索した地域を全て地図上にピン止め
+-- 再検索するとspot listの地点のピンが削除されるので、削除されないようにする。
+        また、再検索時はルート線をoffにするようにする。
+-- ルート線のスタート地点とゴール地点を別色のピンにするなど分かりやすくする。
+-- かつ、削除時にすでに引いた地図上のルート線が消えないようにする（削除処理の際に再度線を引く？）
+-- titleでツールチップを導入する。、また、toggleを使用して、文字列省略されている箇所をクリックで全表示できるようにする。 
+   ― tooltipと、pタグで固定のtooltipを作成
 2　地図上マーカー色分け
 -- searched result にある地名：グレーのマーカー
 -- spot list にある地名: 青のマーカー
@@ -619,6 +886,12 @@ const createRoute = (function () {
 ** not neccesary but better if fixed for usability
 ・ 検索結果を地図上のタブとかに一覧に出す。必要な時だけ開けるようにする。
 ・ 
+
+*********************************
+* 改修履歴
+-- 削除リストからsot listに戻ってからルート線を引けなくなっているので修正する。
+-- かつ、順番が変わっているがその順にルート線が引かれるか確認する
+*********************************
 */
 
 $(function(){

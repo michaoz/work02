@@ -5,32 +5,57 @@
   <version>0.0.1-SNAPSHOT</version>
  
     <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
     </properties>
   
     <dependencies>	
-	    <dependency>
-	      <groupId>org.springframework</groupId>
-	      <artifactId>spring-webmvc</artifactId>
-	      <version>5.2.4.RELEASE</version>
-	     </dependency>
+	   <dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-webmvc</artifactId>
+	        <version>5.2.4.RELEASE</version>
+	    </dependency>
   
     <!-- Servlet -->
-	<dependency>
-	    <groupId>javax.servlet</groupId>
-	    <artifactId>javax.servlet-api</artifactId>
-	    <version>4.0.1</version>
-	    <!-- 動作時はTomcat のライブラリを使用するので開発時だけ依存する。 -->
-    	<scope>provided</scope>
-	</dependency>
-	<dependency>	
-	<groupId>javax.servlet</groupId>
-	<artifactId>jstl</artifactId>
-	<version>1.2</version>
-    </dependency>	
-	
-
+	    <dependency>
+	        <groupId>javax.servlet</groupId>
+	        <artifactId>javax.servlet-api</artifactId>
+	        <version>4.0.1</version>
+	        <!-- 動作時はTomcat のライブラリを使用するので開発時だけ依存する。 -->
+    	    <scope>provided</scope>
+	    </dependency>
+	    <dependency>	
+	        <groupId>javax.servlet</groupId>
+	        <artifactId>jstl</artifactId>
+	        <version>1.2</version>
+        </dependency>	
 	</dependencies>  
+	
+	<build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.oz.controller.TopController</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+<!-- 
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals><goal>single</goal></goals>
+                    </execution>
+                </executions>                
+ -->                
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

@@ -88,19 +88,25 @@
 	      </div>
 		</div>
 		
+		<button class="js-confirm css-confirm-btn">
+		  <p>confirm the created route</p>
+		</button>
+		
 		<%-- DIV: Spot List, Delete List --%>
 		<div class="body-make-new-plans">
 			<div id="spot-list-area">
 			  <div id="page-title">
 			    <p>Spot List</p>
 			  </div>
-			  <button class="js-draw-route css-spot-list-table-btn">draw a route on map</button>
-			  <button class="js-to-delete-list css-add-recode-button">send to Delete List</button>
-			  <button class="js-to-sort-spot-list css-spot-list-table-btn">sort Spot List</button>
+			  <div class="css-spot-list-nav">
+				  <div class="js-draw-route css-draw-route"><input type="checkbox" name="check"></div>
+				  <button class="js-to-delete-list css-add-recode-button">send to Delete List</button>
+				  <button class="js-to-sort-spot-list css-spot-list-table-btn">sort Spot List</button>
+			  </div>
 			  
 			  <%-- remained for studying --%>
-    	      <c:set var="spotListRecordNo" value="0"/>
-		      <span id="span-spotListRecordNo"><c:out value="${spotListRecordNo}" /></span>
+    	      <%-- <c:set var="spotListRecordNo" value="0"/> --%>
+		      <%-- <span id="span-spotListRecordNo"><c:out value="${spotListRecordNo}" /></span> --%>
 			  <%-- remained for studying end--%>
 			  
 		      <table id="spot-list-table">
@@ -131,7 +137,31 @@
 		        </thead>
 		      </table>
 		    </div>
-		</div>	    
+		</div>
+		
+		<%-- DIV: confirm pane --%>
+		<div class="body-create-route">
+			<div id="page-title">
+			  <p>The Created Route</p>
+			</div>
+		    <table>
+		        <thead>
+		            <tr>
+	   	              <th>No</th>
+				      <th>Spot Name</th>
+				      <th>City</th>
+				      <th>Address</th>
+		            </tr>
+		        </thead>
+		    </table>
+		</div>
+		
+		<%-- DIV: control the page --%>
+		<div class="page-control">
+		  <input type="button" value="Back to Make New Plans" id="back-to-make-new-plans">
+		  <input type="button" value="Save the Created Route" id="submit">
+		</div>
+		
 		<jsp:include page = "../common/footer.jsp"/>
 	    <script type="text/javascript" src="../../resources/js/createRoute.js" defer></script>
 	</body>
