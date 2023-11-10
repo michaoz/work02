@@ -313,9 +313,6 @@ div.body-make-new-plans {
 	overflow: hidden;  /* 枠内に収まらない要素は表示しない */
 	cursor: pointer;
 }
-.css-draw-route checkbox {
-	display: none;  /* デフォルトのチェックボックスは表示しない */
-}
 .css-draw-route:before {
 	content: "";
 	position: absolute;
@@ -362,7 +359,7 @@ div.body-make-new-plans {
     color: var(--blackColor);
 	border: none;
 }
-#spot-list-table .css-list-chbox-label {
+#spot-list-table .css-list-chbox + label {
 	padding: 5px 20px;/
 	text-align: center;
 	cursor: pointer;
@@ -493,8 +490,9 @@ div.body-make-new-plans {
 /** The Created Route */
 /* the created route **************************/
 
-.body-create-route {
+.body-created-route {
 	padding: 45px 70px;
+	display: none;
 }
 .css-confirm-btn {
 	margin: 30px 0px 0px 70px;
@@ -528,6 +526,14 @@ div.body-make-new-plans {
 }
 .css-confirm-btn p {
 	margin: 0px 15px 0px 35px;
+}
+#created-route-table thead th:nth-of-type(1),
+#created-route-table thead th:nth-of-type(2) {
+	display: none;
+}
+#created-route-table tbody td:nth-of-type(1),
+#created-route-table tbody td:nth-of-type(2) {
+	display: none
 }
 
 /* the created table end **********************/

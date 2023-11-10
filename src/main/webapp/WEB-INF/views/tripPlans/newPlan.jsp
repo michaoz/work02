@@ -6,10 +6,10 @@
 		<%@ include file="../common/includes.jsp"%>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<link href="<c:url value='/resources/CSS/common.css' />" rel="stylesheet">
-		<link href="<c:url value='/resources/CSS/trip-plans/newPlans.css' />" rel="stylesheet">
+		<link href="<c:url value='/resources/CSS/trip-plans/newPlan.css' />" rel="stylesheet">
 		<script type="text/javascript" src="../../resources/js/top.js" ></script>
 		
-		<title>NewPlans</title>
+		<title>NewPlan</title>
 		
 	</head>
 	<body>
@@ -17,7 +17,7 @@
 		<div class="page-breadcrumb">
 			<a  id="previous-page-name">Trip Planning</a>
 			<span> > </span>
-			<p id="current-page-name">Your Trip Plans-Make New Plans</p>
+			<p id="current-page-name">Your Trip Plans-Make a New Plan</p>
 		</div>		
 		<div class="page-top-nav">
 		  <div class="page-top-nav-links">
@@ -31,7 +31,7 @@
 		</div>
 		<div class="body-make-new-plans">
 			<div id="page-title">
-				<p>Your Trip Plans /  <span>Make New Plans</span></p>
+				<p>Your Trip Plans /  <span>Make a New Plan</span></p>
 			</div>
 			<div id="new-plans-option">
 				<a href="/work02/travel/tripPlans/createRoute">> Create a Route to the Destination</a>

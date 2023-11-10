@@ -27,14 +27,16 @@
 				
 		<!--<script type="text/javascript" src="../../resources/js/map.js" ></script>-->
 		
-		<title>create</title>
+		<title>create route</title>
 	</head>
 	<body>
-		<jsp:include page = "../common/header.jsp"/>
+	<jsp:include page = "../common/header.jsp"/>
+	<form:form action="/work02/travel/tripPlans/createRoute/prepLuggage" method="POST" modelAttribute="tripPlansCommonForm">
+	
 		<div class="page-breadcrumb">
 			<a  id="previous-page-name">Trip Planning</a>
 			<span> > </span>
-			<a  id="previous-page-name">Make New Plans</a>
+			<a  id="previous-page-name">Make a New Plan</a>
 			<span> > </span>
 			<p id="current-page-name">Create a Route to the Destination</p>
 		</div>		
@@ -79,7 +81,7 @@
 	        <thead>
 	          <tr id="header-table">
 	            <th>No</th>
-			    <th>Adress</th>
+			    <th>Address</th>
 			    <th style="display: none">LatLon</th>
 			    <th>Add to list</th>
 	          </tr>
@@ -88,7 +90,7 @@
 	      </div>
 		</div>
 		
-		<button class="js-confirm css-confirm-btn">
+		<button type="button" class="js-confirm css-confirm-btn" value="confirm the created route">
 		  <p>confirm the created route</p>
 		</button>
 		
@@ -100,15 +102,14 @@
 			  </div>
 			  <div class="css-spot-list-nav">
 				  <div class="js-draw-route css-draw-route"><input type="checkbox" name="check"></div>
-				  <button class="js-to-delete-list css-add-recode-button">send to Delete List</button>
-				  <button class="js-to-sort-spot-list css-spot-list-table-btn">sort Spot List</button>
+				  <button type="button" class="js-to-delete-list css-add-recode-button">send to Delete List</button>
+				  <button type="button" class="js-to-sort-spot-list css-spot-list-table-btn">sort Spot List</button>
 			  </div>
 			  
 			  <%-- remained for studying --%>
     	      <%-- <c:set var="spotListRecordNo" value="0"/> --%>
 		      <%-- <span id="span-spotListRecordNo"><c:out value="${spotListRecordNo}" /></span> --%>
-			  <%-- remained for studying end--%>
-			  
+			  <%-- remained for studying end --%>
 		      <table id="spot-list-table">
 		        <thead>
 		          <tr id="header-table">
@@ -120,13 +121,49 @@
 				    <th>Address</th>
 		          </tr>
 		        </thead>
+		        <tbody>
+		        <c:forEach items="${tripPlansCommonForm.spotList}" var="spotInfo" varStatus="spotInfoStatus">
+			        <tr id="${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}">
+			          <td><span></span></td>
+			          <td>
+			            <input type="checkbox" id="spot-list-record-content-emit-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000" 
+			            class="css-list-chbox" value="${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
+			            <label for="spot-list-record-content-emit-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000" 
+			            class="css-list-chbox-label">✓</label></td>
+			          <td id="spot-list-record-no-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000" >
+			            <form:hidden path="spotList[${spotInfoStatus.index}].recordNum" />
+			            ${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}
+			          </td>
+			          <td id="spot-list-record-content-spotName-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
+			            <form:hidden path="spotList[${spotInfoStatus.index}].spotName" />
+			            ${tripPlansCommonForm.spotList[spotInfoStatus.index].spotName}
+			          </td>
+			          <td id="spot-list-record-content-city-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
+			            <form:hidden path="spotList[${spotInfoStatus.index}].city" />
+			            ${tripPlansCommonForm.spotList[spotInfoStatus.index].city}
+			          </td>
+			          <td id="spot-list-record-content-address-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
+			            <form:hidden path="spotList[${spotInfoStatus.index}].address" />
+			            ${tripPlansCommonForm.spotList[spotInfoStatus.index].address}
+			          </td>
+			          <td style="display: none" id="spot-list-record-content-latLon-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
+			            <form:hidden path="spotList[${spotInfoStatus.index}].latLon" />
+			            ${tripPlansCommonForm.spotList[spotInfoStatus.index].latLon}
+			          </td>
+			          <td style="display: none" id="spot-list-record-content-leafletId">
+			            <form:hidden path="spotList[${spotInfoStatus.index}].leafletId" />
+			            ${tripPlansCommonForm.spotList[spotInfoStatus.index].leafletId}
+			          </td>
+			        </tr>
+		        </c:forEach>
+		        </tbody>
 		      </table>
 		    </div>
 			<div id="delete-list-area">
 			  <div id="page-title">
 			    <p>Delete List</p>
 			  </div>
-			  <button class="js-back-to-recode css-back-to-recode-button">back to recode</button>
+			  <button type="button" class="js-back-to-recode css-back-to-recode-button">back to recode</button>
 			  <table id="delete-list-table">
 		        <thead>
 		          <tr id="header-table">
@@ -140,29 +177,37 @@
 		</div>
 		
 		<%-- DIV: confirm pane --%>
-		<div class="body-create-route">
-			<div id="page-title">
-			  <p>The Created Route</p>
+			<div class="body-created-route">
+				<div id="page-title">
+				  <p>The Created Route</p>
+				</div>
+			    <table id="created-route-table">
+			        <thead>
+			            <tr>
+     				      <th></th>
+				          <th>Emit</th>
+		   	              <th>No</th>
+					      <th>Spot Name</th>
+					      <th>City</th>
+					      <th>Address</th>
+			            </tr>
+			        </thead>
+			    </table>
 			</div>
-		    <table>
-		        <thead>
-		            <tr>
-	   	              <th>No</th>
-				      <th>Spot Name</th>
-				      <th>City</th>
-				      <th>Address</th>
-		            </tr>
-		        </thead>
-		    </table>
-		</div>
 		
-		<%-- DIV: control the page --%>
-		<div class="page-control">
-		  <input type="button" value="Back to Make New Plans" id="back-to-make-new-plans">
-		  <input type="button" value="Save the Created Route" id="submit">
-		</div>
-		
-		<jsp:include page = "../common/footer.jsp"/>
-	    <script type="text/javascript" src="../../resources/js/createRoute.js" defer></script>
+			<%-- DIV: control the page --%>
+			<div class="page-control">
+			  <button type="button" id="back-to-make-new-plans" value="Back to Make a New Plan">
+			      <a href="/work02/travel/tripPlans/newPlan">Back to Make a New Plan</a>
+			  </button>
+			  <input type="submit" name="save" id="save" value="Save the Created Route">
+			</div>
+			
+			<%-- hidden items --%>
+			<form:hidden path="tripPlanName" />
+	</form:form>
+
+	<jsp:include page = "../common/footer.jsp"/>
+	<script type="text/javascript" src="../../resources/js/createRoute.js" defer></script>
 	</body>
 </html>

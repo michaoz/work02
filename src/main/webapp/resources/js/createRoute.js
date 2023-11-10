@@ -119,22 +119,48 @@ const createRoute = (function () {
 		}	
 		//alert(spotName + "||" + city + "||" + address);
 		
-		var tdNo = '<td id="spot-list-record-no-' + placeId + '" >' + recordNum + '</td>';
-		var tdSortLeader = '<td><span></span>' + '</td>';
+		var tdNo = '<td id="spot-list-record-no-' + placeId + '" >' 
+	               + '<input id="spotList' + (recordNum - 1) + '.recordNum" name="spotList[' + (recordNum - 1) + '].recordNum"'
+                   + ' type="hidden" value="' + recordNum + '">'
+                   + recordNum
+		           + '</td>';
+		var tdSortLeader = '<td><span></span></td>';
 		var tdSpotName = '<td id="spot-list-record-content-spotName-' + placeId + '">' 
-		                 + spotName + '</td>';
-		var tdCity = '<td id="spot-list-record-content-city-' + placeId + '">'
-		             + city + '</td>';
+                     + '<input id="spotList' + (recordNum - 1) + '.spotName" name="spotList[' + (recordNum - 1) + '].spotName"'
+                     + ' type="hidden" value="' + spotName + '">'
+                     + spotName
+		             + '</td>';
+		var tdCity = '<td id="spot-list-record-content-city-' + placeId + '">' 
+                     + '<input id="spotList' + (recordNum - 1) + '.city" name="spotList[' + (recordNum - 1) + '].city"'
+                     + ' type="hidden" value="' + city + '">'
+		             + city 
+		             + '</td>';
+		/* var tdAddress = '<td id="spot-list-record-content-address-' + placeId + '">'
+                                   　　　　　　　　        formタグやcタグなど使えない。jstlはjsから作ったHTML要素には適用されない。
+　　　　　　　　　　　　　                            + '<form:input path="spotList[' + Number(recordNum) + '].address">' 
+　　　　　　　　　　　　                       　     + address + '</form:input>' */
 		var tdAddress = '<td id="spot-list-record-content-address-' + placeId + '">'
-                        + address + '</td>';
+		                + '<input id="spotList' + (recordNum - 1) + '.address" name="spotList[' + (recordNum - 1) + '].address"'
+//		                + ' type="text" value="' + address + '">'
+                        + ' type="hidden" value="' + address + '">'
+                        + address
+		                + '</td>';
 //		var latLon = '<td style="display: none" id="spot-list-record-content-latLon-' + searchedLeafletId + '">'
 		var latLon = '<td style="display: none" id="spot-list-record-content-latLon-' + placeId + '">'
-                     + latLonText + '</td>';
-		var tdLeafletId = '<td style="display: none" id="spot-list-record-content-leafletid">' + searchedLeafletId + '_' + pointLeafletId + '_' + placeId + '</td>';		
-        var tdEmitChbox = '<td>' + '<input type="checkbox" id="spot-list-record-content-emit-' + placeId + '" '
+                     + '<input id="spotList' + (recordNum - 1) + '.latLon" name="spotList[' + (recordNum - 1) + '].latLon"'
+                     + ' type="hidden" value="' + latLonText + '">'
+		             + latLonText 
+		             + '</td>';
+		var tdLeafletId = '<td style="display: none" id="spot-list-record-content-leafletId">' 
+			              + '<input id="spotList' + (recordNum - 1) + '.leafletId" name="spotList[' + (recordNum - 1) + '].leafletId"'
+		                  + ' type="hidden" value="' + searchedLeafletId + '_' + pointLeafletId + '_' + placeId + '">'
+			              + searchedLeafletId + '_' + pointLeafletId + '_' + placeId 
+			              + '</td>';	
+        var tdEmitChbox = '<td>' 
+        	              + '<input type="checkbox" id="spot-list-record-content-emit-' + placeId + '" '
                           + 'class="css-list-chbox" value=' + placeId + '>'
                           + '<label for="spot-list-record-content-emit-' + placeId + '" class="css-list-chbox-label">✓</label>'
-                          + '</td>';
+        	              + '</td>';
 
 		var tr = '<tr id="' +  recordNum + '">'  
 			+ tdSortLeader
@@ -199,7 +225,7 @@ const createRoute = (function () {
 		return tbody;
 	});
 
-	// add an record to the spot list when the button's clicked
+	// add a record to the spot list when the button's clicked
 	const addSpotListRecode = (function() {
 		$('.js-add-recode').click(function() {
 			var spotListRecordNo = $('td[id^="spot-list-record-no"]').last().text();
@@ -242,7 +268,7 @@ const createRoute = (function () {
 						deletedTd[0].id.lastIndexOf('-', deletedTd[0].id.length) + 1
 						, deletedTd[0].id.length
 						);  // id part=placeId
-				var pLeafletId = deletedTds.filter(tdElm => tdElm.id.startsWith('spot-list-record-content-leafletid'))[0].textContent.split('_')[1];
+				var pLeafletId = deletedTds.filter(tdElm => tdElm.id.startsWith('spot-list-record-content-leafletId'))[0].textContent.split('_')[1];
 				
 				var tbody = createDeleteListRecord(deleteListRecordNo, deletedTarget, placeId, pLeafletId);
 				addHtml($('#delete-list-table'), tbody);
@@ -261,7 +287,14 @@ const createRoute = (function () {
 				}
 			});	
 			$.each(spotRecodeNumTds, function(idx, td) {
-				td.textContent = idx + 1;
+				// clear the td's content
+				$(this).text('');
+				delHtml($(this).children());
+				
+				var newElm = '<input id="spotList' + ((idx + 1) - 1) + '.recordNum" name="spotList[' + ((idx + 1) - 1) + '].recordNum"'
+                             + ' type="hidden" value="' + (idx + 1) + '">'
+				             + (idx + 1);
+				addHtml($(this), newElm);
 				td.parentElement.id = td.textContent;
 			});
 			
@@ -284,7 +317,7 @@ const createRoute = (function () {
 					var targetDeleteTd = deleteTrList[i].children('[id^="spot-list-record-content-latLon-"]');
 					var deleteLat = targetDeleteTd[0].textContent.split("_")[0];
 					var deleteLon = targetDeleteTd[0].textContent.split("_")[1];
-					var deleteLeafletId = deleteTrList[i].children('[id^="spot-list-record-content-leafletid"]').text();
+					var deleteLeafletId = deleteTrList[i].children('[id^="spot-list-record-content-leafletId"]').text();
 					deleteLeafletId = deleteLeafletId.split('_')[1];
 					
 					// remove the layer if it's the deleting target
@@ -321,10 +354,13 @@ const createRoute = (function () {
 	
 	// Sync PointGeoLayer leaflet_id on HTML when the layers on map were edited
 	const syncPLeafletIdOnHtml = (function(pLeafletId, geoLayer) {
-		$('[id = "spot-list-record-content-leafletid"]').each(function() {
+		$('[id = "spot-list-record-content-leafletId"]').each(function() {
 			var leafletIdText = $(this).text();
 			if (leafletIdText.split('_')[1] == (pLeafletId + 1)) {
-				$(this).text(leafletIdText.split('_')[0] + '_' + geoLayer._leaflet_id + '_' + leafletIdText.split('_')[2]);
+				//$(this).text(leafletIdText.split('_')[0] + '_' + geoLayer._leaflet_id + '_' + leafletIdText.split('_')[2]);
+				var newLeafletIdText = leafletIdText.split('_')[0] + '_' + geoLayer._leaflet_id + '_' + leafletIdText.split('_')[2];
+				$(this).html($(this).children('input').val(newLeafletIdText));
+				$(this).append(newLeafletIdText);
 			}
 		});
 	});
@@ -352,8 +388,15 @@ const createRoute = (function () {
 			disabled: false,
 			update: function() {
 				$('td[id^="spot-list-record-no-"]').each(function(idx) {
+					var lastRecordNoInputHtml = $(this).children('input');
+
 					$(this).val(idx + 1);
 					$(this)[0].textContent = idx + 1;  // rewrite td.textContent
+					
+					$(this).append(lastRecordNoInputHtml);
+					// $(this).children('input').val(idx + 1);
+					// $(this).children('input')[0].textContent = idx + 1;  // rewrite td.textContent
+
 					idx++;
 				});
 			}
@@ -498,7 +541,7 @@ const createRoute = (function () {
 			var pointLeafletId = Object.keys(pointGeoLayerGroup._layers)[spotListRecordNo];
 			var tr = createSpotListRecord(spotListRecordNo, address, placeId, latLonText, pointLeafletId);
 			addHtml($('#spot-list-table'), tr);  //$('#spot-list-table').append(tbody);  // $('table[id="spot-list-table"]').append(tbody);
-			
+
 			// spotCntNoを更新
 			spotCntNo++;
 			
@@ -803,7 +846,7 @@ const createRoute = (function () {
 				$('.js-draw-route').trigger('click');				
 			}					
 		}
-	})
+	});
 	
 	/* confirm the created route */
 	const confirm = (function() {
@@ -814,28 +857,104 @@ const createRoute = (function () {
 			$('.body-make-new-plans').slideToggle();
 			$('.map-search-results').slideToggle();
 			
-			// when the class is 'active', copy spot list to the created route
+			// when the class should be 'active', copy spot list to the created route
 			if ($(this).attr('class').endsWith('active')) {
-				// clear the table
-				delHtml($('.body-create-route tbody'));
+				// clear the created route table
+				delHtml($('.body-created-route tbody'));
 				
 				// copy spot list to the created route
 				$.each($('#spot-list-table tbody').children('tr'), function() {
 					// add a new tr
 					var newTr = '<tr id="' + $(this).attr('id') + '"></tr>';
-					var editTable = $('.body-create-route table').append(newTr);
+					var editTable = $('.body-created-route table').append(newTr);
 					
 					// create the copy source and edit its ids
-					var copySource = $(this).children('[id^="spot-list-record-"]').slice(0, 4).clone();
+					var copySource = $(this).children().clone();
+					// var copySource = $(this).children('[id^="spot-list-record-"]').slice(0, 6).clone();
 					copySource.each(function() {
-						var replaced = $(this).attr('id').replace('spot-list-record', 'created-route');
-						$(this).attr('id', replaced);
+						if ($(this).attr('id') != null) {
+							var replacedId = $(this).attr('id').replace('spot-list-record', 'created-route');
+							$(this).attr('id', replacedId);							
+						}
 					})
 					
 					// copy spot list and add to the new tr
-					editTable.find('#' + $(this).attr('id')).append(copySource);				
+					editTable.find('#' + $(this).attr('id')).append(copySource);		
 				});
-			}			
+				
+				delHtml($('#spot-list-area tbody'));
+			} else {
+				// when the class is NOT 'active', copy created route to spot list
+				// clear the spot list table
+				delHtml($('#spot-list-area tbody'));
+				
+				// copy spot list to the created route
+				$.each($('#created-route-table tbody').children('tr'), function() {
+					// add a new tr
+					var newTr = '<tr id="' + $(this).attr('id') + '"></tr>';
+					var editTable = $('#spot-list-area table').append(newTr);
+					
+					// create the copy source and edit its ids
+					var copySource = $(this).children().clone();
+					// var copySource = $(this).children('[id^="created-route-"]').slice(0, 6).clone();
+					copySource.each(function() {
+						if ($(this).attr('id') != null) {
+							var replacedId = $(this).attr('id').replace('created-route', 'spot-list-record');
+							$(this).attr('id', replacedId);							
+						}
+					})
+					
+					// copy spot list and add to the new tr
+					editTable.find('#' + $(this).attr('id')).append(copySource);			
+				});
+				
+				delHtml($('.body-created-route tbody'));
+			}
+			
+			// show/hide body-created-route area
+			$('.body-created-route').toggle();
+			return
+		});
+	});
+	
+	// - param : trElm  TR element 
+	const rewriteFormIndexes = (function(trElm, spotListIndex) {
+		var targetInputElms = trElm.children('td').children('[id^="spotList"]');
+		targetInputElms.each(function() {
+			var id = $(this).attr('id');
+			var idFirstPt = id.substring(0, id.indexOf('.') - 1);
+			var idSecondPt = id.substring(id.indexOf('.') + 1, id.length);
+			
+			var newId = idFirstPt + spotListIndex + '.' + idSecondPt;
+			var newName = idFirstPt + '[' + spotListIndex + '].' + idSecondPt;
+			
+			$(this).attr('id', newId);
+			$(this).attr('name', newName);
+		});
+	});
+	
+	// method right before submit
+	const beforeSubmit = (function() {
+		$('form').submit(function() {
+			confirm();
+			
+			var recordNoElmList = null;
+			if ($('.js-confirm').attr('class').endsWith('active')) {
+				recordNoElmList = $('[id^="created-route-no"]');
+			} else {
+				recordNoElmList = $('[id^="spot-list-record-no"]');
+			}
+			recordNoElmList = recordNoElmList.sort(function(a, b) {
+				if (Number(a.textContent) < Number(b.textContent)) {
+					return -1;
+				} else {
+					return 1;
+				}
+			});	
+			recordNoElmList.each(function() {
+				var spotListIndex = Number($(this).text()) - 1;
+				rewriteFormIndexes($(this).parents('tr'), spotListIndex);
+			});
 		});
 	});
 	
@@ -846,7 +965,8 @@ const createRoute = (function () {
 		searchPlace();
 		handleSortPane();
 		drawRoute();
-		confirm();
+		confirm();	
+		beforeSubmit();
 	});
 	
 	$(function(){

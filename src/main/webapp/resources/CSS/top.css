@@ -39,6 +39,7 @@
 	margin: 0px 10px;
 	color: #000;
 	font-size: 20px; 
+	cursor: pointer;
 }
 .your-trip-plans-div p::before{/* 閉じている時 */
 	content: "＋";

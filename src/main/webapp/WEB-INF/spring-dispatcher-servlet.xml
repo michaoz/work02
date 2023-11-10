@@ -36,6 +36,29 @@
     <!-- <mvc:view-resolvers>
 		<mvc:jsp prefix="/WEB-INF/views/" suffix=".jsp"/>
 	</mvc:view-resolvers> -->
+	
+	<!-- JDBC datasource configuration -->
+	<!-- read db config file  -->
+	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+	  <property name="location" value="/WEB-INF/datasource.properties" />
+	</bean>
+	<!-- db connection -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.primary.driverClassName}" />
+		<property name="url" value="${jdbc.primary.url}" />
+		<property name="username" value="${jdbc.primary.username}" />
+		<property name="password" value="${jdbc.primary.password}" />
+	</bean>
+	<!-- setting of JdbcTemplate usage -->
+	<bean class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSource" />
+	</bean>
+	<!-- JDBC Template -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+	  <property name="dataSource" ref="dataSource" />
+	</bean>
+	
 
     <mvc:resources mapping="/resources/**" location="/resources/" />
     

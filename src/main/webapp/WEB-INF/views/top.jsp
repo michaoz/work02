@@ -22,7 +22,7 @@
 					<div id="your-trip-plans-list-nav-div">
 						<nav id="your-trip-plans-list-nav">
 							<ul >
-								<li><a href="/work02/travel/tripPlans/newPlans">Make New Plans</a></li>
+								<li><a href="/work02/travel/tripPlans/newPlan">Make a New Plan</a></li>
 								<li><a href="/work02/travel/tripPlans/createdPlans">See Created Plans</a></li>
 							</ul>
 						</nav>
