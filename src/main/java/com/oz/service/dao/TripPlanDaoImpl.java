@@ -198,9 +198,9 @@ public class TripPlanDaoImpl implements TripPlanDao {
 			
 			// Set the latest data to model to synchronize with DB data
 			spotList.forEach(s -> s.setInsUserId(USER_ID));
-			spotList.forEach(s -> s.setInsDate(systemTimestamp));
+//			spotList.forEach(s -> s.setInsDate(systemTimestamp));
 			spotList.forEach(s -> s.setUpdUserId(USER_ID));
-			spotList.forEach(s -> s.setUpdDate(systemTimestamp));
+//			spotList.forEach(s -> s.setUpdDate(systemTimestamp));
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

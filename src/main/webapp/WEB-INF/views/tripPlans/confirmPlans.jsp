@@ -157,9 +157,12 @@
 		  <button type="button" value="Create a Route to the Destination" id="back-to-make-new-plans">
 		      <a href="/work02/travel/tripPlans/createRoute?back">Back to Create a Route to the Destination</a>
 		  </button>
-		  --%>
 		  <button type="button" id="back-to-make-new-plans"onclick="history.back()">Back to Previous Page</button>
-		  <input type="submit" value="Save All" id="submit">
+		  --%>
+		  <input type="button" id="back" class="css-back-button" onclick="history.back()" value="Back to Previous Page" >
+		  <%--
+		  <input type="submit" value="Save All" id="submit">--%>
+		  <input type="button" id="submit" class="css-submit-button" value="Save All" >
 		</div>
 
 		<%-- hidden items --%>

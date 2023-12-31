@@ -701,6 +701,32 @@ const createRoute = (function () {
 		luggageCntNo++;
 	});
 	
+	// method right before submit
+	const beforeSubmit = (function() {
+		$('input[type="submit"]').click(function() {
+			var url = '';
+
+			if ($(this).attr('id') == 'submit') {
+				// if the button is not submit button
+				url = '/work02/travel/tripPlans/createRoute/prepLuggage/confirmPlans/resultTripPlans';
+			} else {
+				if ($(this).attr('id') == 'back') {
+					// if the button is back button
+					url = '/work02/travel/tripPlans/createRoute/prepLuggage?back';
+				}
+			}
+			// rewrite the action
+			$('form').attr('action', url);				
+			
+			$('form').submit(function() {
+				// set luggage info and item
+				setLuggageInfoItem();
+				
+				return true;
+			});
+		});
+	});
+	
 	const setEvent = (function() {
 		addSpotListRecode();
 		addRecordBtn();

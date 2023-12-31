@@ -257,11 +257,9 @@ div.body-prep-luggage {
 #page-title {
 	/*font-size: 15px;*/
 }
-
 #page-title p{
 	text-align: left;
 }
-
 .css-list-chbox {
 	display: none;
 }
@@ -329,18 +327,18 @@ div.body-prep-luggage {
 	word-break: normal;  /* 文字列折り返し */
 }
 #luggage-list-table .css-list-chbox:checked + label{
-    background-color: var(--greenColor);
+    background-color: var(--lightGrayColor);
     color: var(--blackColor);
 	border: none;
 }
-#luggage-list-table .css-list-chbox-label {
-	padding: 5px 20px;/
+#luggage-list-table .css-list-chbox + label {
+	padding: 5px 20px;
 	text-align: center;
 	cursor: pointer;
-    background-color: var(--whiteColor);
+    /* background-color: var(--whiteColor); */
     color: var(--lightGrayColor);
     border-radius: 3px;
-	/*border: 0.2px solid var(--blackColor);*/
+	/* border: 0.2px solid var(--blackColor); */
 }
 #luggage-list-table th:nth-of-type(1) {
 	display: none;
@@ -433,6 +431,13 @@ div.body-prep-luggage {
 	font-size: 20px;
 	border: none;
 	outline: none;
+	/* background-color: var(--whiteColor); */
+}
+[id^=luggage-record-content-name] input:-webkit-autofill,
+[id^=luggage-item-name] input:-webkit-autofill,
+[id^=luggage-record-content-num] input:-webkit-autofill,
+[id^=luggage-item-count] input:-webkit-autofill {
+	box-shadow: 0 0 0 1000px white inset;
 }
 [id^=luggage-record-content-name] input,
 [id^=luggage-item-name] input {
@@ -515,7 +520,8 @@ div.body-prep-luggage {
 
 /* page control *******************************/
 .page-control {
-	padding: 45px 70px;
+	padding: 45px 70px 0px 70px;
+	display: flex;
 }
 
 

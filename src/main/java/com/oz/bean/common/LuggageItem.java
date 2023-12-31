@@ -1,6 +1,7 @@
 package com.oz.bean.common;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class LuggageItem implements Serializable {
 	
@@ -30,6 +31,17 @@ public class LuggageItem implements Serializable {
 	/** item owner */
 	private String itemOwnerName;
 
+	/** ins user id */
+	private String insUserId;
+	
+	/** ins date */
+	private String insDate;
+	
+	/** update user id */
+	private String updUserId;
+	
+	/** update date */
+	private String updDate;
 	
 
 
@@ -95,5 +107,37 @@ public class LuggageItem implements Serializable {
 
 	public void setItemOwnerName(String itemOwnerName) {
 		this.itemOwnerName = itemOwnerName;
+	}
+	
+	public String getInsUserId() {
+		return insUserId;
+	}
+
+	public void setInsUserId(String insUserId) {
+		this.insUserId = insUserId;
+	}
+
+	public String getInsDate() {
+		return insDate;
+	}
+
+	public void setInsDate(String insDate) {
+		this.insDate = insDate;
+	}
+
+	public String getUpdUserId() {
+		return updUserId;
+	}
+
+	public void setUpdUserId(String updUserId) {
+		this.updUserId = updUserId;
+	}
+
+	public String getUpdDate() {
+		return updDate;
+	}
+
+	public void setUpdDate(String updDate) {
+		this.updDate = updDate;
 	}
 }

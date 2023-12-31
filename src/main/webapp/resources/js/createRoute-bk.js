@@ -24,15 +24,9 @@ const createRoute = (function () {
 	var map = L.map('mapContainer');
 	// current geoJson layerGroup on the map
 	// var searchedPointGeoLayerGroup = new L.layerGroup();
-	
-	/* pointGeoLayerGroup
-	 * : GeoLayerGroup marked on the map
-	 *  - contents: (data.place_id, geoLayer._layers[geoLayer._leaflet_id - 1])
-	 */ 
 	var pointGeoLayerGroup = new L.layerGroup();	
 	var lineGeoLayerGroup = new L.layerGroup();
 	// targeted geoLayer map
-	var pointedGeoLayerMap = new Map();
 	var searchedGeoLayerMap = new Map();
 	// var routeGeoLayerList = new Array();
 
@@ -40,22 +34,16 @@ const createRoute = (function () {
 	
 	// create the searched-result records
 	const createSearchResultRecord = (function(jsonResultData, recordNum) {
-		// var searchedLeafletId = pointedGeoLayerMap.get(jsonResultData["place_id"])._leaflet_id + 1;
-		var searchedGeoLayer = pointedGeoLayerMap.get(jsonResultData["place_id"]);
-		if (searchedGeoLayer == undefined) {
-			searchedGeoLayer = searchedGeoLayerMap.get(jsonResultData["place_id"]);			
-		}
+		// var searchedLeafletId = searchedGeoLayerMap.get(jsonResultData["place_id"])._leaflet_id + 1;
+		var searchedGeoLayer = searchedGeoLayerMap.get(jsonResultData["place_id"]);
 		var searchedLeafletId = 0;
 		if (searchedGeoLayer != null) {
 			searchedLeafletId = searchedGeoLayer._leaflet_id + 1;
 		}
-		/*
 		var pointLeafletId = Object.keys(pointGeoLayerGroup._layers)[recordNum - 1];
 		if (pointLeafletId == undefined) {
 			pointLeafletId = searchedLeafletId;
 		}
-		*/
-		var pointLeafletId = searchedLeafletId;
 		
 		let tdNo = '<td class="js-search-result-record-no' + jsonResultData["place_id"] + '-' + recordNum 
 		           + ' css-search-result-record-no">' + recordNum + '</td>';
@@ -95,11 +83,8 @@ const createRoute = (function () {
 	const createSpotListRecord = (function(recordNum, addressText, placeId, latLonText, pointLeafletId) {
 		recordNum++;
 		
-		// var searchedLeafletId = pointedGeoLayerMap.get(Number(placeId.split(DELIMITER_COLON)[1]))._leaflet_id + 1;
-		var searchedGeoLayer = pointedGeoLayerMap.get(Number(placeId.split(DELIMITER_COLON)[1]));
-		if (searchedGeoLayer == undefined) {
-			searchedGeoLayer = searchedGeoLayerMap.get(Number(placeId.split(DELIMITER_COLON)[1]));
-		}
+		// var searchedLeafletId = searchedGeoLayerMap.get(Number(placeId.split(DELIMITER_COLON)[1]))._leaflet_id + 1;
+		var searchedGeoLayer = searchedGeoLayerMap.get(Number(placeId.split(DELIMITER_COLON)[1]));
 		var searchedLeafletId = 0;
 		if (searchedGeoLayer != null) {
 			searchedLeafletId = searchedGeoLayer._leaflet_id + 1;
@@ -205,8 +190,8 @@ const createRoute = (function () {
 	const createDeleteListRecord = (function(recordNum, target, placeId, pLeafletId) {
 		recordNum++;
 
-		// var searchedLeafletId = pointedGeoLayerMap.get(Number(placeId.split(DELIMITER_COLON)[1]))._leaflet_id + 1;
-		var searchedGeoLayer = pointedGeoLayerMap.get(Number(placeId.split(DELIMITER_COLON)[1]));
+		// var searchedLeafletId = searchedGeoLayerMap.get(Number(placeId.split(DELIMITER_COLON)[1]))._leaflet_id + 1;
+		var searchedGeoLayer = searchedGeoLayerMap.get(Number(placeId.split(DELIMITER_COLON)[1]));
 		var searchedLeafletId = 0;
 		if (searchedGeoLayer != null) {
 			searchedLeafletId = searchedGeoLayer._leaflet_id + 1;
@@ -334,7 +319,6 @@ const createRoute = (function () {
 			var pointGeoLayers = $.extend({}, pointGeoLayerGroup._layers);
 			pointGeoLayerGroup.clearLayers();
 			
-			let mapIdx = 0;
 			for (var pLeafletId in pointGeoLayers) {
 				var newLayerFlg = true;  // creating a new layer: true / false
 				
@@ -358,7 +342,7 @@ const createRoute = (function () {
 						break;
 					}
 					
-//					for (let key of pointedGeoLayerMap.keys()) {
+//					for (let key of searchedGeoLayerMap.keys()) {
 //						if (lat == Number(deleteLat) && lon == Number(deleteLon) && pLeafletId == Number(deleteLeafletId)) {
 //							newLayerFlg = false;
 //						} else {
@@ -372,26 +356,14 @@ const createRoute = (function () {
 				}
 				if (newLayerFlg) {
 //					newLayersFeatureList.push(pointGeoLayer._layers[pLeafletId - 1].feature);				
-					newLayersFeatureList.push(pointGeoLayer._layers[pLeafletId - 1]);
-					mapIdx++;
-				} else {
-					pointedGeoLayerMap.delete(Array.from(pointedGeoLayerMap.keys())[mapIdx])
+					newLayersFeatureList.push(pointGeoLayer._layers[pLeafletId - 1]);				
 				}
 			}
 			if (newLayersFeatureList.length > 0) {
-				$('[id="spot-list-record-content-leafletId"]').each(function() {
-					var searchedLeafletId = $(this).text().split('_')[0];
-					var pointLeafletId = $(this).text().split('_')[1];
-
-					// register a new layers
-					//newLayersFeatureList.forEach(newLayer => controlGeoInfo(newLayer.feature, null, null, null, newLayer._leaflet_id));
-					$.each(newLayersFeatureList, function(idx, newLayer){
-						if (pointLeafletId == newLayer._leaflet_id + 1) {
-							controlGeoInfo(newLayer.feature, null, null, null, searchedLeafletId);
-						}
-					});
-				});
-				
+				var a = null;
+				newLayersFeatureList.forEach(newLayer => a = newLayer);
+				// register a new layers
+				newLayersFeatureList.forEach(newLayer => controlGeoInfo(newLayer.feature, null, null, null, newLayer._leaflet_id))				
 			}			
 		});
 	});
@@ -400,9 +372,7 @@ const createRoute = (function () {
 	const syncPLeafletIdOnHtml = (function(pLeafletId, geoLayer) {
 		$('[id = "spot-list-record-content-leafletId"]').each(function() {
 			var leafletIdText = $(this).text();
-			if (leafletIdText.split('_')[0] == (pLeafletId)) {
-//			if (leafletIdText.split('_')[0] == (pLeafletId + 1)) {
-//			if (leafletIdText.split('_')[1] == (pLeafletId + 1)) {
+			if (leafletIdText.split('_')[1] == (pLeafletId + 1)) {
 				//$(this).text(leafletIdText.split('_')[0] + '_' + geoLayer._leaflet_id + '_' + leafletIdText.split('_')[2]);
 				var newLeafletIdText = leafletIdText.split('_')[0] + '_' + geoLayer._leaflet_id + '_' + leafletIdText.split('_')[2];
 				$(this).html($(this).children('input').val(newLeafletIdText));
@@ -499,6 +469,7 @@ const createRoute = (function () {
 				
 				var tr = createSpotListRecord(spotListRecordNo, addressText, placeId, latLonText, pointLeafletId);
 				addHtml($('#spot-list-table'), tr);
+				
 			});
 			
 			// reassign numbers to the recodes
@@ -535,13 +506,9 @@ const createRoute = (function () {
 					var spotLat = backedToTarget.children('[id^="delete-list-record-content-latLon-"]')[0].textContent.split('_')[0];
 					var spotLon = backedToTarget.children('[id^="delete-list-record-content-latLon-"]')[0].textContent.split('_')[1];
 					var addressText = backedToTarget.children('td[id^="delete-list-record-content-address-"]')[0].textContent;
-					//var pLeafletId = backedToTarget.children('td[id="delete-list-record-content-leafletid"]').text().split('_')[1];
-					var pLeafletId = backedToTarget.children('td[id="delete-list-record-content-leafletid"]').text().split('_')[0];
-					var placeId = backedToTarget.children('td[id^="delete-list-record-content-leafletid"]').text().split(':')[1];
-					
-					var geoLayer = controlGeoInfo(null, spotLat, spotLon, addressText, Number(pLeafletId));
-					
-					pointedGeoLayerMap.set(Number(placeId), geoLayer._layers[geoLayer._leaflet_id - 1]);
+					var pLeafletId = backedToTarget.children('td[id="delete-list-record-content-leafletid"]').text().split('_')[1];
+
+					controlGeoInfo(null, spotLat, spotLon, addressText, Number(pLeafletId) - 1);
 				});
 				/*
 				if (newLayerFlg) {
@@ -567,127 +534,8 @@ const createRoute = (function () {
 		return deletedElm
 	});
 
-	const addToSpotList2 = (function() {
-		// add to list
-			// hide the sort pane and clear the route on map
-			commonClear(HIDE_SORT_TRUE, CLEAR_ROUTE_TRUE);
-			
-			// get data from search results
-			var address = $(this).parent().prevAll('.js-search-result-address').text();
-			var placeId = $(this).attr('name');
-			var spotListPlaceId = spotCntNo + ':' + placeId;
-			var latLonText = $(this).parent().prevAll('.js-search-result-lanlon').text();
-			var sLeafletId = $(this).parent().prevAll('.js-search-result-leafletid').text().split("_")[0];			
-			var spotListRecordNo = $('td[id^="spot-list-record-no"]').last().text();
-			if (!spotListRecordNo) {
-				spotListRecordNo = 0;
-			}
-
-			/** create spot list record */
-//			var pointLeafletId = pointGeoLayerGroup != null || pointGeoLayerGroup != undefined 
-//				? Object.keys(pointGeoLayerGroup._layers)[spotListRecordNo] : null;
-			var pointLeafletId = null;	
-				
-			//var tr = createSpotListRecord(spotListRecordNo, address, spotListPlaceId, latLonText, pointLeafletId);
-			//addHtml($('#spot-list-table'), tr);  //$('#spot-list-table').append(tbody);  // $('table[id="spot-list-table"]').append(tbody);
-
-			// spotCntNoを更新
-			spotCntNo++;
-			
-			/** create layers */
-			// copy pointGeoLayerGroup._layers to a new object
-//			var pointGeoLayers = null;
-//			if (pointGeoLayerGroup != undefined) {
-//				// if there's already pins on the map
-//				pointGeoLayers = $.extend({}, pointGeoLayerGroup._layers);
-//			} else {
-//				// if there's no pins on the map
-//				/* todo
-//				var targetId = placeId.substr(placeId.lastIndexOf(":") + 1, placeId.length);
-//				var b = pointedGeoLayerMap.size;
-//				for (let key of pointedGeoLayerMap.keys()) {
-//					if (targetId == key) {
-//						pointGeoLayers = $.extend({}, pointedGeoLayerMap.get(key));
-//						
-//						pointGeoLayerGroup._layers = pointedGeoLayerMap.get(key);
-//					}
-//				}*/
-//
-//				$.each(pointedGeoLayerMap, function(idx, pointedGeoLayer) {
-//					var a = pointedGeoLayer.key;
-//					if (targetId == pointedGeoLayer.key) {
-//						pointGeoLayers = $.extend({}, pointedGeoLayer);
-//					}
-//				});
-//			}
-//			
-//			var searchPlaceFlg = true;
-//			pointGeoLayers = $.extend({}, pointGeoLayerGroup._layers);
-//			if (pointGeoLayers != null && pointGeoLayers.length != 0) {
-//				// clear the pointGeoLayerGroup if there's no records at spot list
-//				if ($('#spot-list-table').find('tr').length <= 2) {
-//					pointGeoLayerGroup.clearLayers();
-//					pointedGeoLayerMap.clear();
-//				}
-//				var spotListLeafletId = $('[id^="spotList"][id$=".leafletId"]').val();
-//				var pLeafletId = spotListLeafletId.substr(spotListLeafletId.indexOf("_") + 1,
-//						spotListLeafletId.lastIndexOf("_") - (spotListLeafletId.indexOf("_") + 1));
-//				//pLeafletId = spotListLeafletId.substr(0, spotListLeafletId.indexOf("_"));
-//				
-//				// Update pointGeoLayerGroup
-//				for (let key of searchedGeoLayerMap.keys()) {
-//					if (key == Number(placeId)) {
-//						pointedGeoLayerMap.set(Number(placeId), searchedGeoLayerMap.get(Number(placeId)));						
-//					} else {
-//						if (searchPlaceFlg) {
-//							pointedGeoLayerMap.delete(key);							
-//						}
-//						if (!searchPlaceFlg && !pointedGeoLayerMap.has(key)) {
-//							pointedGeoLayerMap.delete(key);							
-//						}
-//					}
-//				}
-////				let cnt = 0;
-////				for (let pointedGL of pointedGeoLayerMap) {
-////					var pointedGLId = pointedGL[1]._leaflet_id + 1;
-////					if (pLeafletId != pointedGLId) {
-////						var key = Array.from(pointedGeoLayerMap.keys())[cnt];
-////						pointedGeoLayerMap.delete(key);								
-////					} else {
-////						cnt++;						
-////					}
-////				}				
-//			}
-//			
-//
-//			var lat = latLonText.split("_")[0];
-//			var lon = latLonText.split("_")[1];
-//			for (let key of pointedGeoLayerMap.keys()) {
-//				var searchedLat = pointedGeoLayerMap.get(key)._latlng.lat;
-//				var searchedLon = pointedGeoLayerMap.get(key)._latlng.lng;
-//				var searchedLeafletId = pointedGeoLayerMap.get(key)._leaflet_id + 1;		
-//				var pLeafletId = pointedGeoLayerMap.get(key)._leaflet_id;
-//
-//				if (searchedLat.toString() == lat && searchedLon.toString() == lon && searchedLeafletId.toString() == sLeafletId) {
-//					controlGeoInfo(pointedGeoLayerMap.get(key).feature, searchedLat, searchedLon, null, pLeafletId);
-//				}
-//			}
-//			
-////			/** create spot list record */
-////			var pointLeafletId = Object.keys(pointGeoLayerGroup._layers)[spotListRecordNo - 1];
-////			var tr = createSpotListRecord(spotListRecordNo, address, placeId, latLonText, pointLeafletId);
-////			addHtml($('#spot-list-table'), tr);  //$('#spot-list-table').append(tbody);  // $('table[id="spot-list-table"]').append(tbody);
-////			
-////			// spotCntNoを更新
-////			spotCntNo++;
-		
-	});
-	
 	// add all the search results to the spot list
-	/*
-	 * searchFlg  flag if it's called by 'searchPlace' method
-	 */
-	const addToSpotList3 = (function() {
+	const addToSpotList2 = (function() {
 		// add to list
 		$(document).off('click.name1', '[class^="js-search-result-button-"]');
 		$(document).on('click.name1', '[class^="js-search-result-button-"]', function(){
@@ -696,8 +544,7 @@ const createRoute = (function () {
 			
 			// get data from search results
 			var address = $(this).parent().prevAll('.js-search-result-address').text();
-			var placeId = $(this).attr('name');
-			var spotListPlaceId = spotCntNo + ':' + placeId;
+			var placeId = spotCntNo + ':' + $(this).attr('name');
 			var latLonText = $(this).parent().prevAll('.js-search-result-lanlon').text();
 			var sLeafletId = $(this).parent().prevAll('.js-search-result-leafletid').text().split("_")[0];			
 			var spotListRecordNo = $('td[id^="spot-list-record-no"]').last().text();
@@ -706,11 +553,9 @@ const createRoute = (function () {
 			}
 
 			/** create spot list record */
-//			var pointLeafletId = pointGeoLayerGroup != null || pointGeoLayerGroup != undefined 
-//				? Object.keys(pointGeoLayerGroup._layers)[spotListRecordNo] : null;
-			var pointLeafletId = null;	
-				
-			var tr = createSpotListRecord(spotListRecordNo, address, spotListPlaceId, latLonText, pointLeafletId);
+			var pointLeafletId = pointGeoLayerGroup != null || pointGeoLayerGroup != undefined 
+				? Object.keys(pointGeoLayerGroup._layers)[spotListRecordNo] : null;
+			var tr = createSpotListRecord(spotListRecordNo, address, placeId, latLonText, pointLeafletId);
 			addHtml($('#spot-list-table'), tr);  //$('#spot-list-table').append(tbody);  // $('table[id="spot-list-table"]').append(tbody);
 
 			// spotCntNoを更新
@@ -723,58 +568,58 @@ const createRoute = (function () {
 				// if there's already pins on the map
 				pointGeoLayers = $.extend({}, pointGeoLayerGroup._layers);
 			} else {
-				$.each(pointedGeoLayerMap, function(idx, pointedGeoLayer) {
-					if (targetId == pointedGeoLayer.key) {
-						pointGeoLayers = $.extend({}, pointedGeoLayer);
+				// if there's no pins on the map
+				/* todo
+				var targetId = placeId.substr(placeId.lastIndexOf(":") + 1, placeId.length);
+				var b = searchedGeoLayerMap.size;
+				for (let key of searchedGeoLayerMap.keys()) {
+					if (targetId == key) {
+						pointGeoLayers = $.extend({}, searchedGeoLayerMap.get(key));
+						
+						pointGeoLayerGroup._layers = searchedGeoLayerMap.get(key);
+					}
+				}*/
+
+				$.each(searchedGeoLayerMap, function(idx, searchedGeoLayer) {
+					var a = searchedGeoLayer.key;
+					if (targetId == searchedGeoLayer.key) {
+						pointGeoLayers = $.extend({}, searchedGeoLayer);
 					}
 				});
 			}
 			
 			pointGeoLayers = $.extend({}, pointGeoLayerGroup._layers);
 			if (pointGeoLayers != null && pointGeoLayers.length != 0) {
-				
-				// clear the pointGeoLayerGroup
-				pointGeoLayerGroup.clearLayers();
+				// clear the pointGeoLayerGroup if there's no records at spot list
 				if ($('#spot-list-table').find('tr').length <= 2) {
-					// clear the pointGeoLayerMap if there's no records at spot list
-					// pointGeoLayerGroup.clearLayers();
-					pointedGeoLayerMap.clear();
+					pointGeoLayerGroup.clearLayers();					
 				}
 				var spotListLeafletId = $('[id^="spotList"][id$=".leafletId"]').val();
 				var pLeafletId = spotListLeafletId.substr(spotListLeafletId.indexOf("_") + 1,
 						spotListLeafletId.lastIndexOf("_") - (spotListLeafletId.indexOf("_") + 1));
-				//pLeafletId = spotListLeafletId.substr(0, spotListLeafletId.indexOf("_"));
+				pLeafletId = spotListLeafletId.substr(0, spotListLeafletId.indexOf("_"));
 				
 				// Update pointGeoLayerGroup
-				for (let key of searchedGeoLayerMap.keys()) {
-					if (key == Number(placeId)) {
-						pointedGeoLayerMap.set(Number(placeId), searchedGeoLayerMap.get(Number(placeId)));						
-					} else {
-						if (!pointedGeoLayerMap.has(key)) {
-							pointedGeoLayerMap.delete(key);							
-						}
+				for (var pglLeafletId in pointGeoLayers) {
+					if (pLeafletId == pglLeafletId) {
+						alert("same");
+						pointGeoLayerGroup = pointGeoLayerGroup._layers[pglLeafletId];
 					}
 				}
+				
 			}
-			
 
 			var lat = latLonText.split("_")[0];
 			var lon = latLonText.split("_")[1];
-			for (let pkey of pointedGeoLayerMap.keys()) {
-				var searchedLat = pointedGeoLayerMap.get(pkey)._latlng.lat;
-				var searchedLon = pointedGeoLayerMap.get(pkey)._latlng.lng;
-				var searchedLeafletId = pointedGeoLayerMap.get(pkey)._leaflet_id + 1;
-				
-				var pLeafletId = pointedGeoLayerMap.get(pkey)._leaflet_id + 1;
-				for (let skey of searchedGeoLayerMap.keys()) {
-					if (pkey == skey) {
-						pLeafletId = searchedGeoLayerMap.get(skey)._leaflet_id + 1;
-					}
-				}
+			for (let key of searchedGeoLayerMap.keys()) {
+				var searchedLat = searchedGeoLayerMap.get(key)._latlng.lat;
+				var searchedLon = searchedGeoLayerMap.get(key)._latlng.lng;
+				var searchedLeafletId = searchedGeoLayerMap.get(key)._leaflet_id + 1;		
+				var pLeafletId = searchedGeoLayerMap.get(key)._leaflet_id;
 
-//				if (searchedLat.toString() == lat && searchedLon.toString() == lon && searchedLeafletId.toString() == sLeafletId) {
-					controlGeoInfo(pointedGeoLayerMap.get(pkey).feature, searchedLat, searchedLon, null, pLeafletId);
-//				}
+				if (searchedLat.toString() == lat && searchedLon.toString() == lon && searchedLeafletId.toString() == sLeafletId) {
+					controlGeoInfo(searchedGeoLayerMap.get(key).feature, searchedLat, searchedLon, null, pLeafletId);
+				}
 			}
 			
 //			/** create spot list record */
@@ -806,6 +651,9 @@ const createRoute = (function () {
 				spotListRecordNo = 0;
 			}
 			
+			var a = Object.keys(pointGeoLayerGroup._layers);
+			var b = a[spotListRecordNo];
+			
 			/** create spot list record */
 			var pointLeafletId = pointGeoLayerGroup != null || pointGeoLayerGroup != undefined 
 				? Object.keys(pointGeoLayerGroup._layers)[spotListRecordNo] : null;
@@ -825,16 +673,17 @@ const createRoute = (function () {
 				// if there's no pins on the map
 				/* todo
 				var targetId = placeId.substr(placeId.lastIndexOf(":") + 1, placeId.length);
-				var b = pointedGeoLayerMap.size;
-				for (let key of pointedGeoLayerMap.keys()) {
+				var b = searchedGeoLayerMap.size;
+				for (let key of searchedGeoLayerMap.keys()) {
 					if (targetId == key) {
-						pointGeoLayers = $.extend({}, pointedGeoLayerMap.get(key));
+						pointGeoLayers = $.extend({}, searchedGeoLayerMap.get(key));
 						
-						pointGeoLayerGroup._layers = pointedGeoLayerMap.get(key);
+						pointGeoLayerGroup._layers = searchedGeoLayerMap.get(key);
 					}
 				}*/
 
-				$.each(pointedGeoLayerMap, function(idx, searchedGeoLayer) {
+				$.each(searchedGeoLayerMap, function(idx, searchedGeoLayer) {
+					var a = searchedGeoLayer.key;
 					if (targetId == searchedGeoLayer.key) {
 						pointGeoLayers = $.extend({}, searchedGeoLayer);
 					}
@@ -862,14 +711,14 @@ const createRoute = (function () {
 
 			var lat = latLonText.split("_")[0];
 			var lon = latLonText.split("_")[1];
-			for (let key of pointedGeoLayerMap.keys()) {
-				var searchedLat = pointedGeoLayerMap.get(key)._latlng.lat;
-				var searchedLon = pointedGeoLayerMap.get(key)._latlng.lng;
-				var searchedLeafletId = pointedGeoLayerMap.get(key)._leaflet_id + 1;		
-				var pLeafletId = pointedGeoLayerMap.get(key)._leaflet_id;
+			for (let key of searchedGeoLayerMap.keys()) {
+				var searchedLat = searchedGeoLayerMap.get(key)._latlng.lat;
+				var searchedLon = searchedGeoLayerMap.get(key)._latlng.lng;
+				var searchedLeafletId = searchedGeoLayerMap.get(key)._leaflet_id + 1;		
+				var pLeafletId = searchedGeoLayerMap.get(key)._leaflet_id;
 
 				if (searchedLat.toString() == lat && searchedLon.toString() == lon && searchedLeafletId.toString() == sLeafletId) {
-					controlGeoInfo(pointedGeoLayerMap.get(key).feature, searchedLat, searchedLon, null, pLeafletId);
+					controlGeoInfo(searchedGeoLayerMap.get(key).feature, searchedLat, searchedLon, null, pLeafletId);
 				}
 			}
 			
@@ -946,12 +795,6 @@ const createRoute = (function () {
 				//  引数：textStatus　通信結果のステータス
 				//  引数：jqXHR　XMLHttpRequestオブジェクト
 				}).done(function(response,textStatus,jqXHR) {
-					if ($('#spot-list-table').find('tr').length < 2) {
-						// clear the pointGeoLayerMap if there's no records at spot list
-						pointGeoLayerGroup.clearLayers();
-						pointedGeoLayerMap.clear();
-					}
-					
 					console.log("Api Response: " + jqXHR.status 
 							+ "(" + textStatus + ")"); // 例：200, success
 
@@ -979,7 +822,6 @@ const createRoute = (function () {
 						showOnMap(jsonResultDataList);
 						displayResult(jsonResultDataList, resultPlaceIdList);
 					}
-					
 					// add an event of add-to-spot-list event
 					addToSpotList2();
 
@@ -1045,17 +887,14 @@ const createRoute = (function () {
 	// show geo data on map
 	const showOnMap = (function(jsonResultDataList) {
 		// remove old layers/markers on map
-		//pointGeoLayerGroup.clearLayers();
-		//pointedGeoLayerMap.clear();
-		//searchedGeoLayerMap.clear();
+		//pointGeoLayerGroup.clearLayers();			
+		searchedGeoLayerMap = new Map();
 		
 		$.each(jsonResultDataList, function(idx, data) {
 			map.setView([data.lat, data.lon], VIEW_ZOOM_LEVEL);
 			var geoLayer = controlGeoInfo(null, data.lat, data.lon, data.display_name, null);
-			//pointedGeoLayerMap.set(geoLayer._leaflet_id - 1, geoLayer._layers[geoLayer._leaflet_id - 1]);
-			//pointedGeoLayerMap.set(data.place_id, geoLayer._layers[geoLayer._leaflet_id - 1]);
+			//searchedGeoLayerMap.set(geoLayer._leaflet_id - 1, geoLayer._layers[geoLayer._leaflet_id - 1]);
 			searchedGeoLayerMap.set(data.place_id, geoLayer._layers[geoLayer._leaflet_id - 1]);
-			// ★1
 		})
 	});
 	
@@ -1270,7 +1109,7 @@ const createRoute = (function () {
 				}
 			});	
 			recordNoElmList.each(function() {
-				// spotListIndex = index にするか？
+				// TODO spotListIndex = index にするか？
 				var spotListIndex = Number($(this).text()) - 1;
 				rewriteFormIndexes($(this).parents('tr'), spotListIndex);
 			});
@@ -1293,9 +1132,8 @@ const createRoute = (function () {
 					} else {
 					}
 				});	
-				
 				recordNoElmList.each(function() {
-					// spotListIndex = index にするか？
+					// TODO spotListIndex = index にするか？
 					var spotListIndex = Number($(this).text()) - 1;
 					rewriteFormIndexes($(this).parents('tr'), spotListIndex);
 				});
@@ -1304,7 +1142,6 @@ const createRoute = (function () {
 	});
 	
 	const setEvent = (function() {
-		addToSpotList3();
 		addSpotListRecode();
 		sendToDeleteList();
 		sendBackToSpotList();

@@ -1,6 +1,7 @@
 package com.oz.bean.common;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class SpotInfo implements Serializable{
@@ -44,13 +45,13 @@ public class SpotInfo implements Serializable{
 	private String insUserId;
 	
 	/** ins date */
-	private Date insDate;
+	private String insDate;
 	
 	/** update user id */
 	private String updUserId;
 	
 	/** update date */
-	private Date updDate;
+	private String updDate;
 	
 	
 
@@ -143,11 +144,11 @@ public class SpotInfo implements Serializable{
 		this.insUserId = insUserId;
 	}
 
-	public Date getInsDate() {
+	public String getInsDate() {
 		return insDate;
 	}
 
-	public void setInsDate(Date insDate) {
+	public void setInsDate(String insDate) {
 		this.insDate = insDate;
 	}
 
@@ -159,11 +160,11 @@ public class SpotInfo implements Serializable{
 		this.updUserId = updUserId;
 	}
 
-	public Date getUpdDate() {
+	public String getUpdDate() {
 		return updDate;
 	}
 
-	public void setUpdDate(Date updDate) {
+	public void setUpdDate(String updDate) {
 		this.updDate = updDate;
 	}
 

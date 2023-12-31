@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 /**********************************************************************/
 :root {
-	/** color */
+  /** color */
   --blackColor: #000;
   --grayColor: #696666;
   --gray02Color: #61646d;
@@ -10,6 +10,8 @@
   --green02Color: #189e83;
   --lightGrayColor: #ccc8c8;
   --lightYellowColor: #FFFFDD;
+  --lightPink01Color: #FFE4E1;
+  --lightBluePinkColor: #FFE0ED;
   --whiteColor: #fff;
   
   /** font weight */
@@ -360,7 +362,7 @@ div.body-make-new-plans {
 	border: none;
 }
 #spot-list-table .css-list-chbox + label {
-	padding: 5px 20px;/
+	padding: 5px 20px;
 	text-align: center;
 	cursor: pointer;
     background-color: var(--whiteColor);
@@ -540,9 +542,12 @@ div.body-make-new-plans {
 
 /* page control *******************************/
 .page-control {
-	padding: 45px 70px;
+	padding: 45px 70px 0px 70px;
+	display: flex;
 }
-
+input[type="submit"] {
+	margin: 0px 10px 10px 15px;
+}
 
 /* page control end ***************************/
 

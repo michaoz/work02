@@ -1,6 +1,7 @@
 package com.oz.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class LuggageItemEntity implements Serializable {
 	
@@ -29,6 +30,18 @@ public class LuggageItemEntity implements Serializable {
 	
 	/** item owner */
 	private String itemOwnerName;
+	
+	/** ins user id */
+	private String insUserId;
+	
+	/** ins date */
+	private Date insDate;
+	
+	/** update user id */
+	private String updUserId;
+	
+	/** update date */
+	private Date updDate;
 
 	
 	
@@ -94,5 +107,37 @@ public class LuggageItemEntity implements Serializable {
 
 	public void setItemOwnerName(String itemOwnerName) {
 		this.itemOwnerName = itemOwnerName;
+	}
+	
+	public String getInsUserId() {
+		return insUserId;
+	}
+
+	public void setInsUserId(String insUserId) {
+		this.insUserId = insUserId;
+	}
+
+	public Date getInsDate() {
+		return insDate;
+	}
+
+	public void setInsDate(Date insDate) {
+		this.insDate = insDate;
+	}
+
+	public String getUpdUserId() {
+		return updUserId;
+	}
+
+	public void setUpdUserId(String updUserId) {
+		this.updUserId = updUserId;
+	}
+
+	public Date getUpdDate() {
+		return updDate;
+	}
+
+	public void setUpdDate(Date updDate) {
+		this.updDate = updDate;
 	}
 }

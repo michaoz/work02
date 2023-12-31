@@ -1,5 +1,6 @@
 package com.oz.controller.tripPlans;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.poi.util.StringUtil;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -60,63 +62,50 @@ public class TripPlansController {
 	 * createRoute ルート作成画面表示
 	 * @return
 	 */
-    @RequestMapping(value = "/createRoute", method = RequestMethod.GET)
+//    @RequestMapping(value = "/createRoute", method = RequestMethod.GET)
+    @RequestMapping(value = "/createRoute", method = RequestMethod.POST)
     public String createRoute(@ModelAttribute("tripPlansCommonForm") TripPlansCommonForm form, BindingResult result,
     		HttpServletRequest req, HttpServletResponse res, HttpSession session) {
     	
+    	// input check
+    	// - either newTripPlanName or existedTripPlanName must not be NULL
+    	
+    	
     	// new plan or existed plan
-//    	boolean newPlanFlg = "0".equals(req.getAttribute("isNewPlan")) ? true : false ;
-//    	boolean hasTripPlanNameFlg = createRouteService.searchTripPlanName(form);
-//    	if (newPlanFlg == hasTripPlanNameFlg) {
-//    		// either both are true or both are false, then rise an error.
-//    		// todo
-//    		return CommonConstant.NEWPLAN_URL;    		
-//    	}
+    	form.setNewPlanFlg(!StringUtils.isEmpty(form.getNewTripPlanName()));
+    	boolean hasTripPlanNameFlg = false;
+    	form.setTripPlanName(!StringUtils.isEmpty(form.getNewTripPlanName()) ? form.getNewTripPlanName() : form.getExistedTripPlanName());
+    	if (!StringUtils.isEmpty(form.getTripPlanName())) {
+    		// search trip plan name for DB
+    		hasTripPlanNameFlg = createRouteService.searchTripPlanName(form.getTripPlanName());    		
+    	}
+    	if (form.isNewPlanFlg() == hasTripPlanNameFlg) {
+    		// either both are true or both are false, then rise an error.
+    		// todo
+    		// req.setAttribute(CommonConstant.TRIP_PLAN_NAME_LIST, tripPlanNameList);
+    		return CommonConstant.NEWPLAN_URL;    		
+    	}
     	
-    	/*
-    	List<SpotInfo> l = new ArrayList<>();
-    	SpotInfo s0 = new SpotInfo();
-    	s0.setRecordNum(1);
-    	s0.setAddress("test-0");
-    	SpotInfo s1 = new SpotInfo();
-    	s1.setRecordNum(2);
-    	s1.setAddress("test-1");
-    	l.add(s0);
-    	l.add(s1);
-    	form.setSpotList(l);
-    	*/
+    	if (hasTripPlanNameFlg) {
+    		// get the previous data from db
+        	form.setSpotList(createRouteService.selectRouteInfo(form));
+    	}
 
-    	List<SpotInfoEntity> resultList = createRouteService.selectRouteInfo(form);
+    	if (ObjectUtils.isNotEmpty(form.getSpotList())) {
+        	tripPlansHelper.setCreateRouteModel(form);    		
+    	}
     	
-    	
-    	tripPlansHelper.setCreateRouteModel(form);
-    	
-    	// trip plan name
-    	form.setTripPlanName("sample_plan_20231019");
-
     	// @ModelAttribute があるのでModelの引数、この処理は省略する。
     	// model.addAttribute(tripPlansCommonForm);
         return CommonConstant.CREATEROUTE_URL;
     }
 
-	/**
-	 * createRoute ルート作成画面再表示
-	 * @return
-	 */
-    /*
-    @RequestMapping(value = "/createRoute", params="back", method = RequestMethod.GET)
-    public String backCreateRoute(@ModelAttribute("tripPlansCommonForm") TripPlansCommonForm form, BindingResult result,
-    		HttpServletRequest req, HttpServletResponse res, Model model) {
+    @RequestMapping(value = "/createRoute", params="back", method = RequestMethod.POST)
+    public String createRouteBack(@ModelAttribute("tripPlansCommonForm") TripPlansCommonForm form, BindingResult result,
+    		HttpServletRequest req, HttpServletResponse res, HttpSession session) {
     	
-    	List<TripPlansEntity> resultList = createRouteService.selectRouteInfo(form);
-
-    	// @ModelAttribute があるのでModelの引数、この処理は省略する。
-    	// model.addAttribute(tripPlansCommonForm);
-    	System.out.println("back to create route");
-
     	return CommonConstant.CREATEROUTE_URL;
     }
-    */
 
 	/**
 	 * prepLuggage 荷物準備画面表示
@@ -127,6 +116,9 @@ public class TripPlansController {
     		HttpServletRequest req, HttpServletResponse res, Model model) {
     	
     	/* todo: 単項目チェック */
+    	if (result.hasErrors()) {
+    		System.out.println("error");
+    	}
     	
     	/* 相関チェック */
     	this.checkInput(form, result);
@@ -138,8 +130,16 @@ public class TripPlansController {
     	
     	tripPlansHelper.editCreateRouteForm(form);
 
-    	// todo: service呼び出し
-    	createRouteService.insertRouteInfo(form);
+    	// register the create-route data and delete the old data
+    	createRouteService.insertDeleteRouteInfo(form);
+//    	if (form.isNewPlanFlg()) {
+//        	createRouteService.insertRouteInfo(form);    		
+//    	} else {
+//    		createRouteService.updateRouteInfo(form);
+//    	}
+    	
+		// fetch the previous prep-luggage data from db
+    	form.setLuggageInfoList(prepLuggageService.selectLuggageInfo(form));
     	
     	/* luggageKeywordList */
     	LUGGAGE_KEYWORD_ITEMS a =  CommonConstant.LUGGAGE_KEYWORD_ITEMS.Travel_Items;
@@ -159,6 +159,12 @@ public class TripPlansController {
     	
     	return CommonConstant.PREPLUGGAGE_URL;
     }
+
+    @RequestMapping(value = "/createRoute/prepLuggage", params="back", method = RequestMethod.POST)
+    public String prepLuggageBack(@ModelAttribute("tripPlansCommonForm") TripPlansCommonForm form, BindingResult result,
+    		HttpServletRequest req, HttpServletResponse res, Model model) {
+    	return CommonConstant.PREPLUGGAGE_URL;
+    }
     
 	/**
 	 * confirmPlans 確認画面表示
@@ -173,16 +179,17 @@ public class TripPlansController {
     	/* todo: 相関チェック  */
     	tripPlansHelper.editPrepLuggageForm(form);
 
-    	// todo: service呼び出し
-    	prepLuggageService.insertLuggageInfo(form);
-    	
-        	
+    	prepLuggageService.insertDeleteLuggageInfo(form);
+//    	if (form.isNewPlanFlg()) {
+//        	prepLuggageService.insertLuggageInfo(form);
+//    	}
     	
     	/* create route info */
-    	List<SpotInfoEntity> resultList = createRouteService.selectRouteInfo(form);
-    	// map the spot info
-    	form.setSpotList(mapSpotInfo(resultList));
-    	
+//    	List<SpotInfoEntity> resultList = createRouteService.selectRouteInfo(form);
+//    	// map the spot info
+//    	form.setSpotList(mapSpotInfo(resultList));
+    	form.setSpotList(createRouteService.selectRouteInfo(form));
+
     	form.setTripPlanName(form.getSpotList().get(0).getTripPlanName());
 
     	return CommonConstant.CONFIRM_PLANS_URL;
@@ -221,6 +228,9 @@ public class TripPlansController {
 
 				String[] spotNameCity = new String[] {spot.getSpotName(), spot.getCity()};
 				for (short i = 0; i < spotNameCity.length; i++) {
+					spotNameCity[i] = spotNameCity[i].replaceFirst(CommonConstant.PREFIX_MATCH + CommonConstant.REGEX_SPACE, "")
+							.replaceFirst(CommonConstant.REGEX_SPACE + CommonConstant.SUFFIX_MATCH, "");
+					
 					if (!spot.getAddress().contains(spotNameCity[i])) {
 						String field = i == 0 ? "spotName" : "city";
 						result.rejectValue(field, "errors.address.match");						
@@ -242,7 +252,8 @@ public class TripPlansController {
     private List<SpotInfo> mapSpotInfo(List<SpotInfoEntity> entityList) {
     	
     	List<SpotInfo> spotInfoList = new ArrayList<>();
-    	
+		SimpleDateFormat sdf = new SimpleDateFormat(CommonConstant.DATETIMEFORMAT_HYPHEN_COLON);
+		
     	for (SpotInfoEntity entity : entityList) {
     		SpotInfo si = new SpotInfo();
     		
@@ -256,9 +267,9 @@ public class TripPlansController {
     		si.setLeafletId(entity.getLeafletId());
     		si.setGeoType(entity.getGeoType());
     		si.setInsUserId(entity.getInsUserId());
-    		si.setInsDate(entity.getInsDate());
+    		si.setInsDate(sdf.format(entity.getInsDate()));
     		si.setUpdUserId(entity.getUpdUserId());
-    		si.setUpdDate(entity.getUpdDate());
+    		si.setUpdDate(sdf.format(entity.getUpdDate()));
     		
     		spotInfoList.add(si);
     	}

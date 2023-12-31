@@ -46,11 +46,11 @@ public final class LuggageInfoEntity implements Serializable {
 		this.tripPlanName = tripPlanName;
 	}
 	
-	public int getLuggageName() {
+	public int getLuggageNo() {
 		return luggageNo;
 	}
 
-	public void setLuggageName(int luggageNo) {
+	public void setLuggageNo(int luggageNo) {
 		this.luggageNo = luggageNo;
 	}
 

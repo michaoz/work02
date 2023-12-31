@@ -1,5 +1,31 @@
 @CHARSET "UTF-8";
 
+:root {
+  /** color */
+  --red01: #DC143C;
+  --orange01: #FF570D;
+  --lightPink01Color: #FFE4E1;
+  --lightBluePinkColor: #FFE0ED;
+  --lightGrayColor02: #ccc8c8;
+  --yellowColor01: #FFFF9D;
+  --lightYellowColor: #FFFFDD;
+  --greenColor: #5ebfac;
+  --green02Color: #189e83;
+  --grayColor: #696666;
+  --gray02Color: #61646d;
+  --darkGrayColor: #42454e;
+  --lightGrayColor01: ##808080;
+  --blackColor: #000;
+  --whiteColor01: #fff;
+  --whiteColor02: #f7f8f9;
+}
+
+/** common css *******************************************/
+/* オートコンプリート機能を利用して入力した場合の背景色を白色にする（自動設定を無効にする） */
+input:-webkit-autofill {	
+    box-shadow: 0 0 0 1000px white inset;	
+}	
+
 body, html {
 	margin: 0;
 	padding: 0;
@@ -10,6 +36,46 @@ body {
 	/* font options : Constantia, Helvetica Neue, arial*/
 	font-size: 20px;
 }
+
+input[type=checkbox],
+input[type=radio],
+label,
+select {
+	cursor: pointer;
+}
+
+/** button */
+/* input[type="submit"] {
+	padding: 10px
+	cursor: pointer;
+}*/
+.css-submit-button {
+	padding: 10px;
+	background-color: var(--lightYellowColor);
+	border-radius: 5px;
+	font-size: 15px;
+	cursor: pointer;
+	margin: 0px 10px 10px 15px;
+}
+.css-submit-button:hover {
+	color: var(--red01);
+	background-color: var(--yellowColor01);		
+}
+.css-back-button {
+	padding: 10px;
+	background-color: var(--whiteColor01);
+	border-radius: 5px;
+	font-size: 15px;
+	cursor: pointer;
+}
+.css-back-button:hover {
+	color: var(--red01);	
+}
+
+/** button end */
+
+/** common css end *******************************************/
+
 
 #content {
 	text-align: center;
@@ -27,7 +93,7 @@ body {
 	align-items: center;
 }
 
-/** footer */
+/** footer *******************************************/
 #pre-space-for-footer {
 	position: relative;
 	height: 100px;	
@@ -46,9 +112,11 @@ body {
 	text-align: right;
 	padding: 0;
 }
-/** footer end */
 
-/* エラーメッセージ */
+/** footer end *******************************************/
+
+
+/** エラーメッセージ ************************************************/
 .errorMsg {
 	color: red;
 	font-size: 12px;
@@ -61,8 +129,9 @@ a {
 a:hover {
 	color: #DC143C;
 }
+/** エラーメッセージ end *******************************************/
 
-/* header部分　START */
+/** header部分　START *******************************************/
 div#logo {
 	position: absolute;
 	font-size: 25px;
@@ -82,9 +151,9 @@ a.logoLink {
 	color:#DC143C; /* マウスオーバー時のリンク色 */
 }                 
 
-/* header部分　END */
+/** header部分　END *******************************************/
 
-/* ログインリンク部分　START */
+/** ログインリンク部分　START *******************************************/
 div#login {
 	position: absolute;
 	top: 35px;
@@ -103,9 +172,9 @@ a.loginLink {
    {color:#FFFFFF;}                 /* まだ見ていないリンク色 */
 .loginLink:visited
    {color:#FFFFFF;}                 /* 既に見たリンク色 */
-/* ログインリンク部分　END */
+/** ログインリンク部分　END *******************************************/
 
-/* ユーザ情報一覧部分 STRAT */
+/** ユーザ情報一覧部分 STRAT *******************************************/
 
 /* テーブルにスクロールを付ける為の外枠 */
 .listContents {
@@ -228,14 +297,13 @@ a.loginLink {
 	border: 1px #1C79C6 solid; /* セルの枠線（太さ・色・スタイル） */
 }
 
-/* ユーザ情報一覧部分 END */
+/** ユーザ情報一覧部分 END *******************************************/
 
-/* top.jsp用のCSS START */
+/** top.jsp用のCSS START *******************************************/
 
 div.syeat{
 	padding-bottom: 60px; 
 }
-
 .pointsyeat {
 	border: 1px #1C79C6 solid; /* テーブル全体の枠線（太さ・色・スタイル） */
 	background-color: #FFFFFF; /* 背景色 */
@@ -245,14 +313,12 @@ div.syeat{
 	table-layout: auto;
 	width: 80%;	
 }
-
 .pointsyeat TH {
 	background-color: #BAD8E5;
 	border: 1px #1C79C6 solid; /* セルの枠線（太さ・色・スタイル） */
 }
-
 .pointsyeat TD {
 	border: 1px #1C79C6 solid; /* セルの枠線（太さ・色・スタイル） */
 }
 
-/* top.jsp用のCSS END */
+/** top.jsp用のCSS END *******************************************/

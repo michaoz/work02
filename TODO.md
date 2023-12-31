@@ -1,19 +1,40 @@
 # ToDo
 
+- General
+ - Enterキーで次画面遷移できなくする  5
+ - validation check 単項目、相関項目! 4
+ - 画面2重送信の防止 6
+ - マッピングクラスを使ってマッピングする
+ - entityクラスの活用 
+ 
 - make a new plan
 
-- create route で別の検索地でもできること
+- create route 
+
+
+
+pointGeoLayerGroupはcontrolGeoInfoに渡されたものが追加される
+pointGeoLayerGroupは地図上にピンがのっているもののグループ
+searchedGeoLayerMapは検索済みの全てのものが入っている
+
+searchedGeoLayerMapからピンをたてているが、pointGeoLayerGroupから作った方がよい？
+
+
+
+★1　jsonResultDataList（検索結果）の長さのみでcontrolGeoInfo呼び出しをループしている→検索結果しか地図上にピンを作らない
+   →既存のピンも含めてcontrolGeoInfoを呼び出しする様に修正が必要。
  
 - prepluggage 
+ - 再訪問画面でadd recordで新しいitemを増やすと、editPrepLuggageFormでヌルポになる。 ★
  - 以前の持ち物リストを付けるようにする。履歴を見れて、現在にも適用できるようにする。
- - 戻った時に持ちまわっているフォームを表示する（DBに保存したもの全部）
+
+－ confirm 
+ - 特にcreate routeについて、別の検索地とか追加したりソートした後の通りに表示されない（DBに正しく登録されていない？） ★
  
 - first page
- - DBに保存したものを取得して表示
- - trip name をプルダウンから選択 → DBにある場合は一度訪れたことがあるフラグをつける
 
 - button
- - スタイルの変更
+ - スタイルの変更!
 
 ***
 # Done

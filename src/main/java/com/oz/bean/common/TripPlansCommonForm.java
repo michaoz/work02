@@ -14,12 +14,26 @@ public class TripPlansCommonForm implements Serializable{
 	/** trip plan name */
 	private String tripPlanName;
 	
+	// TODO 別のフォームに移す(newPlan.jsp用)
+	/** new trip plan name */
+	private String newTripPlanName;
+	
+	/** new trip plan name */
+	private String existedTripPlanName;
+	
+	/** new plan flg */
+	private boolean newPlanFlg;
+	
+	/** tripPlanNameList */
+	private List<String> tripPlanNameList;
+	// TODO end
+	
 	/** spot info list */
 	private List<SpotInfo> spotList;
 	
 	/** luggage info list */
 	private List<LuggageInfo> luggageInfoList;
-
+	
 	
 
 	public String getTripPlanName() {
@@ -30,6 +44,22 @@ public class TripPlansCommonForm implements Serializable{
 		this.tripPlanName = tripPlanName;
 	}
 	
+	public String getNewTripPlanName() {
+		return newTripPlanName;
+	}
+
+	public void setNewTripPlanName(String newTripPlanName) {
+		this.newTripPlanName = newTripPlanName;
+	}
+
+	public String getExistedTripPlanName() {
+		return existedTripPlanName;
+	}
+
+	public void setExistedTripPlanName(String existedTripPlanName) {
+		this.existedTripPlanName = existedTripPlanName;
+	}
+
 	public List<SpotInfo> getSpotList() {
 		return spotList;
 	}
@@ -44,6 +74,22 @@ public class TripPlansCommonForm implements Serializable{
 
 	public void setLuggageInfoList(List<LuggageInfo> luggageInfoList) {
 		this.luggageInfoList = luggageInfoList;
+	}
+
+	public boolean isNewPlanFlg() {
+		return newPlanFlg;
+	}
+
+	public void setNewPlanFlg(boolean newPlanFlg) {
+		this.newPlanFlg = newPlanFlg;
+	}
+
+	public List<String> getTripPlanNameList() {
+		return tripPlanNameList;
+	}
+
+	public void setTripPlanNameList(List<String> tripPlanNameList) {
+		this.tripPlanNameList = tripPlanNameList;
 	}
 
 	

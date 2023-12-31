@@ -72,11 +72,12 @@
 		        <thead>
 		          <tr id="header-table">
 				    <th style="display: none"></th>
-		            <th>No</th>
-		            <th>BagNo</th>
+		            <th>No.</th>
+		            <th>Bag No.</th>
 		            <th style="display: none">ItemNo</th>
 				    <th>Item Name</th>
-				    <th>the Number of the Item</th>
+				    <th>The Number of the Item</th>
+				    <th>Delete Check</th>
 		          </tr>
 		        </thead>
 		        <tbody>
@@ -111,76 +112,55 @@
 		              <td id="luggage-item-count" >
 			            <form:input path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemCount" />
 			          </td>
+			          <td id="luggage-item-emit">
+			            <input type="checkbox" id="luggage-item-count-emit-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" class="css-list-chbox">
+			            <label for="luggage-item-count-emit-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" class="css-list-chbox-label">✓</label>
+			          </td>
 		            </tr>
 		          </c:forEach>
 		          </c:forEach>
 		        </tbody>
 		      </table>
 		    </div>
-		    
-		    <%-- DIV: route pane --%>
-		    <%-- 
-		    <div class="body-create-route">
-			    <div id="page-title">
-			      <p>The Created Route</p>
-		    	</div>
-	    	    <table>
-    		        <thead>
-	    	            <tr>
-	   	                  <th>No</th>
-			    	      <th>Spot Name</th>
-				          <th>City</th>
-				          <th>Address</th>
-		                </tr>
-	    	        </thead>
-	    	        <tbody>
-	    	        <c:forEach items="${tripPlansCommonForm.spotList}" var="spotInfo" varStatus="spotInfoStatus">
-  			            <tr id="${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}">
-			    	          <td id="spot-list-record-no-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000" >
-					            <form:hidden path="spotList[${spotInfoStatus.index}].recordNum" />
-					            ${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}
-					          </td>
-					          <td id="spot-list-record-content-spotName-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
-					            <form:hidden path="spotList[${spotInfoStatus.index}].spotName" />
-					            ${tripPlansCommonForm.spotList[spotInfoStatus.index].spotName}
-					          </td>
-					          <td id="spot-list-record-content-city-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
-					            <form:hidden path="spotList[${spotInfoStatus.index}].city" />
-					            ${tripPlansCommonForm.spotList[spotInfoStatus.index].city}
-					          </td>
-					          <td id="spot-list-record-content-address-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
-					            <form:hidden path="spotList[${spotInfoStatus.index}].address" />
-					            ${tripPlansCommonForm.spotList[spotInfoStatus.index].address}
-					          </td>
-					      </tr>
-	    	        </c:forEach>
-	    	        </tbody>
-    		    </table>
-    		</div>
-    		--%>
 		</div>
-		
-		<%-- DIV: control the page --%>
 		<div class="page-control">
 		 <%-- 
 		  <button type="button" value="Create a Route to the Destination" id="back-to-make-new-plans">
 		      <a href="/work02/travel/tripPlans/createRoute?back">Back to Create a Route to the Destination</a>
 		  </button>
 		  --%>
-		  <button type="button" id="back-to-make-new-plans"onclick="history.back()">Back to Previous Page</button>
-		  <input type="submit" value="Save the Luggage List" id="submit">
+		 <%-- 
+		  <button type="button" id="back-to-make-new-plans" onclick="history.back()">Back to Previous Page</button>
+		  --%>
+		  <input type="button" id="submit-back" class="css-back-button" value="Back to Previous Page" >
+		  <input type="submit" id="submit" class="css-submit-button" value="Save the Luggage List" >
+		 <%-- 
+		  <input type="button" id="submit-back" class="css-back-button" value="Back to Previous Page" >		  
+		  <input type="button" id="submit" class="css-submit-button" value="Save the Luggage List" >
+		  --%>
 		</div>
 		
 		
 		<%-- hidden items --%>
 		<form:hidden path="tripPlanName" />
-		<%--
+		<form:hidden path="newTripPlanName" />
+		<form:hidden path="existedTripPlanName" />
+		<form:hidden path="newPlanFlg" />
 		<c:forEach items="${tripPlansCommonForm.spotList}" var="spotInfo" varStatus="spotInfoStatus">
+		    <form:hidden path="spotList[${spotInfoStatus.index}].tripPlanName" />
 		    <form:hidden path="spotList[${spotInfoStatus.index}].recordNum" />
 		    <form:hidden path="spotList[${spotInfoStatus.index}].spotName" />
 		    <form:hidden path="spotList[${spotInfoStatus.index}].city" />
+		    <form:hidden path="spotList[${spotInfoStatus.index}].address" />
+		    <form:hidden path="spotList[${spotInfoStatus.index}].latLon" />
+		    <form:hidden path="spotList[${spotInfoStatus.index}].latitude" />
+			<form:hidden path="spotList[${spotInfoStatus.index}].longitude" />
+			<form:hidden path="spotList[${spotInfoStatus.index}].geoType" />
+			<form:hidden path="spotList[${spotInfoStatus.index}].insUserId" />
+			<form:hidden path="spotList[${spotInfoStatus.index}].insDate" />
+			<form:hidden path="spotList[${spotInfoStatus.index}].updUserId" />
+			<form:hidden path="spotList[${spotInfoStatus.index}].updDate" />
 		</c:forEach>
-		--%>
 	</form:form>
 		
 	<jsp:include page = "../common/footer.jsp"/>

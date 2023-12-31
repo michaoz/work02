@@ -106,14 +106,14 @@ const createRoute = (function () {
                           //+ itemCount
 		                  + '</td>';
 //		var tdLeafletId = '<td style="display: none" id="luggage-record-content-leafletid">' + searchedLeafletId + '_' + pointLeafletId + '_' + placeId + '</td>';		
-//        var tdEmitChbox = '<td>' + '<input type="checkbox" id="luggage-record-content-emit-' + placeId + '" '
-//                          + 'class="css-list-chbox" value=' + placeId + '>'
-//                          + '<label for="luggage-record-content-emit-' + placeId + '" class="css-list-chbox-label">✓</label>'
-//                          + '</td>';
+        var tdEmitChbox = '<td id="luggage-item-emit">' 
+        	              + '<input type="checkbox" id="luggage-item-count-emit-' + recordNum + '" '
+                          + 'class="css-list-chbox" >'
+                          + '<label for="luggage-item-count-emit-' + recordNum + '" class="css-list-chbox-label">✓</label>'
+                          + '</td>';
 
 		var tr = '<tr id="' +  recordNum + '">'  
 			+ tdSortLeader
-//			+ tdEmitChbox
 			+ tdNo 
 			+ tdBagNo
 			+ tdItemNo 
@@ -121,6 +121,7 @@ const createRoute = (function () {
 			+ tdItemCount
 //			+ latLon
 //			+ tdLeafletId
+			+ tdEmitChbox
 			+ '</tr>';
 
 		return tr;
@@ -633,6 +634,7 @@ const createRoute = (function () {
 		$('.js-luggage-keyword-items').children('[id^="item-"]').children('input[type=button]').click(function() {
 			var selectedItemName = $(this).next('label').text();
 			addLuggageRecord(selectedItemName);
+			deleteChangeRecordColor();
 		});
 	});
 	
@@ -641,6 +643,7 @@ const createRoute = (function () {
 	const addRecordBtn = (function() {
 		$('.js-add-record-btn').click(function() {
 			addLuggageRecord("");
+			deleteChangeRecordColor();
 		});
 	});
 	
@@ -697,51 +700,144 @@ const createRoute = (function () {
 		});
 	});
 	
+	const deleteChangeRecordColor = (function() {
+		// Gray out the record if the delete check was checked.
+		$('#luggage-list-table').find('.css-list-chbox').change(function() {
+			var parentSiblings = parentSiblings = $(this).parent('td').siblings('td');
+			var parentSiblingsChildren = parentSiblingsChildren = $(this).parent('td').siblings('td').children();
+			if ($(this).prop('checked')) {
+				$(this).parent('td').css('background-color', '#ccc8c8');
+				parentSiblings.css('background-color', '#ccc8c8');
+				parentSiblings.css('color', '#61646d');
+				parentSiblingsChildren.css('background-color', '#ccc8c8');	
+				parentSiblingsChildren.css('color', '#61646d');	
+			} else {
+				$(this).parent('td').css('background-color', '#fff');
+				parentSiblings.css('background-color', '#fff');
+				parentSiblings.css('color', '#000');
+				parentSiblingsChildren.css('background-color', '#fff');
+				parentSiblingsChildren.css('color', '#000');
+			}
+		});
+	});
+	
+	const setLuggageInfoItem = (function() {
+		// All nagNo element list
+		var bagNoElmList = new Array();
+		// All bagNo list 
+		var bagNos = new Array();
+		// Unique bagNo list
+		var uniqueBagNoElmList = new Array();
+		
+		$('#luggage-list-table tbody tr').find('[id$=".bagNo"]').each(function() {
+			if ($(this).parent('td').nextAll('#luggage-item-emit').children('input').prop('checked')) {
+				delHtml($(this).parents('tr'));
+			}
+		});
+		
+		var bagNoElmList = $('#luggage-list-table tbody tr').find('[id$=".bagNo"]');
+		$.each(bagNoElmList, function() {
+			uniqueBagNoElmList.push($(this).val());
+		});
+		// create unique bagNo list and sort by bagNo asc
+		uniqueBagNoElmList = $.unique(uniqueBagNoElmList);
+		uniqueBagNoElmList = uniqueBagNoElmList.sort(function(x, y) {
+			// sort by asc
+			return (x > y) ? 1 : -1;
+		});
+		
+		// sort item by its record number
+		var sortedLuggageItemElmList = bagNoElmList.sort(function(x, y) {
+			var xRecordNo = x.parentElement.previousElementSibling.firstElementChild.value;
+			var yRecordNo = y.parentElement.previousElementSibling.firstElementChild.value;
+			
+			// sort by Bag No string asc
+			var sortResult = $(x).val() > $(y).val() ? 1 : -1;
+			// sort by Record No string asc
+			if ($(x).val() == $(y).val()) {
+				sortResult = xRecordNo > yRecordNo ? 1 : -1;
+			}
+			return sortResult;
+		});
+		
+		let baseInfoIndex = 0;
+		sortedLuggageItemElmList.each(function(idx, elm) {
+			let infoIndex = 0;
+			let itemIndex = 0;
+//			var elmBagNo = ($(this).val() == '-') ? 0 : Number($(this).val());
+			var elmBagNo = ($(this).val());
+			
+			// set infoIndex and itemIndex
+			if (uniqueBagNoElmList.length > 0) {
+				for (let i = 0; i < uniqueBagNoElmList.length; i++) {
+					if (elmBagNo == uniqueBagNoElmList[i]) {
+						// set infoindex based on the number of bagNo 
+						infoIndex = i;
+					}
+				}
+			}
+			for (var bagNo of bagNos) {
+				if (elmBagNo == bagNo) {
+					itemIndex++;
+				}
+			}
+			// set the first infoIndex(ex: 1, 2, etc.) if the first bagNo is not 0
+//			if (idx == 0 && elmBagNo != 0) {
+//				baseInfoIndex = elmBagNo;
+//			}
+			
+			// add Bag No to the list 
+			bagNos.push(elmBagNo);
+			rewriteFormIndexes($(this).parents('tr'), infoIndex, itemIndex);
+			
+			/*
+			if (bagNos.length > 0) {
+				const regex = elmBagNo;
+				for (var bagNo of bagNos) {
+					if (elmBagNo == bagNo) {
+						itemIndex++;
+					}
+				}
+				infoIndex = elmBagNo - baseInfoIndex;
+			}
+			// set the first infoIndex(ex: 1, 2, etc.) if the first bagNo is not 0
+			if (idx == 0 && elmBagNo != 0) {
+				baseInfoIndex = elmBagNo;
+			}
+			
+			// add Bag No to the list 
+			bagNos.push(elmBagNo);
+			rewriteFormIndexes($(this).parents('tr'), infoIndex, itemIndex);
+			*/
+			//formElmMap[elmBagNo] = itemIndex;
+		});
+	});
+	
 	// method right before submit
 	const beforeSubmit = (function() {
-		$('form').submit(function() {
-			var bagNoElmList = $('#luggage-list-table tbody tr').find('[id$=".bagNo"]');
-			// var formElmMap = {};
-			var bagNos = new Array();
+		$('input[id^="submit"]').click(function() {
+			var url = '';
+
+			if ($(this).attr('id') == 'submit') {
+				// if the button is not submit button
+				url = '/work02/travel/tripPlans/createRoute/prepLuggage/confirmPlans';
+			} else {
+				if ($(this).attr('id') == 'submit-back') {
+					// if the button is submit-back button
+					url = '/work02/travel/tripPlans/createRoute?back';
+				}
+			}
+			// rewrite the action
+			$('form').attr('action', url);				
 			
-			// sort item by its record number
-			var sortedLuggageItemElmList = bagNoElmList.sort(function(x, y) {
-				var xRecordNo = x.parentElement.previousElementSibling.firstElementChild.value;
-				var yRecordNo = y.parentElement.previousElementSibling.firstElementChild.value;
+//			// set luggage info and item
+//			setLuggageInfoItem();
+//			$('form').submit();
+			$('form').submit(function() {
+				// set luggage info and item
+				setLuggageInfoItem();
 				
-				// sort by Bag No string asc
-				var sortResult = $(x).val() > $(y).val() ? 1 : -1;
-				// sort by Record No string asc
-				if ($(x).val() == $(y).val()) {
-					sortResult = xRecordNo > yRecordNo ? 1 : -1;
-				}
-				return sortResult;
-			});
-			
-			let startInfoIndex = 0;
-			sortedLuggageItemElmList.each(function(idx, elm) {
-				let infoIndex = 0;
-				let itemIndex = 0;
-				var elmBagNo = ($(this).val() == '-') ? 0 : Number($(this).val());
-				if (bagNos.length > 0) {
-					const regex = elmBagNo;
-					for (var bagNo of bagNos) {
-						if (elmBagNo == bagNo) {
-							itemIndex++;
-						}
-					}
-					infoIndex = elmBagNo - startInfoIndex;
-				}
-				
-				// set the first infoIndex if the first bagNo is not 0
-				if (idx == 0 && elmBagNo != 0) {
-					startInfoIndex = elmBagNo;
-				}
-				
-				// add Bag No to the list 
-				bagNos.push(elmBagNo);
-				rewriteFormIndexes($(this).parents('tr'), infoIndex, itemIndex);
-				//formElmMap[elmBagNo] = itemIndex;
+				return true;
 			});
 		});
 	});
@@ -753,6 +849,7 @@ const createRoute = (function () {
 		selectLuggageKeyword();
 		selectLuggageItem();
 		changeSelectedBagNo();
+		deleteChangeRecordColor();
 		confirm();
 		beforeSubmit();
 	});

@@ -21,11 +21,12 @@ docker build . -t work02-app:0.1
 - psqlにログインする 
  
 ```
-# postgresユーザー
+# postgresユーザー、psqlデータベース
 psql -U psql -h localhost -p 5432 -d psql
 　
-# workuserユーザー
+# workuserユーザー、db_workデータベース
 psql -U workuser -h localhost -p 5432 -d db_work
+workuser_pass
 ```
  
 

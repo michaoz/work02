@@ -86,7 +86,9 @@ checkbox {
 	font-size: 17px;
 }
 
-.page-breadcrumb a#previous-page-name:hover { /* #previous-page-nameにのみ適用  */
+.page-breadcrumb a#previous-page-name:
+
+ { /* #previous-page-nameにのみ適用  */
 	text-decoration: underline; /* マウスオーバー時は下線を表示 */
 }
 .page-breadcrumb #previous-page-name {
@@ -508,6 +510,7 @@ thead {
 /* page control *******************************/
 .page-control {
 	padding: 45px 70px;
+	display: flex;
 }
 
 

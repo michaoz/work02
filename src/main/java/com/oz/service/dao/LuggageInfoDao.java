@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.oz.bean.common.TripPlansCommonForm;
+import com.oz.entity.LuggageInfoEntity;
+import com.oz.entity.LuggageItemEntity;
 import com.oz.entity.SpotInfoEntity;
 
 /**
@@ -25,7 +27,14 @@ public interface LuggageInfoDao {
 	 * select createRoute data from DB
 	 * @param form
 	 */
-	abstract public List<SpotInfoEntity> select(TripPlansCommonForm form, String condition, Object[] paramArry) throws SQLException;
+	abstract public List<LuggageInfoEntity> selectLuggageInfoByPraimaryKey(String condition, String[] paramArry) throws SQLException;
+
+	/**
+	 * select createRoute data from DB
+	 * @param form
+	 */
+	abstract public List<LuggageItemEntity> selectLuggageItemByPraimaryKey(String[] conditionColumns, String[] paramArry) throws SQLException;
+
 	
 	/**
 	 * insert createRoute data into DB
@@ -33,4 +42,5 @@ public interface LuggageInfoDao {
 	 */
 	abstract public void insert(TripPlansCommonForm form) throws SQLException;
 	
+	abstract public void delete(TripPlansCommonForm form, String condition, String updDateParam) throws SQLException;
 }

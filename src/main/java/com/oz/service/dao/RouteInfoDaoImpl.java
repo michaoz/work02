@@ -13,12 +13,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ObjectUtils;
 
 import com.oz.bean.common.SpotInfo;
 import com.oz.bean.common.TripPlansCommonForm;
+import com.oz.consts.CommonConstant;
 import com.oz.consts.DBConst;
 import com.oz.entity.SpotInfoEntity;
 
@@ -63,11 +67,18 @@ public class RouteInfoDaoImpl implements RouteInfoDao {
 			// get db connection
 			conn = baseDao.getConnection(conn);
 			// get statement
-			stmt = conn.createStatement();
-			System.out.println(sb.toString());
+			// stmt = conn.createStatement();
+			pstmt = conn.prepareStatement(sb.toString());
+			for (Object param : paramArry) {
+				int i = 0;
+				pstmt.setString(++i, (String) param);				
+			}
+			
+			System.out.println(pstmt.toString());
 			// execute sql
-			rs = stmt.executeQuery(sb.toString());
-						
+			// rs = stmt.executeQuery(sb.toString());
+			rs = pstmt.executeQuery();
+			
 			while (rs.next()) {
 				System.out.println(rs.getRow() + "件目-------------");
 				
@@ -88,6 +99,9 @@ public class RouteInfoDaoImpl implements RouteInfoDao {
 				resultEntity.setUpdDate(rs.getTimestamp("UPD_DATE"));
 				
 				resultList.add(resultEntity);
+				
+		        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss.s");
+		        System.out.println(sdf.format(resultEntity.getUpdDate()));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -99,45 +113,53 @@ public class RouteInfoDaoImpl implements RouteInfoDao {
 	}
 	
 	@Override
-	public String selectTripPlanName(TripPlansCommonForm form, String condition, Object[] paramArry) throws SQLException {
+	public List<String> selectTripPlanName(TripPlansCommonForm form, String condition, Object[] paramArry, boolean getFirstFlg) throws SQLException {
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT TRIP_PLAN_NAME FROM T_ROUTE_INFO ");
-		if (condition != null) {
-			sb.append(condition);
+		sb.append("SELECT TRIP_PLAN_NAME ");
+		if(getFirstFlg) {
+			sb.append("FROM T_ROUTE_INFO ");
+		} else {
+			sb.append("FROM (SELECT * FROM T_ROUTE_INFO ORDER BY UPD_DATE DESC) AS sub ");			
 		}
-		if (paramArry != null && paramArry.length > 0) {
-			// TODO
-			
+		if (condition != null) {
+			if (paramArry == null || paramArry.length == 0) {
+				condition = condition.replace("?", "\"\"");
+			}
+			sb.append(condition);
 		}
 		sb.append(";");
 		
-		String tripPlanName = null;
+		List<String> tripPlanNameList = new ArrayList<>();
 		try {
 			// get db connection
 			conn = baseDao.getConnection(conn);
+			
 			// get statement
-			stmt = conn.createStatement();
+			pstmt = conn.prepareStatement(sb.toString());
+			if (!ObjectUtils.isEmpty(paramArry)) {
+				pstmt.setString(1, (String) paramArry[0]);				
+			}
+						
 			System.out.println(sb.toString());
 			// execute sql
-			rs = stmt.executeQuery(sb.toString());
-					
-			while (rs.next()) {
-				// fetch the first result only
-				if (rs.getRow() > 1) {
-					continue;
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				tripPlanNameList.add(rs.getString("TRIP_PLAN_NAME"));
+				if (getFirstFlg) {
+					// get only the first result
+					break;
 				}
-				System.out.println(rs.getRow() + "件目-------------");
-				
-				tripPlanName = rs.getString("TRIP_PLAN_NAME");
 			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			baseDao.closeConnection(conn);
 			baseDao.closeStatement(pstmt, rs);
 		}
-		return tripPlanName;
+		return tripPlanNameList;
 	}
 		
 	@Override
@@ -166,29 +188,7 @@ public class RouteInfoDaoImpl implements RouteInfoDao {
 		sql.append(", UPD_DATE ) ");
 		sql.append("VALUES ");
 		sql.append("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ");
-		
-		/*
-		for (SpotInfo si : form.getSpotList()) {
-			sql.append("( ");
-			sql.append(si.getRecordNum());
-			sql.append(si.getSpotName());
-			sql.append(si.getCity());
-			sql.append(si.getAddress());
-			sql.append(si.getLatitude());
-			sql.append(si.getLongitude());
-			sql.append(si.getLeafletId());
-			sql.append(si.getGeoType());
-			sql.append(si.getInsUserId());
-			sql.append(si.getInsDate());
-			sql.append(si.getUpdUserId());
-			sql.append(si.getUpdDate());
-			sql.append("), ");			
-		}
-//		sql.append("WHERE RECORD_NUM = ? AND LEAFLET_ID = ? AND GEO_TYPE = ? AND INS_DATE = ?");
-		sql.substring(0, sql.lastIndexOf(","));
-		*/
-		
-		sql.append(";");
+		sql.append("; ");
 		System.out.println("sql:" + sql.toString());
 		
 		Object[][] params = new Object[form.getSpotList().size()][];
@@ -237,10 +237,16 @@ public class RouteInfoDaoImpl implements RouteInfoDao {
 			}
 			
 			// Set the latest data to model to synchronize with DB data
+			SimpleDateFormat sdf = new SimpleDateFormat(CommonConstant.DATETIMEFORMAT_HYPHEN_COLON);
+//			if (form.isNewPlanFlg()) {
+//				spotList.forEach(s -> s.setInsUserId(USER_ID));
+//				spotList.forEach(s -> s.setInsDate(sdf.format(systemTimestamp)));				
+//			}
 			spotList.forEach(s -> s.setInsUserId(USER_ID));
-			spotList.forEach(s -> s.setInsDate(systemTimestamp));
+			spotList.forEach(s -> s.setInsDate(sdf.format(systemTimestamp)));	
 			spotList.forEach(s -> s.setUpdUserId(USER_ID));
-			spotList.forEach(s -> s.setUpdDate(systemTimestamp));
+			spotList.forEach(s -> s.setUpdDate(sdf.format(systemTimestamp)));
+			System.out.println(sdf.format(systemTimestamp));
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -250,4 +256,142 @@ public class RouteInfoDaoImpl implements RouteInfoDao {
 		}
 	}
 	
+	@Override
+	public void delete(TripPlansCommonForm form, String condition, String updDateParam) throws SQLException {
+		// get current timestamp
+		Timestamp systemTimestamp = new Timestamp(System.currentTimeMillis());
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append("DELETE FROM T_ROUTE_INFO ");
+		sql.append("WHERE ");
+		sql.append("TRIP_PLAN_NAME = ? ");
+		sql.append("AND INS_DATE < ? ");
+		if (condition != null) {
+			// UPD_DATE
+			sql.append("AND " + condition + " ");
+		}
+		sql.append(";");
+		
+		Object[][] params = new Object[form.getSpotList().size()][];
+		List<SpotInfo> spotList = form.getSpotList();
+
+		try {
+			// get db connection
+			conn = baseDao.getConnection(conn);
+			
+			// get statement
+			pstmt = conn.prepareStatement(sql.toString());
+			
+			int i = 0;
+			pstmt.setString(++i, form.getTripPlanName());
+			pstmt.setTimestamp(++i, Timestamp.valueOf(form.getSpotList().get(0).getInsDate()));
+			if (!StringUtils.isEmpty(updDateParam)) {
+				pstmt.setTimestamp(++i, Timestamp.valueOf(form.getSpotList().get(0).getUpdDate()));
+			}
+			System.out.println("pstmt:" + pstmt.toString());
+			
+			int result = pstmt.executeUpdate();
+			System.out.println("result:" + result);
+			
+			// Set the latest data to model to synchronize with DB data
+			SimpleDateFormat sdf = new SimpleDateFormat(CommonConstant.DATETIMEFORMAT_HYPHEN_COLON);
+			spotList.forEach(s -> s.setUpdUserId(USER_ID));
+			spotList.forEach(s -> s.setUpdDate(sdf.format(systemTimestamp)));
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			baseDao.closeConnection(conn);
+			baseDao.closeStatement(pstmt, rs);
+		}
+	}
+
+	@Override
+	public void update(List<SpotInfo> spotInfoEntityList) throws SQLException {
+//	public void update(List<SpotInfoEntity> spotInfoEntityList) throws SQLException {
+		SimpleDateFormat sdf = new SimpleDateFormat(CommonConstant.DATETIMEFORMAT_HYPHEN_COLON);
+		
+		// get current timestamp
+		Timestamp systemTimestamp = new Timestamp(System.currentTimeMillis());
+		System.out.println("--current timestamp(System.currentTimeMillis):" + new SimpleDateFormat("yyyymmdd hh:mm:ss.sss").format(new Timestamp(System.currentTimeMillis())));
+		System.out.println("--current timestamp(new Date):" + new SimpleDateFormat("yyyymmdd hh:mm:ss.sss").format(new Date()));
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append("UPDATE T_ROUTE_INFO ");
+		sql.append("SET RECORD_NUM = ? ");
+		sql.append(", SPOT_NAME = ? ");
+		sql.append(", CITY = ? ");
+		sql.append(", ADDRESS = ? ");
+		sql.append(", LATITUDE = ? ");
+		sql.append(", LONGITUDE = ? ");
+		sql.append(", LEAFLET_ID = ? ");
+		sql.append(", GEO_TYPE = ? ");
+		sql.append(", UPD_USER_ID = ? ");
+		sql.append(", UPD_DATE = ? ");
+		sql.append("WHERE ");
+		sql.append("TRIP_PLAN_NAME = ? AND INS_DATE = ? AND UPD_DATE = ? ");		
+		sql.append(";");
+		
+//		Object[][] params = new Object[spotInfoEntityList.size()][];		
+//		String condition = null;
+		
+		try {
+			// get db connection
+			conn = baseDao.getConnection(conn);
+
+			// get statement
+			pstmt = conn.prepareStatement(sql.toString());
+			
+			for (SpotInfo entity : spotInfoEntityList) {
+				int i = 0;
+				// SET value
+				pstmt.setInt(++i, entity.getRecordNum());
+				pstmt.setString(++i, entity.getSpotName());
+				pstmt.setString(++i, entity.getCity());
+				pstmt.setString(++i, entity.getAddress());
+				pstmt.setString(++i, entity.getLatitude());
+				pstmt.setString(++i, entity.getLongitude());
+				pstmt.setString(++i, entity.getLeafletId());
+				pstmt.setString(++i, entity.getGeoType());
+				pstmt.setString(++i, USER_ID);
+				pstmt.setTimestamp(++i, systemTimestamp);
+				
+				// condition parameter
+				pstmt.setString(++i, entity.getTripPlanName());
+				pstmt.setTimestamp(++i, Timestamp.valueOf(entity.getUpdDate()));
+				pstmt.setTimestamp(++i, Timestamp.valueOf(entity.getInsDate()));
+//				System.out.println("upd date:" + sdf.format(entity.getUpdDate()));
+//				pstmt.setTimestamp(++i, new Timestamp(entity.getUpdDate().getTime()));
+				
+				pstmt.addBatch();
+				System.out.println("pstmt:" + pstmt.toString());
+			}
+			
+//			int cnt = stmt.executeUpdate(sql.toString());
+			int[] result = pstmt.executeBatch();
+			// result
+			Arrays.stream(result).forEach(System.out::println);
+			
+			// UPDATE結果が取得できない場合は例外処理を行う
+			for (int resultCount : result) {
+				if (resultCount <= 0) {
+					throw new SQLException();
+				}
+			}
+			
+			// Set the latest data to model to synchronize with DB data
+			spotInfoEntityList.forEach(s -> s.setInsUserId(USER_ID));
+			spotInfoEntityList.forEach(s -> s.setInsDate(sdf.format(systemTimestamp)));
+//			spotInfoEntityList.forEach(s -> s.setInsDate(systemTimestamp));
+			spotInfoEntityList.forEach(s -> s.setUpdUserId(USER_ID));
+			spotInfoEntityList.forEach(s -> s.setUpdDate(sdf.format(systemTimestamp)));
+//			spotInfoEntityList.forEach(s -> s.setUpdDate(systemTimestamp));
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			baseDao.closeConnection(conn);
+			baseDao.closeStatement(pstmt, rs);
+		}
+	}
 }

@@ -9,6 +9,10 @@ public class CommonConstant {
 	private CommonConstant() {
 	}
 	
+	/** tripPlanNameList */
+	public static final String TRIP_PLAN_NAME_LIST = "tripPlanNameList";
+
+	
 	public static final List<String> LUGGAGE_KEYWORD_LIST = new ArrayList<>(
 			Arrays.asList(
 					"travel items"
@@ -53,10 +57,31 @@ public class CommonConstant {
 			"02"
 	};
 	
-	/** 画面 */
+	/** Date Format */
+	public static final String DATEFORMAT_NO_PUNCTUATION = "yyyyMMdd";
+	public static final String TIMEFORMAT_NO_PUNCTUATION = "HHmmssSSS";
+	public static final String DATETIMEFORMAT_HYPHEN_COLON = "yyyy-MM-dd HH:mm:ss";
+	public static final String DATETIMEFORMAT_HYPHEN_COLON_MILLIS = "yyyy-MM-dd HH:mm:ss.SSS";
+	public static final String DATETIMEFORMAT_NO_PUNCTUATION = "yyyyMMdd HHmmssSSS";
+	
+	/** view */
 	public static final String NEWPLAN_URL = "tripPlans/newPlan";
 	public static final String CREATEROUTE_URL = "/tripPlans/createRoute";
 	public static final String PREPLUGGAGE_URL = "/tripPlans/prepLuggage";
 	public static final String CONFIRM_PLANS_URL = "/tripPlans/confirmPlans";
 	public static final String RESULT_TRIP_PLANS_URL = "/tripPlans/resultTripPlans";
+	
+	/** 正規表現 */
+	// suffix
+	public static final String PREFIX_MATCH = "^";
+	// prefix
+	public static final String SUFFIX_MATCH = "$";
+	// 全角スペース、半角スペース
+	public static final String REGEX_SPACE = "[\\h]+";
+	// line break code （CR）
+	public static final String REGEX_CR = "\r\n";
+	// Tab
+	public static final String REGEX_TAB = "\t";
+	// Half-Width Space
+	public static final String REGEX_HALF_SPACE = " ";
 }

@@ -4,15 +4,24 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.oz.bean.common.SpotInfo;
 import com.oz.bean.common.TripPlansCommonForm;
 import com.oz.entity.SpotInfoEntity;
 
 public interface CreateRouteService {
 
-	public List<SpotInfoEntity> selectRouteInfo(TripPlansCommonForm form);
+	public List<String> getTripPlanNameList();
 	
-	public boolean searchTripPlanName(TripPlansCommonForm form);
+	public boolean searchTripPlanName(String tripPlanName);
 
+	public List<SpotInfo> selectRouteInfo(TripPlansCommonForm form);
+	
 	public void insertRouteInfo(TripPlansCommonForm form);
 	
+	public void insertDeleteRouteInfo(TripPlansCommonForm form);
+
+	public void deleteRouteInfo(TripPlansCommonForm form, String updDateParam);
+
+	public void updateRouteInfo(TripPlansCommonForm form);
+
 }

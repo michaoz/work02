@@ -61,7 +61,7 @@
   			<%-- <form:input path="initDisplayFlg" value="${reloadCnt}" />  --%> 
 			<div class="search-box">
 	           <div class="form-field">
-	               <input type="search" name="search" placeholder="Search..." id="content-to-search" value="東京駅">
+	               <input type="search" name="search" placeholder="Search..." id="content-to-search" value="渋谷駅">
 	               <input type="button" value="Search" id="search-button">
 	           </div>
 		     </div>
@@ -154,6 +154,15 @@
 			            <form:hidden path="spotList[${spotInfoStatus.index}].leafletId" />
 			            ${tripPlansCommonForm.spotList[spotInfoStatus.index].leafletId}
 			          </td>
+			          <td style="display: none">
+    			      <form:hidden path="spotList[${spotInfoStatus.index}].latitude" />
+			          <form:hidden path="spotList[${spotInfoStatus.index}].longitude" />
+			          <form:hidden path="spotList[${spotInfoStatus.index}].geoType" />
+			          <form:hidden path="spotList[${spotInfoStatus.index}].insUserId" />
+			          <form:hidden path="spotList[${spotInfoStatus.index}].insDate" />
+			          <form:hidden path="spotList[${spotInfoStatus.index}].updUserId" />
+			          <form:hidden path="spotList[${spotInfoStatus.index}].updDate" />
+			          </td>
 			        </tr>
 		        </c:forEach>
 		        </tbody>
@@ -197,14 +206,24 @@
 		
 			<%-- DIV: control the page --%>
 			<div class="page-control">
-			  <button type="button" id="back-to-make-new-plans" value="Back to Make a New Plan">
-			      <a href="/work02/travel/tripPlans/newPlan">Back to Make a New Plan</a>
+			  <button type="button" id="back-to-make-new-plans" class="css-back-button" value="< Back">
+			      <a href="/work02/travel/tripPlans/newPlan">< Back to Make a New Plan</a>
 			  </button>
-			  <input type="submit" name="save" id="save" value="Save the Created Route">
+			  <%-- Enterキーでの次画面遷移防止のため、type="submit"は不使用とする --%>
+			  <%--<input type="submit" name="save" id="save" class="css-submit-button" value="Save >">--%>
+			  <input type="button" name="save" id="save" class="css-submit-button" value="Save >">
 			</div>
 			
 			<%-- hidden items --%>
 			<form:hidden path="tripPlanName" />
+			<form:hidden path="newTripPlanName" />
+			<form:hidden path="existedTripPlanName" />
+			<form:hidden path="newPlanFlg" />
+			<form:hidden path="tripPlanNameList" />
+			<%-- cannot set list into form:hidden
+			<form:hidden path="tripPlansCommonForm.luggageInfoList" />
+			--%>
+
 	</form:form>
 
 	<jsp:include page = "../common/footer.jsp"/>
