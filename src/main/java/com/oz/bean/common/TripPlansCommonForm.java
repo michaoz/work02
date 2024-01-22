@@ -3,14 +3,18 @@ package com.oz.bean.common;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.Valid;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 public class TripPlansCommonForm implements Serializable{
-
+	
 	/** シリアルID */
 	private static final long serialVersionUID = 1L;
 	
+	@NotEmpty(message="{errors.empty}")
 	/** trip plan name */
 	private String tripPlanName;
 	
@@ -29,9 +33,11 @@ public class TripPlansCommonForm implements Serializable{
 	// TODO end
 	
 	/** spot info list */
+	@Valid
 	private List<SpotInfo> spotList;
 	
 	/** luggage info list */
+	@Valid
 	private List<LuggageInfo> luggageInfoList;
 	
 	

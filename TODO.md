@@ -2,15 +2,21 @@
 
 - General
  - Enterキーで次画面遷移できなくする  5
+ - 英語版でできるか試す
  - validation check 単項目、相関項目! 4
+   - 相関チェック
+ - ツールチップ
  - 画面2重送信の防止 6
  - マッピングクラスを使ってマッピングする
  - entityクラスの活用 
  
 - make a new plan
+  - 戻ったと際の入力状態が微妙
 
 - create route 
 
+- Doc
+ - bindingresultの中身(errorsなど)についてまとめる	
 
 
 pointGeoLayerGroupはcontrolGeoInfoに渡されたものが追加される

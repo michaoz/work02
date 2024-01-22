@@ -1,5 +1,6 @@
 package com.oz.controller.tripPlans;
 
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,17 +18,28 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.Conventions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.Validator;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.oz.bean.common.LuggageInfo;
 import com.oz.bean.common.LuggageItem;
 import com.oz.bean.common.SpotInfo;
+import com.oz.bean.common.SpotInfo.ValidSpotInfo;
 import com.oz.bean.common.TripPlansCommonForm;
 import com.oz.consts.CommonConstant;
 import com.oz.consts.CommonConstant.LUGGAGE_KEYWORD_ITEMS;
@@ -36,11 +48,21 @@ import com.oz.helper.TripPlansHelper;
 import com.oz.service.CreateRouteService;
 import com.oz.service.PrepLuggageService;
 import com.oz.service.dao.RouteInfoDao;
+//import com.sun.org.apache.xml.internal.utils.URI;
+import com.sun.org.apache.xml.internal.utils.URI.MalformedURIException;
 
 @Controller
 @ComponentScan({"com.oz"})
 @RequestMapping(value="/travel/tripPlans")
 public class TripPlansController {
+	
+	@Autowired
+	private Validator validator;
+	
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		binder.setValidator(validator);
+	}
 	
 	@Autowired
 	TripPlansHelper tripPlansHelper;
@@ -62,7 +84,6 @@ public class TripPlansController {
 	 * createRoute ルート作成画面表示
 	 * @return
 	 */
-//    @RequestMapping(value = "/createRoute", method = RequestMethod.GET)
     @RequestMapping(value = "/createRoute", method = RequestMethod.POST)
     public String createRoute(@ModelAttribute("tripPlansCommonForm") TripPlansCommonForm form, BindingResult result,
     		HttpServletRequest req, HttpServletResponse res, HttpSession session) {
@@ -106,22 +127,56 @@ public class TripPlansController {
     	
     	return CommonConstant.CREATEROUTE_URL;
     }
+    
+    @ModelAttribute("tripPlansCommonForm")
+    public TripPlansCommonForm tripPlansCommonForm() {
+        return new TripPlansCommonForm();
+    }
+    
+    @RequestMapping(value = "/createRoute", method = RequestMethod.GET)
+    public String createRouteGet(@ModelAttribute("tripPlansCommonForm") TripPlansCommonForm form, 
+    		BindingResult result, Model model, 
+    		HttpServletRequest req, HttpServletResponse res, HttpSession session, RedirectAttributes attr) {
+
+    	if (model.getAttribute("errors") != null) {
+    		for (ObjectError error : (List<ObjectError>)model.asMap().get("errors")) {
+        		result.addError(error);
+        	}
+    	}
+
+    	return CommonConstant.CREATEROUTE_URL;
+    }
 
 	/**
 	 * prepLuggage 荷物準備画面表示
 	 * @return
 	 */
     @RequestMapping(value = "/createRoute/prepLuggage", method = RequestMethod.POST)
-    public String prepLuggage(@ModelAttribute("tripPlansCommonForm") TripPlansCommonForm form, BindingResult result,
-    		HttpServletRequest req, HttpServletResponse res, Model model) {
+    public String prepLuggage(@Validated(ValidSpotInfo.class) @ModelAttribute("tripPlansCommonForm") TripPlansCommonForm form, BindingResult result,
+		    HttpServletRequest req, HttpServletResponse res, Model model, RedirectAttributes attr, UriComponentsBuilder builder) {
     	
-    	/* todo: 単項目チェック */
+    	/* 単項目チェック(BeanValidation) */
     	if (result.hasErrors()) {
-    		System.out.println("error");
+    		// redirect時にパラメーターを継承するために設定
+    		// - 関数の引数にRedirectAttributesを追加
+    		// - form, BindingResult, erros を設定する
+    		attr.addFlashAttribute("tripPlansCommonForm", form);
+    		attr.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "tripPlansCommonForm", result);
+    		attr.addFlashAttribute("errors", result.getAllErrors());
+    		
+    		// validation error 時にurlが元の画面のものになるようにするための設定
+    		// - 関数の引数にUriComponentsBuilderを追加する
+    		URI location = builder.path("/travel/" + CommonConstant.CREATEROUTE_URL).build().toUri();
+    		return "redirect:" + location.toString();
+
+//    		return CommonConstant.CREATEROUTE_URL;
     	}
     	
     	/* 相関チェック */
     	this.checkInput(form, result);
+    	if (result.hasErrors()) {
+    		System.out.println("相関チェックエラー");
+    	}
     	
     	if (result.hasErrors()) {
     		tripPlansHelper.setPrepLuggageModel(form);

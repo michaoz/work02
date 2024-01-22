@@ -722,7 +722,7 @@ const createRoute = (function () {
 	});
 	
 	const setLuggageInfoItem = (function() {
-		// All nagNo element list
+		// All bagNo element list
 		var bagNoElmList = new Array();
 		// All bagNo list 
 		var bagNos = new Array();
@@ -831,14 +831,14 @@ const createRoute = (function () {
 			$('form').attr('action', url);				
 			
 //			// set luggage info and item
-//			setLuggageInfoItem();
-//			$('form').submit();
-			$('form').submit(function() {
-				// set luggage info and item
-				setLuggageInfoItem();
-				
-				return true;
-			});
+			setLuggageInfoItem();
+			$('form').submit();
+//			$('form').submit(function() {
+//				// set luggage info and item
+//				setLuggageInfoItem();
+//				
+//				return true;
+//			});
 		});
 	});
 	

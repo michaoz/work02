@@ -4,6 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 public final class LuggageInfo implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -12,12 +17,17 @@ public final class LuggageInfo implements Serializable {
 	private String tripPlanName;
 	
 	/** luggage number */
+	@NotEmpty(message="{errors.luggageNo.empty}")
+	@Size(min=1, max=32767, message="{errors.range.minMax}")
 	private int luggageNo;
 	
 	/** the number of the luggage */
+	@NotEmpty(message="{errors.luggageCount.empty}")
+	@Size(min=1, max=1000, message="{errors.range.minMax}")
 	private int luggageCount;
 	
 	/** bag No */
+	@NotEmpty(message="{errors.bagNo.empty}")
 	private String bagNo;
 	
 	/** luggage prepared flg */

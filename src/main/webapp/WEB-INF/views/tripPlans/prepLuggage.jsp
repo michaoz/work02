@@ -131,8 +131,10 @@
 		  --%>
 		 <%-- 
 		  <button type="button" id="back-to-make-new-plans" onclick="history.back()">Back to Previous Page</button>
-		  --%>
+		  
 		  <input type="button" id="submit-back" class="css-back-button" value="Back to Previous Page" >
+		  --%>
+		  <input type="submit" id="submit-back" class="css-back-button" value="Back to Previous Page" >
 		  <input type="submit" id="submit" class="css-submit-button" value="Save the Luggage List" >
 		 <%-- 
 		  <input type="button" id="submit-back" class="css-back-button" value="Back to Previous Page" >		  

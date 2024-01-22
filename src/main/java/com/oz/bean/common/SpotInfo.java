@@ -4,7 +4,14 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class SpotInfo implements Serializable{
+	
+	public static interface ValidSpotInfo{}
 	
 	/** シリアルID */
 	private static final long serialVersionUID = 1L;
@@ -13,20 +20,27 @@ public class SpotInfo implements Serializable{
 	private String tripPlanName;
 	
 	/** record number */
+	@NotEmpty(message="{errors.recordNum.empty}")
 	private int recordNum;
 	
 	/** spot name */
+	@NotEmpty(message="{errors.spotName.empty}")
 	private String spotName;
 	
 	/** city */
+//	@NotNull(message="{errors.empty}")
+	@NotEmpty(message="{errors.city.empty}")
 	private String city;
 	
 	/** address */
+	@NotEmpty(message="{errors.address.empty}", groups={ValidSpotInfo.class})
 	private String address;
 
 	/** geo info */
 	
 	/** latitude and longitude */
+	@NotEmpty(message="{errors.latLon.empty}")
+	@Pattern(regexp="(^\\d$)", message="{errors.format.latLon.integer}")
 	private String latLon;
 			
 	/** latitude */
@@ -36,6 +50,8 @@ public class SpotInfo implements Serializable{
 	private String longitude;
 	
 	/** leafletId */
+	@NotEmpty(message="{errors.leafletId.empty}")
+	@Pattern(regexp="(^\\d$)", message="{errors.format.leafletId.integer}")
 	private String leafletId;
 	
 	/** geometry type */

@@ -3,13 +3,18 @@ package com.oz.bean.common;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class LuggageItem implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	/** trip plan name */
 	private String tripPlanName;
-	
+		
 	/** luggage number */
 	private int luggageNo;
 	
@@ -17,12 +22,18 @@ public class LuggageItem implements Serializable {
 	private String bagNo;
 	
 	/** item number */
+	@NotEmpty(message="{errors.itemNo.empty}")
+	@Pattern(regexp="(^\\d$)", message="{errors.format.itemNo.integer}")
 	private int itemNo;
 
 	/** item name */
+	@NotEmpty(message="{errors.itemName.empty}")
+	@Size(min=1, max=1000, message="{errors.range.minMax}")
 	private String itemName;
 	
 	/** the number of item */
+	@NotEmpty(message="{errors.itemCount.empty}")
+	@Size(min=1, max=32767, message="{errors.range.minMax}")
 	private int itemCount;
 	
 	/** item prepared flg */

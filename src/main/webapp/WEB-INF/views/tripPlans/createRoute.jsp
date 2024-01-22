@@ -94,6 +94,21 @@
 		  <p>confirm the created route</p>
 		</button>
 		
+		<%-- error messages area --%>
+		<div class="css-error-message">
+		  <c:forEach items="${tripPlansCommonForm.spotList}" var="spotInfo" varStatus="spotInfoStatus">
+		    <form:errors path="spotList[${spotInfoStatus.index}].recordNum" />
+		    <form:errors path="spotList[${spotInfoStatus.index}].spotName" />	
+		    <form:errors path="spotList[${spotInfoStatus.index}].city" />
+		    <form:errors path="spotList[${spotInfoStatus.index}].address" />
+  		    <form:errors path="spotList[${spotInfoStatus.index}].latLon" />
+		    <form:errors path="spotList[${spotInfoStatus.index}].leafletId" />
+		    <form:errors path="spotList[${spotInfoStatus.index}].geoType" />
+		    <form:errors path="spotList[${spotInfoStatus.index}].insDate" />
+		    <form:errors path="spotList[${spotInfoStatus.index}].updDate" />
+		  </c:forEach>
+		</div>		
+		
 		<%-- DIV: Spot List, Delete List --%>
 		<div class="body-make-new-plans">
 			<div id="spot-list-area">

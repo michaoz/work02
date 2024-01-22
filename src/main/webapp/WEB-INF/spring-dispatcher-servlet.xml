@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans
+  xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:context="http://www.springframework.org/schema/context"
   xmlns:p="http://www.springframework.org/schema/p"
@@ -64,4 +65,15 @@
     
     <!-- この宣言をすることで、 @Component などのアノテーションが使えるようになる。 -->
     <mvc:annotation-driven />
+    
+    <!-- read message resource -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+      <property name="basename" value="classpath:validatorMessages"></property>
+      <property name="defaultEncoding" value="UTF-8"></property>
+      <property name="fileEncodings" value="UTF-8"></property>
+    </bean>
+    <bean id="validator"
+      class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+      <property name="validationMessageSource" ref="messageSource" />
+    </bean>
 </beans>
