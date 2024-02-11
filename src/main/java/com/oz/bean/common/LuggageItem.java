@@ -12,6 +12,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.NumberFormat;
 
+import com.oz.bean.common.LuggageInfo.ValidLuggageInfo;
+
 public class LuggageItem implements Serializable {
 
 	public static interface ValidLuggageItem{}
@@ -25,6 +27,7 @@ public class LuggageItem implements Serializable {
 	private int luggageNo;
 
 	/** bag No */
+	@NotEmpty(message="{errors.bagNo.empty}", groups={ValidLuggageInfo.class})
 	private String bagNo;
 
 	/** item number */

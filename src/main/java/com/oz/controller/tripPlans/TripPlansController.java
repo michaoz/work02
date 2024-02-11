@@ -1,6 +1,7 @@
 package com.oz.controller.tripPlans;
 
 import java.net.URI;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.Conventions;
 import org.springframework.stereotype.Controller;
@@ -210,20 +212,8 @@ public class TripPlansController {
 		// fetch the previous prep-luggage data from db
     	form.setLuggageInfoList(prepLuggageService.selectLuggageInfo(form));
 
-    	/* luggageKeywordList */
-    	LUGGAGE_KEYWORD_ITEMS a =  CommonConstant.LUGGAGE_KEYWORD_ITEMS.Travel_Items;
-    	String[] s = a.getItems();
-    	LUGGAGE_KEYWORD_ITEMS[] luggageKeywordItems
-    	= {CommonConstant.LUGGAGE_KEYWORD_ITEMS.Travel_Items,
-				CommonConstant.LUGGAGE_KEYWORD_ITEMS.Morning,
-				CommonConstant.LUGGAGE_KEYWORD_ITEMS.Afternoon,
-				CommonConstant.LUGGAGE_KEYWORD_ITEMS.Night,
-				CommonConstant.LUGGAGE_KEYWORD_ITEMS.Useful_Items};
-    	req.setAttribute("luggageKeywordList", luggageKeywordItems);
-
-    	/* Bag No List */
-    	req.setAttribute("bagNoArry", CommonConstant.BAG_NO_ARRY);
-
+    	setPrepLuggageView(req);
+    	
     	tripPlansHelper.setPrepLuggageModel(form);
 
     	return CommonConstant.PREPLUGGAGE_URL;
@@ -245,6 +235,9 @@ public class TripPlansController {
         		result.addError(error);
         	}
     	}
+    	
+    	// set parameters to request
+		setPrepLuggageView(req);
 
     	return CommonConstant.PREPLUGGAGE_URL;
     }
@@ -260,14 +253,17 @@ public class TripPlansController {
     	/* prep luggage info */
     	/* todo: 単項目チェック  */
     	if (result.hasErrors()) {
+    		
     		// validation error 時にurlが元の画面のものになるようにするための設定
     		// - 関数の引数にUriComponentsBuilderを追加する
     		URI location = builder.path("/travel/" + CommonConstant.REDIRECT_PREPLUGGAGE_URL).build().toUri();
     		return redirectBindingResult(form, attr, result, location);
     	}
 
-    	this.checkPrepLuggage(form, result);
+    	this.checkPrepLuggage(form, result);   	
     	if (result.hasErrors()) {
+    		setPrepLuggageView(req);
+    		
     		URI location = builder.path("/travel/" + CommonConstant.REDIRECT_PREPLUGGAGE_URL).build().toUri();
     		return redirectBindingResult(form, attr, result, location);
     	}
@@ -297,6 +293,22 @@ public class TripPlansController {
     	return CommonConstant.RESULT_TRIP_PLANS_URL;
     }
 
+    private void setPrepLuggageView(HttpServletRequest req) {
+    	/* luggageKeywordList */
+    	LUGGAGE_KEYWORD_ITEMS a =  CommonConstant.LUGGAGE_KEYWORD_ITEMS.Travel_Items;
+    	String[] s = a.getItems();
+    	LUGGAGE_KEYWORD_ITEMS[] luggageKeywordItems
+    	= {CommonConstant.LUGGAGE_KEYWORD_ITEMS.Travel_Items,
+				CommonConstant.LUGGAGE_KEYWORD_ITEMS.Morning,
+				CommonConstant.LUGGAGE_KEYWORD_ITEMS.Afternoon,
+				CommonConstant.LUGGAGE_KEYWORD_ITEMS.Night,
+				CommonConstant.LUGGAGE_KEYWORD_ITEMS.Useful_Items};
+    	req.setAttribute("luggageKeywordList", luggageKeywordItems);
+
+    	/* Bag No List */
+    	req.setAttribute("bagNoArry", CommonConstant.BAG_NO_ARRY);
+    }
+    
     private String redirectBindingResult(TripPlansCommonForm form, RedirectAttributes attr, BindingResult result, URI location) {
 		// redirect時にパラメーターを継承するために設定
 		// - 関数の引数にRedirectAttributesを追加
@@ -312,8 +324,9 @@ public class TripPlansController {
 
     	// deep copied form for checking input
     	TripPlansCommonForm checkForm = SerializationUtils.clone(form);
-
 		List<SpotInfo> spotList = checkForm.getSpotList();
+
+		SimpleDateFormat sdf = new SimpleDateFormat(CommonConstant.DATETIMEFORMAT_HYPHEN_COLON);
 
 		/* record number */
 		// duplicate check
@@ -327,25 +340,25 @@ public class TripPlansController {
 		}
 
 		for (int i = 0; i < spotList.size(); i++) {
-			SpotInfo spot = spotList.get(i);
+			SpotInfo si = spotList.get(i);
 
 			/* Address */
 			// check if address contains either spot name or city
-			if (!StringUtils.isEmpty(spot.getSpotName()) && !StringUtils.isEmpty(spot.getCity())) {
+			if (!StringUtils.isEmpty(si.getSpotName()) && !StringUtils.isEmpty(si.getCity())) {
 				// if ((new ArrayList<String>(Arrays.asList(spot.getSpotName(), spot.getCity()))
 				// .stream().filter(s -> (spot.getAddress())
 				// .contains(s))).collect(Collectors.toList()).size() > 0)
 
-				String[] spotNameCity = new String[] {spot.getSpotName(), spot.getCity()};
+				String[] spotNameCity = new String[] {si.getSpotName(), si.getCity()};
 				for (short j = 0; j < spotNameCity.length; j++) {
 					spotNameCity[j] = spotNameCity[j].replaceFirst(CommonConstant.PREFIX_MATCH + CommonConstant.REGEX_SPACE, "")
 							.replaceFirst(CommonConstant.REGEX_SPACE + CommonConstant.SUFFIX_MATCH, "");
 
-					if (!spot.getAddress().contains(spotNameCity[j])) {
+					if (!si.getAddress().contains(spotNameCity[j])) {
 						String field = j == 0 ? "Spot Name" : "City";
 //						result.rejectValue("", "errors.not.included", new Object[] {"spotname", "address"}, "default message");
 						String code = "spotList[" + i + "].address";
-						String arguments = messageSource.getMessage("errors.not.contain", new Object[]{"Address:'" + spot.getAddress() + "'", field, "Address"}, Locale.JAPANESE);
+						String arguments = messageSource.getMessage("errors.not.contain", new Object[]{"Address:'" + si.getAddress() + "'", field, "Address"}, Locale.JAPANESE);
 						result.addError(new FieldError(result.getObjectName(), code, arguments));
 					}
 				}
@@ -359,6 +372,20 @@ public class TripPlansController {
 				}
 			}
 			*/
+			if (ObjectUtils.allNotNull(si.getUpdDate(), si.getInsDate())) {
+				try {
+					if (sdf.parse(si.getUpdDate()).before(sdf.parse(si.getInsDate()))) {
+						String code = "spotList[" + i + "].updDate";
+						String arguments = messageSource.getMessage("errors.date.compare", new Object[]{"update date", "insert date"}, Locale.JAPANESE);
+						result.addError(new FieldError(result.getObjectName(), code, arguments));
+					}
+				} catch(ParseException e) {
+					e.printStackTrace();
+					String code = "spotList[" + i + "].updDate";
+					String arguments = "Error occured. Please go back to the top page and retry.";
+					result.addError(new FieldError(result.getObjectName(), code, arguments));
+				}
+			}
 		}
 	}
 
@@ -370,13 +397,27 @@ public class TripPlansController {
 		List<LuggageInfo> luggageInfoList = checkForm.getLuggageInfoList();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat(CommonConstant.DATETIMEFORMAT_HYPHEN_COLON);
-		for (LuggageInfo li: luggageInfoList) {
-			if (sdf.parse(li.getInsDate()) > sdf.parse((li.getUpdDate())) {
-				
+		for (int i = 0; i < luggageInfoList.size(); i++) {
+			if (ObjectUtils.allNotNull(luggageInfoList.get(i), luggageInfoList.get(i).getLuggageItemList())) {
+				for (int j = 0; j < luggageInfoList.get(i).getLuggageItemList().size(); j++) {
+					LuggageItem lim = luggageInfoList.get(i).getLuggageItemList().get(j);
+					if (ObjectUtils.allNotNull(lim.getUpdDate(), lim.getInsDate())) {
+						try {
+							if (sdf.parse(lim.getUpdDate()).before(sdf.parse(lim.getInsDate()))) {
+								String code = "luggageInfoList[" + i + "].luggageItemList[" + j + "].updDate";
+								String arguments = messageSource.getMessage("errors.date.compare", new Object[]{"update date", "insert date"}, Locale.JAPANESE);
+								result.addError(new FieldError(result.getObjectName(), code, arguments));
+							}
+						} catch(ParseException e) {
+							e.printStackTrace();
+							String code = "luggageInfoList[" + i + "].luggageItemList[" + j + "].updDate";
+							String arguments = "Error occured. Please go back to the top page and retry.";
+							result.addError(new FieldError(result.getObjectName(), code, arguments));
+						}
+					}
+				}
 			}
-			
 		}
-
 	}
 
     private List<SpotInfo> mapSpotInfo(List<SpotInfoEntity> entityList) {
