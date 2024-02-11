@@ -22,9 +22,9 @@
 
 /** common css *******************************************/
 /* オートコンプリート機能を利用して入力した場合の背景色を白色にする（自動設定を無効にする） */
-input:-webkit-autofill {	
-    box-shadow: 0 0 0 1000px white inset;	
-}	
+input:-webkit-autofill {
+    box-shadow: 0 0 0 1000px white inset;
+}
 
 body, html {
 	margin: 0;
@@ -59,7 +59,7 @@ select {
 }
 .css-submit-button:hover {
 	color: var(--red01);
-	background-color: var(--yellowColor01);		
+	background-color: var(--yellowColor01);
 }
 .css-back-button {
 	padding: 10px;
@@ -69,7 +69,7 @@ select {
 	cursor: pointer;
 }
 .css-back-button:hover {
-	color: var(--red01);	
+	color: var(--red01);
 }
 
 /** button end */
@@ -112,7 +112,7 @@ select {
 /** footer *******************************************/
 #pre-space-for-footer {
 	position: relative;
-	height: 100px;	
+	height: 100px;
 }
 
 #footer {
@@ -133,11 +133,6 @@ select {
 
 
 /** エラーメッセージ ************************************************/
-.errorMsg {
-	color: red;
-	font-size: 12px;
-	}
-
 a {
 	text-decoration: none; /* 未選択時は下線は非表示 */
 	color: #000;
@@ -165,7 +160,7 @@ a.logoLink {
 .logoLink:hover {
 	text-decoration: none;
 	color:#DC143C; /* マウスオーバー時のリンク色 */
-}                 
+}
 
 /** header部分　END *******************************************/
 
@@ -318,7 +313,7 @@ a.loginLink {
 /** top.jsp用のCSS START *******************************************/
 
 div.syeat{
-	padding-bottom: 60px; 
+	padding-bottom: 60px;
 }
 .pointsyeat {
 	border: 1px #1C79C6 solid; /* テーブル全体の枠線（太さ・色・スタイル） */
@@ -327,7 +322,7 @@ div.syeat{
     margin-right: auto;
 	text-align: left;
 	table-layout: auto;
-	width: 80%;	
+	width: 80%;
 }
 .pointsyeat TH {
 	background-color: #BAD8E5;

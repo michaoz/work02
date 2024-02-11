@@ -5,7 +5,7 @@
 <html>
 	<head>
 		<%@ include file="../common/includes.jsp"%>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<!-- JQueryUI : to use Sortable function -->
 		<script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
 		<!-- JQueryUI : to use Sortable function end -->
@@ -23,7 +23,7 @@
 			<a  id="previous-page-name">Make a New Plan</a>
 			<span> > </span>
 			<p id="current-page-name">Create a Route to the Destination</p>
-		</div>		
+		</div>
 		<div class="page-top-nav">
 		  <div class="page-top-nav-links">
 			  <div id="about"><p>About</p></div>
@@ -33,7 +33,7 @@
 		</div>
 <%-- 	<div class="page-main-image">
 		</div>  --%>
-		
+
 		<%-- DIV: body --%>
 		<div class="body-prep-luggage">
 		    <%-- DIV: The Luggage List --%>
@@ -59,15 +59,15 @@
 				    </c:forEach>
 				  </c:forEach>
 			  </div>
-			  
-			    
+
+
 			  <button type="button" class="js-add-record-btn css-add-recode-btn">add a record</button>
 			  <button type="button" class="js-to-sort-spot-list css-luggage-list-table-btn">sort Spot List</button>
 
 			  <div>
-			      
+
 			  </div>
-			  
+
 		      <table id="luggage-list-table">
 		        <thead>
 		          <tr id="header-table">
@@ -110,7 +110,7 @@
 		        </tbody>
 		      </table>
 		    </div>
-		    
+
 		    <%-- DIV: confirm pane --%>
 		    <div class="body-create-route">
 			    <div id="page-title">
@@ -150,10 +150,10 @@
     		    </table>
     		</div>
 		</div>
-		
+
 		<%-- DIV: control the page --%>
 		<div class="page-control">
-		 <%-- 
+		 <%--
 		  <button type="button" value="Create a Route to the Destination" id="back-to-make-new-plans">
 		      <a href="/work02/travel/tripPlans/createRoute?back">Back to Create a Route to the Destination</a>
 		  </button>
@@ -167,9 +167,9 @@
 
 		<%-- hidden items --%>
 		<form:hidden path="tripPlanName" />
-				
+
 	</form:form>
-		
+
 	<jsp:include page = "../common/footer.jsp"/>
 	<script type="text/javascript" src="../../../resources/js/confirmPlans.js" defer></script>
 	</body>

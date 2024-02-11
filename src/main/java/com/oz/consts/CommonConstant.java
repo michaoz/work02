@@ -70,7 +70,10 @@ public class CommonConstant {
 	public static final String PREPLUGGAGE_URL = "/tripPlans/prepLuggage";
 	public static final String CONFIRM_PLANS_URL = "/tripPlans/confirmPlans";
 	public static final String RESULT_TRIP_PLANS_URL = "/tripPlans/resultTripPlans";
-	
+
+	public static final String REDIRECT_CREATEROUTE_URL = "/tripPlans/createRoute";
+	public static final String REDIRECT_PREPLUGGAGE_URL = "/tripPlans/createRoute/prepLuggage";
+
 	/** 正規表現 */
 	// suffix
 	public static final String PREFIX_MATCH = "^";

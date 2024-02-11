@@ -4,52 +4,52 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 public final class LuggageInfo implements Serializable {
-	
+
+	public static interface ValidLuggageInfo{}
+
 	private static final long serialVersionUID = 1L;
-	
+
 	/** trip plan name */
 	private String tripPlanName;
-	
+
 	/** luggage number */
-	@NotEmpty(message="{errors.luggageNo.empty}")
-	@Size(min=1, max=32767, message="{errors.range.minMax}")
 	private int luggageNo;
-	
+
 	/** the number of the luggage */
-	@NotEmpty(message="{errors.luggageCount.empty}")
-	@Size(min=1, max=1000, message="{errors.range.minMax}")
 	private int luggageCount;
-	
+
 	/** bag No */
-	@NotEmpty(message="{errors.bagNo.empty}")
+	@NotEmpty(message="{errors.bagNo.empty}", groups={ValidLuggageInfo.class})
 	private String bagNo;
-	
+
 	/** luggage prepared flg */
 	private boolean luggagePrepaedFlg;
-	
+
 	/** luggage item list */
+	@Valid
 	private List<LuggageItem> luggageItemList;
-	
+
 	/** ins user id */
 	private String insUserId;
-	
+
 	/** ins date */
 	private String insDate;
-	
+
 	/** update user id */
 	private String updUserId;
-	
+
 	/** update date */
 	private String updDate;
 
-	
-	
+
 
 	public String getTripPlanName() {
 		return tripPlanName;
@@ -58,7 +58,7 @@ public final class LuggageInfo implements Serializable {
 	public void setTripPlanName(String tripPlanName) {
 		this.tripPlanName = tripPlanName;
 	}
-	
+
 	public int getLuggageNo() {
 		return luggageNo;
 	}
@@ -98,7 +98,7 @@ public final class LuggageInfo implements Serializable {
 	public void setLuggageItemList(List<LuggageItem> luggageItemList) {
 		this.luggageItemList = luggageItemList;
 	}
-	
+
 	public String getInsUserId() {
 		return insUserId;
 	}

@@ -5,7 +5,7 @@
 <html>
 	<head>
 		<%@ include file="../common/includes.jsp"%>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<!-- JQueryUI : to use Sortable function -->
 		<script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
 		<!-- JQueryUI : to use Sortable function end -->
@@ -23,7 +23,7 @@
 			<a  id="previous-page-name">Make a New Plan</a>
 			<span> > </span>
 			<p id="current-page-name">Create a Route to the Destination</p>
-		</div>		
+		</div>
 		<div class="page-top-nav">
 		  <div class="page-top-nav-links">
 			  <div id="about"><p>About</p></div>
@@ -33,7 +33,28 @@
 		</div>
 <%-- 	<div class="page-main-image">
 		</div>  --%>
-		
+
+		<%-- error messages area --%>
+		<div class="css-error-message">
+		  <c:forEach items="${tripPlansCommonForm.luggageInfoList}" var="luggageInfo" varStatus="luggageInfoStatus">
+		    <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggageNo" />
+		    <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggageCount" />
+		    <form:errors path="luggageInfoList[${luggageInfoStatus.index}].bagNo" />
+		    <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggagePrepaedFlg" />
+		    <form:errors path="luggageInfoList[${luggageInfoStatus.index}].insDate" />
+		    <form:errors path="luggageInfoList[${luggageInfoStatus.index}].updDate" />
+		    <c:forEach items="${tripPlansCommonForm.luggageInfoList}[${luggageInfoStatus.index}].${luggageItemList}" var="luggageItem" varStatus="luggageItemStatus">
+  		      <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemNo" />
+  		      <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemName" />
+  		      <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemCount" />
+  		      <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemPreparedFlg" />
+  		      <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemOwnerName" />
+  		      <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].insDate" />
+  		      <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].updDate" />
+		    </c:forEach>
+		  </c:forEach>
+		</div>
+
 		<%-- DIV: body --%>
 		<div class="body-prep-luggage">
 		    <%-- DIV: The Luggage List --%>
@@ -59,15 +80,15 @@
 				    </c:forEach>
 				  </c:forEach>
 			  </div>
-			  
-			    
+
+
 			  <button type="button" class="js-add-record-btn css-add-recode-btn">add a record</button>
 			  <button type="button" class="js-to-sort-luggage-list css-luggage-list-table-btn">sort Luggage List</button>
 
 			  <div>
-			      
+
 			  </div>
-			  
+
 		      <table id="luggage-list-table">
 		        <thead>
 		          <tr id="header-table">
@@ -124,25 +145,25 @@
 		    </div>
 		</div>
 		<div class="page-control">
-		 <%-- 
+		 <%--
 		  <button type="button" value="Create a Route to the Destination" id="back-to-make-new-plans">
 		      <a href="/work02/travel/tripPlans/createRoute?back">Back to Create a Route to the Destination</a>
 		  </button>
 		  --%>
-		 <%-- 
+		 <%--
 		  <button type="button" id="back-to-make-new-plans" onclick="history.back()">Back to Previous Page</button>
-		  
+
 		  <input type="button" id="submit-back" class="css-back-button" value="Back to Previous Page" >
 		  --%>
 		  <input type="submit" id="submit-back" class="css-back-button" value="Back to Previous Page" >
 		  <input type="submit" id="submit" class="css-submit-button" value="Save the Luggage List" >
-		 <%-- 
-		  <input type="button" id="submit-back" class="css-back-button" value="Back to Previous Page" >		  
+		 <%--
+		  <input type="button" id="submit-back" class="css-back-button" value="Back to Previous Page" >
 		  <input type="button" id="submit" class="css-submit-button" value="Save the Luggage List" >
 		  --%>
 		</div>
-		
-		
+
+
 		<%-- hidden items --%>
 		<form:hidden path="tripPlanName" />
 		<form:hidden path="newTripPlanName" />
@@ -164,7 +185,7 @@
 			<form:hidden path="spotList[${spotInfoStatus.index}].updDate" />
 		</c:forEach>
 	</form:form>
-		
+
 	<jsp:include page = "../common/footer.jsp"/>
 	<script type="text/javascript" src="../../../resources/js/prepLuggage.js" defer></script>
 	</body>

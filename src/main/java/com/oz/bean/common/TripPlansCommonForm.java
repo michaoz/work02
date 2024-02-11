@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.stereotype.Controller;
+import com.oz.bean.common.SpotInfo;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 public class TripPlansCommonForm implements Serializable{

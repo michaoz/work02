@@ -13,15 +13,15 @@
   --lightPink01Color: #FFE4E1;
   --lightBluePinkColor: #FFE0ED;
   --whiteColor: #fff;
-  
+
   /** font weight */
   --lighterFontWeight: lighter;
-  
-  
+
+
   --textStroke : -webkit-text-stroke: 0.2px var(--blackColor);
-	
+
   --mapZindex: 1;
-  
+
   --gridMarginTop: 1rem;
   --gridMarginLeft: 3rem;
   --gridMaxWidth: 20rem;
@@ -46,10 +46,10 @@
 
   --searchInputButtonPaddingHorizontal: .625rem;
   --searchInputButtonPaddingVertical: .375rem;
-  
+
   /* Table Style */
   --tableWidth: 1000px;
-  
+
 }
 
 /**********************************************************************/
@@ -110,7 +110,7 @@ checkbox {
     right:0;
     bottom:0;
     z-index: var(--mapZindex);
-}	
+}
 
 .page-breadcrumb {
 	background-color: var(--lightYellowColor);
@@ -142,7 +142,7 @@ checkbox {
 	align-items: center;
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 .page-top-nav #blog	{
@@ -178,7 +178,7 @@ checkbox {
   left: 0;
   margin: auto;
 }
-.css-three-dots-leader-btn #css-three-dots::before, 
+.css-three-dots-leader-btn #css-three-dots::before,
 .css-three-dots-leader-btn #css-three-dots::after {
   content: '';
 }
@@ -264,7 +264,7 @@ div.map-search-results {
 
 /* search result */
 .css-search-result-record-no {
-	text-align: center;	
+	text-align: center;
 }
 
 /*
@@ -282,7 +282,10 @@ div.map-search-results {
 	margin: 30px 0px 0px 70px;
 	color: var(--red01);
 }
-
+.css-error-message span::after {
+	content: "\A";
+	white-space: pre;
+}
 /** error message end **/
 
 
@@ -309,7 +312,7 @@ div.body-make-new-plans {
 
 /* spot-list-table nav ***********/
 .css-spot-list-nav {
-	display: flex; 
+	display: flex;
 	flex-direction: row;
 }
 .css-spot-list-nav div,
@@ -345,7 +348,7 @@ div.body-make-new-plans {
     display: block;
     border-radius: 50px;
     background: #fff;
-    box-shadow: 0 9px 28px -6px rgba(0, 0, 0, 0.3);  /* right-left top-bottom shading extension-of-XY */  
+    box-shadow: 0 9px 28px -6px rgba(0, 0, 0, 0.3);  /* right-left top-bottom shading extension-of-XY */
     transition: 0.2s ease-out;
 }
 .css-draw-route.checked:before {
@@ -406,7 +409,7 @@ div.body-make-new-plans {
 	background: var(--lightGrayColor);
 	width: 17px;
 	height: 1px;
-}	
+}
 #spot-list-table tbody td:nth-of-type(1) span::before,
 #spot-list-table tbody td:nth-of-type(1) span::after {
 	content: '';
@@ -433,7 +436,7 @@ div.body-make-new-plans {
     color: var(--blackColor);
 	border: none;
 }
-	
+
 #delete-list-table .css-list-chbox-label {
 	padding: 5px 20px;/
 	text-align: center;
@@ -457,7 +460,7 @@ div.body-make-new-plans {
 
 #country-div {
 }
-	
+
 #span-spotListRecordNo {
 	visibility : hidden;
 }
@@ -520,7 +523,7 @@ div.body-make-new-plans {
     border-top: 2px solid #000;
     border-right: 2px solid #000;
 /*    transform: translateX(-50%) rotate(-45deg); */
-    transform: rotate(-45deg);    
+    transform: rotate(-45deg);
 }
 .css-confirm-btn.active::before {/* 開いている時 */
 	content: "";
@@ -588,7 +591,7 @@ html {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.05rem;
-	
+
 	background-color: var(--grayColor);
 	border-radius: var(--searchBorderRadius);
 	font-size: var(--searchFontSize);
@@ -612,7 +615,7 @@ html {
 .form-field input[type="search"] {
   appearance: textfield;
   box-sizing: content-box;
-  
+
   background-color: var(--whiteColor);
   color: var(--darkGrayColor);
   padding: var(--searchInputSearchPaddingVertical) var(--searchInputSearchPaddingHorizontal);

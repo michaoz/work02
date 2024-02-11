@@ -127,6 +127,7 @@ public class PrepLuggageServiceImpl implements PrepLuggageService {
 					lim.setItemNo(slime.getItemNo());
 					lim.setItemName(slime.getItemName());
 					lim.setItemCount(slime.getItemCount());
+//					lim.setItemCount(String.valueOf(slime.getItemCount()));
 					lim.setItemPreparedFlg(slime.isItemPreparedFlg());
 					lim.setItemOwnerName(slime.getItemOwnerName());
 					

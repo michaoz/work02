@@ -10,66 +10,65 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class SpotInfo implements Serializable{
-	
+
 	public static interface ValidSpotInfo{}
-	
+
 	/** シリアルID */
 	private static final long serialVersionUID = 1L;
 
 	/** trip plan name */
 	private String tripPlanName;
-	
+
 	/** record number */
-	@NotEmpty(message="{errors.recordNum.empty}")
 	private int recordNum;
-	
+
 	/** spot name */
 	@NotEmpty(message="{errors.spotName.empty}")
 	private String spotName;
-	
+
 	/** city */
 //	@NotNull(message="{errors.empty}")
 	@NotEmpty(message="{errors.city.empty}")
 	private String city;
-	
+
 	/** address */
 	@NotEmpty(message="{errors.address.empty}", groups={ValidSpotInfo.class})
 	private String address;
 
 	/** geo info */
-	
+
 	/** latitude and longitude */
 	@NotEmpty(message="{errors.latLon.empty}")
 	@Pattern(regexp="(^\\d$)", message="{errors.format.latLon.integer}")
 	private String latLon;
-			
+
 	/** latitude */
 	private String latitude;
-	
+
 	/** longitude */
 	private String longitude;
-	
+
 	/** leafletId */
 	@NotEmpty(message="{errors.leafletId.empty}")
 	@Pattern(regexp="(^\\d$)", message="{errors.format.leafletId.integer}")
 	private String leafletId;
-	
+
 	/** geometry type */
 	private String geoType;
-	
+
 	/** ins user id */
 	private String insUserId;
-	
+
 	/** ins date */
 	private String insDate;
-	
+
 	/** update user id */
 	private String updUserId;
-	
+
 	/** update date */
 	private String updDate;
-	
-	
+
+
 
 
 	public String getTripPlanName() {
@@ -79,7 +78,7 @@ public class SpotInfo implements Serializable{
 	public void setTripPlanName(String tripPlanName) {
 		this.tripPlanName = tripPlanName;
 	}
-	
+
 	public int getRecordNum() {
 		return recordNum;
 	}

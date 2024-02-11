@@ -11,19 +11,19 @@ public class LuggageItemEntity implements Serializable {
 	private String tripPlanName;
 	
 	/** luggage number */
-	private int luggageNo;
+	private Integer luggageNo;
 
 	/** bag No */
 	private String bagNo;
 	
 	/** item number */
-	private int itemNo;
+	private Integer itemNo;
 
 	/** item name */
 	private String itemName;
 	
 	/** the number of item */
-	private int itemCount;
+	private Integer itemCount;
 	
 	/** item prepared flg */
 	private boolean itemPreparedFlg;
@@ -53,11 +53,11 @@ public class LuggageItemEntity implements Serializable {
 		this.tripPlanName = tripPlanName;
 	}
 
-	public int getLuggageNo() {
+	public Integer getLuggageNo() {
 		return luggageNo;
 	}
 
-	public void setLuggageNo(int luggageNo) {
+	public void setLuggageNo(Integer luggageNo) {
 		this.luggageNo = luggageNo;
 	}
 
@@ -69,11 +69,11 @@ public class LuggageItemEntity implements Serializable {
 		this.bagNo = bagNo;
 	}
 
-	public int getItemNo() {
+	public Integer getItemNo() {
 		return itemNo;
 	}
 
-	public void setItemNo(int itemNo) {
+	public void setItemNo(Integer itemNo) {
 		this.itemNo = itemNo;
 	}
 	
@@ -85,11 +85,11 @@ public class LuggageItemEntity implements Serializable {
 		this.itemName = itemName;
 	}
 
-	public int getItemCount() {
+	public Integer getItemCount() {
 		return itemCount;
 	}
 
-	public void setItemCount(int itemCount) {
+	public void setItemCount(Integer itemCount) {
 		this.itemCount = itemCount;
 	}
 	

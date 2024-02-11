@@ -282,6 +282,7 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 					pstmt.setInt(++i, luggageItem.getItemNo());
 					pstmt.setString(++i, luggageItem.getItemName());
 					pstmt.setInt(++i, luggageItem.getItemCount());
+//					pstmt.setString(++i, luggageItem.getItemCount());
 					pstmt.setBoolean(++i, luggageItem.isItemPreparedFlg());
 					pstmt.setString(++i, luggageItem.getItemOwnerName());
 					pstmt.setString(++i, USER_ID);
