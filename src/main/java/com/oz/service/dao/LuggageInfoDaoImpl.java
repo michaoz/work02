@@ -400,6 +400,11 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 		luggageInfoList.forEach(s -> s.setInsDate(sdf.format(systemTimestamp)));			
 		luggageInfoList.forEach(s -> s.setUpdUserId(USER_ID));
 		luggageInfoList.forEach(s -> s.setUpdDate(sdf.format(systemTimestamp)));
+
+		luggageInfoList.forEach(s -> s.getLuggageItemList().forEach(lim -> lim.setInsUserId(USER_ID)));
+		luggageInfoList.forEach(s -> s.getLuggageItemList().forEach(lim -> lim.setInsDate(sdf.format(systemTimestamp))));
+		luggageInfoList.forEach(s -> s.getLuggageItemList().forEach(lim -> lim.setUpdUserId(USER_ID)));
+		luggageInfoList.forEach(s -> s.getLuggageItemList().forEach(lim -> lim.setUpdDate(sdf.format(systemTimestamp))));
 	}
 	
 }

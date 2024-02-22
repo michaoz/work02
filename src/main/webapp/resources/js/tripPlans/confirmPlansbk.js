@@ -1,5 +1,5 @@
-//const createRoute = (function() {
-const createRoute = (function () {
+//const confirmPlans = (function() {
+const confirmPlans = (function () {
 	/** global variable *******************/
 
 	// The default address when the page is read.
@@ -745,43 +745,7 @@ const createRoute = (function () {
 		location.href="#";
 	});
 });
-/*
-	return {
-		init: function() {
-			addToSpotList();
-			searchPlace();			
-	    }
-	};	
-})();
-*/
-/* TODO
-1 検索した地域を全て地図上にピン止め
--- 再検索するとspot listの地点のピンが削除されるので、削除されないようにする。
-        また、再検索時はルート線をoffにするようにする。
--- ルート線のスタート地点とゴール地点を別色のピンにするなど分かりやすくする。
--- かつ、削除時にすでに引いた地図上のルート線が消えないようにする（削除処理の際に再度線を引く？）
--- titleでツールチップを導入する。、また、toggleを使用して、文字列省略されている箇所をクリックで全表示できるようにする。 
-   ― tooltipと、pタグで固定のtooltipを作成
-2　地図上マーカー色分け
--- searched result にある地名：グレーのマーカー
--- spot list にある地名: 青のマーカー
--- delete list にある地名：マーカーを消すor薄いグレーのマーカー
--- spot list の地点を線で結ぶ
-3 destination listの機能
-- 選択したら 地図上のピン止めにフォーカス
-4 spot list のソート機能（好きな順に並べる事ができるように）
-5
-** not neccesary but better if fixed for usability
-・ 検索結果を地図上のタブとかに一覧に出す。必要な時だけ開けるようにする。
-・ 
-
-*********************************
-* 改修履歴
--- 削除リストからsot listに戻ってからルート線を引けなくなっているので修正する。
--- かつ、順番が変わっているがその順にルート線が引かれるか確認する
-*********************************
-*/
 
 $(function(){
-    createRoute();
+    confirmPlans();
 });

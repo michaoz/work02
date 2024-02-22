@@ -41,6 +41,7 @@ public class LuggageItem implements Serializable {
 	/** the number of item */
 	@NotNull(message="{errors.itemCount.empty}", groups={ValidLuggageItem.class})
 	@Range(min=1, max=1000, message="{errors.range.minMax}", groups={ValidLuggageItem.class})
+	@Pattern(regexp = "[\\d+}", message = "{errors.format.itemCount.integer}")
 	private Integer itemCount;
 
 	/** item prepared flg */

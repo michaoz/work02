@@ -25,7 +25,7 @@
 	     crossorigin=""></script>
 		<!-- OpenStreetMapを使用するためのLeafletライブラリend  --> 
 				
-		<!--<script type="text/javascript" src="../../resources/js/map.js" ></script>-->
+		<!--<script type="text/javascript" src="../../resources/js/tripPlans/map.js" ></script>-->
 		
 		<title>create route</title>
 	</head>
@@ -242,6 +242,6 @@
 	</form:form>
 
 	<jsp:include page = "../common/footer.jsp"/>
-	<script type="text/javascript" src="../../resources/js/createRoute.js" defer></script>
+	<script type="text/javascript" src="../../resources/js/tripPlans/createRoute.js" defer></script>
 	</body>
 </html>

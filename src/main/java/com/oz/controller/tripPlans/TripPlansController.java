@@ -202,7 +202,10 @@ public class TripPlansController {
     	tripPlansHelper.editCreateRouteForm(form);
 
     	// register the create-route data and delete the old data
-    	createRouteService.insertDeleteRouteInfo(form);
+    	// not register if the spot list is empty
+    	if (ObjectUtils.isNotEmpty(form.getSpotList())) {
+        	createRouteService.insertDeleteRouteInfo(form);    		
+    	}
 //    	if (form.isNewPlanFlg()) {
 //        	createRouteService.insertRouteInfo(form);
 //    	} else {
@@ -214,14 +217,13 @@ public class TripPlansController {
 
     	setPrepLuggageView(req);
     	
-    	tripPlansHelper.setPrepLuggageModel(form);
-
     	return CommonConstant.PREPLUGGAGE_URL;
     }
 
     @RequestMapping(value = "/createRoute/prepLuggage", params="back", method = RequestMethod.POST)
     public String prepLuggageBack(@ModelAttribute("tripPlansCommonForm") TripPlansCommonForm form, BindingResult result,
     		HttpServletRequest req, HttpServletResponse res, Model model) {
+    	setPrepLuggageView(req);
     	return CommonConstant.PREPLUGGAGE_URL;
     }
 
@@ -252,15 +254,14 @@ public class TripPlansController {
 
     	/* prep luggage info */
     	/* todo: 単項目チェック  */
-    	if (result.hasErrors()) {
-    		
+    	if (result.hasErrors()) {    		
     		// validation error 時にurlが元の画面のものになるようにするための設定
     		// - 関数の引数にUriComponentsBuilderを追加する
     		URI location = builder.path("/travel/" + CommonConstant.REDIRECT_PREPLUGGAGE_URL).build().toUri();
     		return redirectBindingResult(form, attr, result, location);
     	}
 
-    	this.checkPrepLuggage(form, result);   	
+    	this.checkPrepLuggage(form, result);
     	if (result.hasErrors()) {
     		setPrepLuggageView(req);
     		
@@ -270,7 +271,10 @@ public class TripPlansController {
 
     	tripPlansHelper.editPrepLuggageForm(form);
 
-    	prepLuggageService.insertDeleteLuggageInfo(form);
+    	// not register if the luggage info list is empty
+    	if (ObjectUtils.isNotEmpty(form.getLuggageInfoList())) {
+        	prepLuggageService.insertDeleteLuggageInfo(form);    		
+    	}
 //    	if (form.isNewPlanFlg()) {
 //        	prepLuggageService.insertLuggageInfo(form);
 //    	}
@@ -280,8 +284,6 @@ public class TripPlansController {
 //    	// map the spot info
 //    	form.setSpotList(mapSpotInfo(resultList));
     	form.setSpotList(createRouteService.selectRouteInfo(form));
-
-    	form.setTripPlanName(form.getSpotList().get(0).getTripPlanName());
 
     	return CommonConstant.CONFIRM_PLANS_URL;
     }
@@ -372,7 +374,7 @@ public class TripPlansController {
 				}
 			}
 			*/
-			if (ObjectUtils.allNotNull(si.getUpdDate(), si.getInsDate())) {
+			if (!StringUtils.isEmpty(si.getUpdDate()) && !StringUtils.isEmpty(si.getInsDate())) {
 				try {
 					if (sdf.parse(si.getUpdDate()).before(sdf.parse(si.getInsDate()))) {
 						String code = "spotList[" + i + "].updDate";
@@ -398,9 +400,25 @@ public class TripPlansController {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat(CommonConstant.DATETIMEFORMAT_HYPHEN_COLON);
 		for (int i = 0; i < luggageInfoList.size(); i++) {
-			if (ObjectUtils.allNotNull(luggageInfoList.get(i), luggageInfoList.get(i).getLuggageItemList())) {
-				for (int j = 0; j < luggageInfoList.get(i).getLuggageItemList().size(); j++) {
-					LuggageItem lim = luggageInfoList.get(i).getLuggageItemList().get(j);
+			if (ObjectUtils.allNotNull(luggageInfoList.get(i))) {
+				LuggageInfo li = luggageInfoList.get(i);
+				if (!StringUtils.isEmpty(li.getUpdDate()) && !StringUtils.isEmpty(li.getInsDate())) {
+					try {
+						if (sdf.parse(li.getUpdDate()).before(sdf.parse(li.getInsDate()))) {
+							String code = "luggageInfoList[" + i + "].updDate";
+							String arguments = messageSource.getMessage("errors.date.compare", new Object[]{"update date", "insert date"}, Locale.JAPANESE);
+							result.addError(new FieldError(result.getObjectName(), code, arguments));
+						}
+					} catch(ParseException e) {
+						e.printStackTrace();
+						String code = "luggageInfoList[" + i + "].updDate";
+						String arguments = "Error occured. Please go back to the top page and retry.";
+						result.addError(new FieldError(result.getObjectName(), code, arguments));
+					}
+				}
+				
+				for (int j = 0; j < li.getLuggageItemList().size(); j++) {
+					LuggageItem lim = li.getLuggageItemList().get(j);
 					if (ObjectUtils.allNotNull(lim.getUpdDate(), lim.getInsDate())) {
 						try {
 							if (sdf.parse(lim.getUpdDate()).before(sdf.parse(lim.getInsDate()))) {

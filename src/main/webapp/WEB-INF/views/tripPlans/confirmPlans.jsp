@@ -11,7 +11,7 @@
 		<!-- JQueryUI : to use Sortable function end -->
 		<link href="<c:url value='/resources/CSS/common.css' />" rel="stylesheet">
 		<link href="<c:url value='/resources/CSS/trip-plans/confirmPlans.css' />" rel="stylesheet">
-		<title>prep luggage</title>
+		<title>confirm plans</title>
 	</head>
 	<body>
 	<jsp:include page = "../common/header.jsp"/>
@@ -153,24 +153,44 @@
 
 		<%-- DIV: control the page --%>
 		<div class="page-control">
-		 <%--
-		  <button type="button" value="Create a Route to the Destination" id="back-to-make-new-plans">
-		      <a href="/work02/travel/tripPlans/createRoute?back">Back to Create a Route to the Destination</a>
-		  </button>
-		  <button type="button" id="back-to-make-new-plans"onclick="history.back()">Back to Previous Page</button>
-		  --%>
-		  <input type="button" id="back" class="css-back-button" onclick="history.back()" value="Back to Previous Page" >
-		  <%--
-		  <input type="submit" value="Save All" id="submit">--%>
-		  <input type="button" id="submit" class="css-submit-button" value="Save All" >
+		  <input type="submit" id="submit-back" class="css-back-button" value="Back to Previous Page" >
+		  <input type="submit" id="submit" class="css-submit-button" value="Save All" >
 		</div>
 
 		<%-- hidden items --%>
 		<form:hidden path="tripPlanName" />
+		<c:forEach items="${tripPlansCommonForm.spotList}" var="spotInfo" varStatus="spotInfoStatus">
+		  <form:hidden path="spotList[${spotInfoStatus.index}].tripPlanName" />
+		  <form:hidden path="spotList[${spotInfoStatus.index}].latLon" />
+		  <form:hidden path="spotList[${spotInfoStatus.index}].latitude" />
+		  <form:hidden path="spotList[${spotInfoStatus.index}].longitude" />
+		  <form:hidden path="spotList[${spotInfoStatus.index}].geoType" />
+		  <form:hidden path="spotList[${spotInfoStatus.index}].insUserId" />
+		  <form:hidden path="spotList[${spotInfoStatus.index}].insDate" />
+		  <form:hidden path="spotList[${spotInfoStatus.index}].updUserId" />
+		  <form:hidden path="spotList[${spotInfoStatus.index}].updDate" />	
+		</c:forEach>
+        <c:forEach items="${tripPlansCommonForm.luggageInfoList}" var="luggageInfo" varStatus="luggageInfoStatus">
+	      <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].insUserId" />
+	      <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].insDate" />
+	      <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].updUserId" />
+	      <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].updDate" />
+        <c:forEach items="${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList}" var="luggageItem" varStatus="luggageItemStatus">
+          <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].bagNo" />
+          <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemNo" />
+	      <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemPreparedFlg" />
+	      <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemOwnerName" />
+	      <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].insUserId" />
+	      <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].insDate" />
+	      <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].updUserId" />
+	      <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].updDate" />
+        </c:forEach>
+        </c:forEach>
+
 
 	</form:form>
 
 	<jsp:include page = "../common/footer.jsp"/>
-	<script type="text/javascript" src="../../../resources/js/confirmPlans.js" defer></script>
+	<script type="text/javascript" src="../../../../resources/js/tripPlans/confirmPlans.js" defer></script>
 	</body>
 </html>

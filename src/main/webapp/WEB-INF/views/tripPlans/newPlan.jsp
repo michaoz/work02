@@ -81,6 +81,6 @@
 		</form:form>
 
 		<jsp:include page = "../common/footer.jsp"/>
-		<script type="text/javascript" src="../../resources/js/newPlan.js" defer></script>
+		<script type="text/javascript" src="../../resources/js/tripPlans/newPlan.js" defer></script>
 	</body>
 </html>

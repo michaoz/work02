@@ -63,11 +63,13 @@ public class TripPlansHelper {
     	/* Set GeoType:Point */
     	newSpotList.forEach(fs -> fs.setGeoType("Point"));
 
-    	/* Set Latitude and Longitude (fs.getLatLon() is not null) */
-    	newSpotList.forEach(fs -> fs.setLatitude(
-    			fs.getLatLon().substring(0, fs.getLatLon().indexOf("_"))));
-    	newSpotList.forEach(fs -> fs.setLongitude(
-    			fs.getLatLon().substring(fs.getLatLon().indexOf("_") + 1)));
+    	/* Set Latitude and Longitude (if fs.getLatLon() is not null) */
+    	newSpotList.forEach(fs -> fs.setLatitude(ObjectUtils.isNotEmpty(fs.getLatLon()) ? 
+    			fs.getLatLon().substring(0, fs.getLatLon().indexOf("_")) : fs.getLatitude()));
+    	newSpotList.forEach(fs -> fs.setLongitude(ObjectUtils.isNotEmpty(fs.getLatLon()) ? 
+    			fs.getLatLon().substring(fs.getLatLon().indexOf("_") + 1) : fs.getLongitude()));
+//    	newSpotList.forEach(fs -> fs.setLongitude(
+//    			fs.getLatLon().substring(fs.getLatLon().indexOf("_") + 1)));
     	
     	/* Set Leaflet Id */
 //    	newSpotList.forEach(fs -> fs.setLeafletId(
@@ -81,14 +83,14 @@ public class TripPlansHelper {
     	List<LuggageInfo> luggageInfoList = form.getLuggageInfoList();
     	
     	for (LuggageInfo li : luggageInfoList) {
-    		List<LuggageItem> luggageItemList = li.getLuggageItemList();
+    		List<LuggageItem> lim = li.getLuggageItemList();
 //    		for (LuggageItem lim :luggageItemList) {
 //    			if ("-".equals(lim.getBagNo())) {
 //    				lim.setBagNo("00");
 //    			}
 //    		}
     		// Set Bag No from the first Luggage Item
-    		li.setBagNo(luggageItemList.get(0).getBagNo());    		
+    		li.setBagNo(lim.get(0).getBagNo());    		
     	}
     }
 

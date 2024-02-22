@@ -57,6 +57,6 @@
 		</div>
 						
 	<jsp:include page = "../common/footer.jsp"/>
-	<script type="text/javascript" src="../../../resources/js/confirmPlans.js" defer></script>
+	<script type="text/javascript" src="../../../resources/js/tripPlans/confirmPlans.js" defer></script>
 	</body>
 </html>

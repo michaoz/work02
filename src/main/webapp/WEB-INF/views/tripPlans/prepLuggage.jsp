@@ -14,6 +14,7 @@
 		<title>prep luggage</title>
 	</head>
 	<body>
+	<jsp:include page = "../common/modalConfirmEmptyEnter.jsp"/>
 	<jsp:include page = "../common/header.jsp"/>
 
 	<form:form action="/work02/travel/tripPlans/createRoute/prepLuggage/confirmPlans" method="POST" modelAttribute="tripPlansCommonForm">
@@ -138,6 +139,10 @@
 			            <label for="luggage-item-count-emit-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" class="css-list-chbox-label">✓</label>
 			          </td>
 		            </tr>
+		            <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].insDate" />
+		            <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].updDate" />
+		            <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].insDate" />
+  		            <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].updDate" />
 		          </c:forEach>
 		          </c:forEach>
 		        </tbody>
@@ -187,6 +192,6 @@
 	</form:form>
 
 	<jsp:include page = "../common/footer.jsp"/>
-	<script type="text/javascript" src="../../../resources/js/prepLuggage.js" defer></script>
+	<script type="text/javascript" src="../../../resources/js/tripPlans/prepLuggage.js" defer></script>
 	</body>
 </html>

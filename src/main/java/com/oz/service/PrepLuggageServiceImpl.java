@@ -91,8 +91,8 @@ public class PrepLuggageServiceImpl implements PrepLuggageService {
 	}
 	
 	public void insertDeleteLuggageInfo(TripPlansCommonForm form) {
-		insertLuggageInfo(form);
-		deleteLuggageInfo(form, form.getSpotList().get(0).getUpdDate());
+		this.insertLuggageInfo(form);
+		this.deleteLuggageInfo(form, form.getSpotList().get(0).getUpdDate());
 	}
 	
 	
@@ -130,6 +130,10 @@ public class PrepLuggageServiceImpl implements PrepLuggageService {
 //					lim.setItemCount(String.valueOf(slime.getItemCount()));
 					lim.setItemPreparedFlg(slime.isItemPreparedFlg());
 					lim.setItemOwnerName(slime.getItemOwnerName());
+					lim.setInsUserId(lie.getInsUserId());
+					lim.setInsDate(sdf.format(lie.getInsDate()));
+					lim.setUpdUserId(lie.getUpdUserId());
+					lim.setUpdDate(sdf.format(lie.getUpdDate()));	
 					
 					luggageItemList.add(lim);
 					
