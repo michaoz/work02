@@ -9,12 +9,14 @@
 
 	<div class="modal" id="js-modal-confirm-empty-enter">
 	  <div id="div-modal-message">
-	    You have not input any information in the form.<br>
+	    You have not input any information in the form.
+	    <br>
 	    Are you sure you'd like to go to the next page?
 	  </div>
-	  <div id="div-modal-btns">
-	    <button type="button" value="Yes">Yes</button>
-	    <button type="button"  value="No">No</button>
+	  <div class="css-modal-btns" id="js-modal-confirm-empty-enter-btns">
+	    <button type="button" value="0" >Yes</button>
+	    <button type="button"  value="1" >No</button>
+	    <input type="hidden" id="confirm-empty-enter-val" value="" />
 	  </div>
 	</div>
 </html>

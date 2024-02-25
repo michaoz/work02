@@ -1,7 +1,8 @@
 
 .modal {
+	display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 10;
     height: 400px;
     width: 40%;
     margin: 0 30% 100% 30%;
@@ -15,10 +16,10 @@
 	margin: 40px 0 0 0;
 	font-size: 25px;
 }
-#div-modal-btns {
+.css-modal-btns {
 	margin: 25px 0 0 0;
 }
-#div-modal-btns button {
+.css-modal-btns button {
 	padding: 5px 20px;
 	margin: 0 15px;
 	font-size: 23px;

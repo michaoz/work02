@@ -30,6 +30,7 @@
 		<title>create route</title>
 	</head>
 	<body>
+	<jsp:include page = "../common/modalConfirmEmptyEnter.jsp"/>	
 	<jsp:include page = "../common/header.jsp"/>
 	<form:form action="/work02/travel/tripPlans/createRoute/prepLuggage" method="POST" modelAttribute="tripPlansCommonForm">
 	
@@ -242,6 +243,8 @@
 	</form:form>
 
 	<jsp:include page = "../common/footer.jsp"/>
-	<script type="text/javascript" src="../../resources/js/tripPlans/createRoute.js" defer></script>
+<!-- to import read external js file -->
+<!-- <script type="text/javascript" src="../../resources/js/tripPlans/createRoute.js" defer></script> -->
+	<script type="module" src="../../resources/js/tripPlans/createRoute.js" defer></script>
 	</body>
 </html>

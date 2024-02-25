@@ -1,3 +1,5 @@
+import {modalConfirmEmptyEnter} from "../modalConfirmEmptyEnter.js"
+
 //const createRoute = (function() {
 const createRoute = (function () {
 	/** global variable *******************/
@@ -813,12 +815,33 @@ const createRoute = (function () {
 		});
 	});
 	
+	const confirmEmptyEnter = (function() {
+		$('#js-modal-confirm-empty-enter-btns').children('button').click(function(elm) {
+			if (modalConfirmEmptyEnter($(this).val())) {
+				$('input[id^="submit"]').trigger('click');;
+			} else {
+				$('#js-modal-confirm-empty-enter').css('display', 'none');		
+				return false;
+			}			
+		});
+	});
+	
 	// method right before submit
 	const beforeSubmit = (function() {
 		$('input[id^="submit"]').click(function() {
 			var url = '';
 
 			if ($(this).attr('id') == 'submit') {
+				// if the form is empty, show the modal to warn.
+				if (!$('#luggage-list-table').children('tbody').children().length) {
+					if ($('#js-modal-confirm-empty-enter').css('display') == 'none') {
+						$('#js-modal-confirm-empty-enter').css('display', 'block');						
+					}
+					// not continue the submit process if except for yes
+					if ($('#confirm-empty-enter-val').val() != "0") {
+						return false;						
+					}
+				}
 				// if the button is not submit button
 				url = '/work02/travel/tripPlans/createRoute/prepLuggage/confirmPlans';
 			} else {
@@ -826,7 +849,8 @@ const createRoute = (function () {
 					// if the button is submit-back button
 					url = '/work02/travel/tripPlans/createRoute?back';
 				}
-			}
+			}			
+			
 			// rewrite the action
 			$('form').attr('action', url);				
 			
@@ -850,6 +874,7 @@ const createRoute = (function () {
 		selectLuggageItem();
 		changeSelectedBagNo();
 		deleteChangeRecordColor();
+		confirmEmptyEnter();
 		confirm();
 		beforeSubmit();
 	});
@@ -869,26 +894,6 @@ const createRoute = (function () {
 	    }
 	};	
 })();
-*/
-/* TODO
-1 検索した地域を全て地図上にピン止め
--- 再検索するとspot listの地点のピンが削除されるので、削除されないようにする。
-        また、再検索時はルート線をoffにするようにする。
-2　地図上マーカー色分け
--- searched result にある地名：グレーのマーカー
-3 destination listの機能
-- 選択したら 地図上のピン止めにフォーカス
-4 spot list のソート機能（好きな順に並べる事ができるように）
-5
-** not neccesary but better if fixed for usability
-・ 検索結果を地図上のタブとかに一覧に出す。必要な時だけ開けるようにする。
-・ 
-
-*********************************
-* 改修履歴
--- 削除リストからsot listに戻ってからルート線を引けなくなっているので修正する。
--- かつ、順番が変わっているがその順にルート線が引かれるか確認する
-*********************************
 */
 
 $(function(){

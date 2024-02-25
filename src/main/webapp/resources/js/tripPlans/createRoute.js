@@ -1,3 +1,5 @@
+import {modalConfirmEmptyEnter} from "../modalConfirmEmptyEnter.js"
+
 //const createRoute = (function() {
 const createRoute = (function () {
 	/** global variable *******************/
@@ -1252,9 +1254,32 @@ const createRoute = (function () {
 		});
 	});
 	
+	const confirmEmptyEnter = (function() {
+		$('#js-modal-confirm-empty-enter-btns').children('button').click(function(elm) {
+			if (modalConfirmEmptyEnter($(this).val())) {
+				$('#save').trigger('click');;
+			} else {
+				$('#js-modal-confirm-empty-enter').css('display', 'none');		
+				return false;
+			}			
+		});
+	});
+	
 	// method right before submit
 	const beforeSubmit = (function() {
 		$('#save').click(function() {
+			// if the form is empty, show the modal to warn.
+			if (!$('#spot-list-table').children('tbody').children().length &&
+					!$('#created-route-table').children('tbody').children().length) {
+				if ($('#js-modal-confirm-empty-enter').css('display') == 'none') {
+					$('#js-modal-confirm-empty-enter').css('display', 'block');						
+				}
+				// not continue the submit process if except for yes
+				if ($('#confirm-empty-enter-val').val() != "0") {
+					return false;						
+				}
+			}
+			
 			confirm();			
 			var recordNoElmList = null;
 			if ($('.js-confirm').attr('class').endsWith('active')) {
@@ -1311,7 +1336,8 @@ const createRoute = (function () {
 		searchPlace();
 		handleSortPane();
 		drawRoute();
-		confirm();	
+		confirmEmptyEnter();
+		confirm();
 		beforeSubmit();
 	});
 	
