@@ -830,10 +830,15 @@ const createRoute = (function () {
 	const beforeSubmit = (function() {
 		$('input[id^="submit"]').click(function() {
 			var url = '';
+			
+			// set luggage info and item
+			setLuggageInfoItem();
 
 			if ($(this).attr('id') == 'submit') {
 				// if the form is empty, show the modal to warn.
-				if (!$('#luggage-list-table').children('tbody').children().length) {
+				if (!$('#luggage-list-table').children('tbody').children('tr').length) {
+					delHtml($('#luggage-list-table').children('tbody').children());
+					
 					if ($('#js-modal-confirm-empty-enter').css('display') == 'none') {
 						$('#js-modal-confirm-empty-enter').css('display', 'block');						
 					}
@@ -854,8 +859,6 @@ const createRoute = (function () {
 			// rewrite the action
 			$('form').attr('action', url);				
 			
-//			// set luggage info and item
-			setLuggageInfoItem();
 			$('form').submit();
 //			$('form').submit(function() {
 //				// set luggage info and item

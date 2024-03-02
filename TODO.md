@@ -1,22 +1,27 @@
 # ToDo
 
 - General
- - Enterキーで次画面遷移できなくする  5
- - 英語版でできるか試す
- - test
-   - そもそもリストがnullの場合は、validationがされない → spotリストとかがnullで大丈夫かの確認ダイアログを作る
- - ツールチップ
- - 画面2重送信の防止 6
- - マッピングクラスを使ってマッピングする
- - entityクラスの活用 
+ - nullリストどうするか 1
+ 	- js側で、nullの場合は何か値を入れるようにする？又は
+ 	- prepliggageが、レコードを削除した場合、emptyentermodalが表示されない。
+ - test 3
+   	- 英語版でできるか試す
+ 	- junit
+ - See Created Plans画面で見れるようにする 2
  
 - make a new plan
-  - 戻ったと際の入力状態が微妙
 
 - create route 
 
 - Doc
  - bindingresultの中身(errorsなど)についてまとめる	
+
+- 改修事項
+ - マッピングクラスを使ってマッピングする
+ - entityクラスの活用 
+ - ツールチップ
+ - 画面2重送信の防止 6
+- Enterキーで次画面遷移できなくする  5
 
 
 pointGeoLayerGroupはcontrolGeoInfoに渡されたものが追加される

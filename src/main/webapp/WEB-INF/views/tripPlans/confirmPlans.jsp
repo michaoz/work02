@@ -35,8 +35,13 @@
 		</div>  --%>
 
 		<%-- DIV: body --%>
-		<div class="body-prep-luggage">
-		    <%-- DIV: The Luggage List --%>
+		<div class="body-trip-plan-summary">
+		<div class="body-trip-plan-name">
+		  <p>Trip Plan </p>
+		  <form:input path="tripPlanName" readonly="true" />
+		</div>
+		<div class="body-route-luggage-summary">
+		    <%-- DIV: Trip Plan Summary --%>
 			<div id="luggage-list-area">
 			  <div id="page-title">
 			    <p>The Luggage List</p>
@@ -150,6 +155,7 @@
     		    </table>
     		</div>
 		</div>
+		</div>
 
 		<%-- DIV: control the page --%>
 		<div class="page-control">
@@ -158,7 +164,6 @@
 		</div>
 
 		<%-- hidden items --%>
-		<form:hidden path="tripPlanName" />
 		<c:forEach items="${tripPlansCommonForm.spotList}" var="spotInfo" varStatus="spotInfoStatus">
 		  <form:hidden path="spotList[${spotInfoStatus.index}].tripPlanName" />
 		  <form:hidden path="spotList[${spotInfoStatus.index}].latLon" />
