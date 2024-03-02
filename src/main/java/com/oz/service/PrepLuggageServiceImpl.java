@@ -81,8 +81,15 @@ public class PrepLuggageServiceImpl implements PrepLuggageService {
 		
 	}
 	
-	public void deleteLuggageInfo(TripPlansCommonForm form, String updDateParam) {
-		String condition = "UPD_DATE <= ? ";
+	public void deleteLuggageInfo(TripPlansCommonForm form) {
+		String condition = null;
+		String updDateParam = null;
+				
+		if (ObjectUtils.isNotEmpty(form.getSpotList()) &&
+				ObjectUtils.isNotEmpty(form.getSpotList().get(0).getUpdDate())) {
+			condition = "UPD_DATE <= ? ";
+			updDateParam = form.getSpotList().get(0).getUpdDate();
+		}
 		try {
 			luggageInfoDao.delete(form, condition, updDateParam);
 		} catch (SQLException e) {
@@ -91,8 +98,10 @@ public class PrepLuggageServiceImpl implements PrepLuggageService {
 	}
 	
 	public void insertDeleteLuggageInfo(TripPlansCommonForm form) {
-		this.insertLuggageInfo(form);
-		this.deleteLuggageInfo(form, form.getSpotList().get(0).getUpdDate());
+		if (ObjectUtils.isNotEmpty(form.getLuggageInfoList())) {
+			this.insertLuggageInfo(form);			
+		}
+		this.deleteLuggageInfo(form);
 	}
 	
 	

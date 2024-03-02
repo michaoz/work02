@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -345,7 +346,6 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 		}
 		sqlLuggageItem.append(";");
 		
-		Object[][] params = new Object[form.getLuggageInfoList().size()][];
 		List<LuggageInfo> luggageInfoList = form.getLuggageInfoList();
 
 		try {
@@ -356,7 +356,11 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 			pstmt = conn.prepareStatement(sqlLuggageInfo.toString());
 			int i = 0;
 			pstmt.setString(++i, form.getTripPlanName());
-			pstmt.setTimestamp(++i, Timestamp.valueOf(form.getLuggageInfoList().get(0).getInsDate()));
+			if (ObjectUtils.isNotEmpty(form.getLuggageInfoList())) {
+				pstmt.setTimestamp(++i, Timestamp.valueOf(form.getLuggageInfoList().get(0).getInsDate()));				
+			} else {
+				pstmt.setTimestamp(++i, systemTimestamp);
+			}
 			if (!StringUtils.isEmpty(updDateParam)) {
 				pstmt.setTimestamp(++i, Timestamp.valueOf(form.getLuggageInfoList().get(0).getUpdDate()));
 			}
@@ -369,7 +373,11 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 			pstmt = conn.prepareStatement(sqlLuggageItem.toString());
 			i = 0;
 			pstmt.setString(++i, form.getTripPlanName());
-			pstmt.setTimestamp(++i, Timestamp.valueOf(form.getLuggageInfoList().get(0).getInsDate()));
+			if (ObjectUtils.isNotEmpty(form.getLuggageInfoList())) {
+				pstmt.setTimestamp(++i, Timestamp.valueOf(form.getLuggageInfoList().get(0).getInsDate()));				
+			} else {
+				pstmt.setTimestamp(++i, systemTimestamp);
+			}
 			if (!StringUtils.isEmpty(updDateParam)) {
 				pstmt.setTimestamp(++i, Timestamp.valueOf(form.getLuggageInfoList().get(0).getUpdDate()));
 			}
@@ -381,9 +389,10 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 			
 			// Set the latest data to model to synchronize with DB data
 			SimpleDateFormat sdf = new SimpleDateFormat(CommonConstant.DATETIMEFORMAT_HYPHEN_COLON);
-			luggageInfoList.forEach(s -> s.setUpdUserId(USER_ID));
-			luggageInfoList.forEach(s -> s.setUpdDate(sdf.format(systemTimestamp)));
-			
+			if (ObjectUtils.isNotEmpty(luggageInfoList)) {
+				luggageInfoList.forEach(s -> s.setUpdUserId(USER_ID));
+				luggageInfoList.forEach(s -> s.setUpdDate(sdf.format(systemTimestamp)));				
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

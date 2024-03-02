@@ -16,9 +16,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ObjectUtils;
 
 import com.oz.bean.common.SpotInfo;
 import com.oz.bean.common.TripPlansCommonForm;
+import com.oz.bean.common.TripPlan;
+import com.oz.consts.CommonConstant;
 import com.oz.consts.DBConst;
 import com.oz.entity.SpotInfoEntity;
 
@@ -45,63 +48,60 @@ public class TripPlanDaoImpl implements TripPlanDao {
 	
 	private ResultSet rs = null;
 	
+	private static final int TRIP_PLAN_BEAN_FIELD_COUNT = 5;
+	
 	@Override
-	public String selectTripPlanName(TripPlansCommonForm form, String condition, Object[] paramArry) throws SQLException {
+	public List<String> selectTripPlanName(TripPlansCommonForm form, String condition, Object[] paramArry, boolean getFirstFlg) throws SQLException {
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT TRIP_PLAN_NAME FROM T_ROUTE_INFO ");
-		if (condition != null) {
-			sb.append(condition);
+		sb.append("SELECT TRIP_PLAN_NAME ");
+		if(getFirstFlg) {
+			sb.append("FROM T_TRIP_PLAN ");
+		} else {
+			sb.append("FROM (SELECT * FROM T_TRIP_PLAN ORDER BY UPD_DATE DESC) AS sub ");			
 		}
-		if (paramArry != null && paramArry.length > 0) {
-			// TODO
+		if (condition != null) {
+			if (paramArry == null || paramArry.length == 0) {
+				condition = condition.replace("?", "\"\"");
+			}
+			sb.append(condition);
 		}
 		sb.append(";");
 		
-		List<SpotInfoEntity> resultList = new ArrayList<>();
+		List<String> tripPlanNameList = new ArrayList<>();
 		try {
 			// get db connection
 			conn = baseDao.getConnection(conn);
+			
 			// get statement
-			stmt = conn.createStatement();
+			pstmt = conn.prepareStatement(sb.toString());
+			if (!ObjectUtils.isEmpty(paramArry)) {
+				pstmt.setString(1, (String) paramArry[0]);				
+			}
+						
 			System.out.println(sb.toString());
 			// execute sql
-			rs = stmt.executeQuery(sb.toString());
-						
-			while (rs.next()) {
-				System.out.println(rs.getRow() + "件目-------------");
-				
-				SpotInfoEntity resultEntity = new SpotInfoEntity();
-				
-			    resultEntity.setTripPlanName(rs.getString("TRIP_PLAN_NAME"));
-			    resultEntity.setRecordNum(rs.getInt("RECORD_NUM"));
-				resultEntity.setSpotName(rs.getString("SPOT_NAME"));
-				resultEntity.setCity(rs.getString("CITY"));
-				resultEntity.setAddress(rs.getString("ADDRESS"));
-				resultEntity.setLatitude(rs.getString("LATITUDE"));
-				resultEntity.setLongitude(rs.getString("LONGITUDE"));
-				resultEntity.setLeafletId(rs.getString("LEAFLET_ID"));
-				resultEntity.setGeoType(rs.getString("GEO_TYPE"));
-				resultEntity.setInsUserId(rs.getString("INS_USER_ID"));
-				resultEntity.setInsDate(rs.getTimestamp("INS_DATE"));
-				resultEntity.setUpdUserId(rs.getString("UPD_USER_ID"));
-				resultEntity.setUpdDate(rs.getTimestamp("UPD_DATE"));
-				
-				resultList.add(resultEntity);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				tripPlanNameList.add(rs.getString("TRIP_PLAN_NAME"));
+				if (getFirstFlg) {
+					// get only the first result
+					break;
+				}
 			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			baseDao.closeConnection(conn);
 			baseDao.closeStatement(pstmt, rs);
 		}
-		return "";
-	}
-	
-	
+		return tripPlanNameList;
+	}	
 		
 	@Override
-	public void insert(TripPlansCommonForm form) throws SQLException {
+	public void insert(TripPlan tripPlanBean) throws SQLException {
 		
 		// get current timestamp
 		Timestamp systemTimestamp = new Timestamp(System.currentTimeMillis());
@@ -110,51 +110,17 @@ public class TripPlanDaoImpl implements TripPlanDao {
 		
 		StringBuilder sql = new StringBuilder();
 		
-		sql.append("INSERT INTO T_ROUTE_INFO");
+		sql.append("INSERT INTO T_TRIP_PLAN");
 		sql.append("( TRIP_PLAN_NAME ");
-		sql.append(", RECORD_NUM ");
-		sql.append(", SPOT_NAME ");
-		sql.append(", CITY ");
-		sql.append(", ADDRESS ");
-		sql.append(", LATITUDE ");
-		sql.append(", LONGITUDE ");
-		sql.append(", LEAFLET_ID ");
-		sql.append(", GEO_TYPE ");
 		sql.append(", INS_USER_ID ");
 		sql.append(", INS_DATE ");
 		sql.append(", UPD_USER_ID ");
 		sql.append(", UPD_DATE ) ");
 		sql.append("VALUES ");
-		sql.append("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ");
-		
-		/*
-		for (SpotInfo si : form.getSpotList()) {
-			sql.append("( ");
-			sql.append(si.getRecordNum());
-			sql.append(si.getSpotName());
-			sql.append(si.getCity());
-			sql.append(si.getAddress());
-			sql.append(si.getLatitude());
-			sql.append(si.getLongitude());
-			sql.append(si.getLeafletId());
-			sql.append(si.getGeoType());
-			sql.append(si.getInsUserId());
-			sql.append(si.getInsDate());
-			sql.append(si.getUpdUserId());
-			sql.append(si.getUpdDate());
-			sql.append("), ");			
-		}
-//		sql.append("WHERE RECORD_NUM = ? AND LEAFLET_ID = ? AND GEO_TYPE = ? AND INS_DATE = ?");
-		sql.substring(0, sql.lastIndexOf(","));
-		*/
+		sql.append("(?, ?, ?, ?, ?) ");
 		
 		sql.append(";");
 		System.out.println("sql:" + sql.toString());
-		
-		Object[][] params = new Object[form.getSpotList().size()][];
-		List<SpotInfo> spotList = form.getSpotList();
-		
-		String condition = null;
 		
 		try {
 			// get db connection
@@ -163,22 +129,12 @@ public class TripPlanDaoImpl implements TripPlanDao {
 			// get statement
 			pstmt = conn.prepareStatement(sql.toString());
 			
-			for (SpotInfo spotInfo : spotList) {
-				int i = 0;
-				pstmt.setString(++i, form.getTripPlanName());
-				pstmt.setInt(++i, spotInfo.getRecordNum());
-				pstmt.setString(++i, spotInfo.getSpotName());
-				pstmt.setString(++i, spotInfo.getCity());
-				pstmt.setString(++i, spotInfo.getAddress());
-				pstmt.setString(++i, spotInfo.getLatitude());
-				pstmt.setString(++i, spotInfo.getLongitude());
-				pstmt.setString(++i, spotInfo.getLeafletId());
-				pstmt.setString(++i, spotInfo.getGeoType());
+			for (int i = 0; i < TRIP_PLAN_BEAN_FIELD_COUNT; i++) {				
+				pstmt.setString(++i, tripPlanBean.getTripPlanName());
 				pstmt.setString(++i, USER_ID);
 				pstmt.setTimestamp(++i, systemTimestamp);
 				pstmt.setString(++i, USER_ID);
 				pstmt.setTimestamp(++i, systemTimestamp);
-				System.out.println("index(columns count):" + i);
 				
 				pstmt.addBatch();
 				System.out.println("pstmt:" + pstmt.toString());
@@ -196,12 +152,11 @@ public class TripPlanDaoImpl implements TripPlanDao {
 				}
 			}
 			
-			// Set the latest data to model to synchronize with DB data
-			spotList.forEach(s -> s.setInsUserId(USER_ID));
-//			spotList.forEach(s -> s.setInsDate(systemTimestamp));
-			spotList.forEach(s -> s.setUpdUserId(USER_ID));
-//			spotList.forEach(s -> s.setUpdDate(systemTimestamp));
-			
+			tripPlanBean.setInsUserId(USER_ID);
+			tripPlanBean.setInsDate(systemTimestamp);	
+			tripPlanBean.setUpdUserId(USER_ID);
+			tripPlanBean.setUpdDate(systemTimestamp);
+						
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

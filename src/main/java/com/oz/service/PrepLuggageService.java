@@ -14,7 +14,7 @@ public interface PrepLuggageService {
 	
 	public void insertLuggageInfo(TripPlansCommonForm form);
 	
-	public void deleteLuggageInfo(TripPlansCommonForm form, String updDateParam);
+	public void deleteLuggageInfo(TripPlansCommonForm form);
 	
 	public void insertDeleteLuggageInfo(TripPlansCommonForm form);
 }

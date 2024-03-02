@@ -14,15 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.oz.bean.common.TripPlansCommonForm;
 import com.oz.consts.CommonConstant;
-import com.oz.service.CreateRouteService;
-import com.oz.service.dao.RouteInfoDao;
+import com.oz.service.TripPlanService;
 
 @Controller
 @RequestMapping(value="travel")
 public class TopController {
 	
 	@Autowired
-	CreateRouteService createRouteService;
+	TripPlanService tripPlanService;
 	
     @RequestMapping(value = "/", method = GET)
     public String showTop() {
@@ -36,7 +35,7 @@ public class TopController {
     
     @RequestMapping(value = "/tripPlans/newPlan", method = GET)
     public String showNewPlan(@ModelAttribute("tripPlansCommonForm") TripPlansCommonForm form, HttpServletRequest req, HttpServletResponse res, HttpSession session) {
-    	List<String> tripPlanNameList = createRouteService.getTripPlanNameList();
+    	List<String> tripPlanNameList = tripPlanService.getTripPlanNameList();
     	//req.setAttribute(CommonConstant.TRIP_PLAN_NAME_LIST, tripPlanNameList);
     	form.setTripPlanNameList(tripPlanNameList);
     	

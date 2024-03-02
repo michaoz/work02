@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,21 +77,28 @@ public class CreateRouteServiceImpl implements CreateRouteService {
 			e.printStackTrace();
 		}
 		
-		for (int i = 0; i < resultList.size(); i++) {
-			SpotInfoEntity sie = resultList.get(i);
-			
-        	// Mapping modelMapper
-			ModelMapper modelMapper = new ModelMapper(); 
-			SpotInfo si = modelMapper.map(sie, SpotInfo.class);
-//			SpotInfo si2 = new SpotInfo();
-//			modelMapper.map(sie, si2);
-        	
-			resultspotInfoList.add(si);
-    	}
+		if (ObjectUtils.isNotEmpty(resultList)) {
+			for (int i = 0; i < resultList.size(); i++) {
+				SpotInfoEntity sie = resultList.get(i);
+				
+	        	// Mapping modelMapper
+				ModelMapper modelMapper = new ModelMapper(); 
+				SpotInfo si = modelMapper.map(sie, SpotInfo.class);
+//				SpotInfo si2 = new SpotInfo();
+//				modelMapper.map(sie, si2);
+	        	
+				resultspotInfoList.add(si);
+	    	}			
+		}
 		return resultspotInfoList;		
 	}
-		
-	public void insertRouteInfo(TripPlansCommonForm form) {
+			
+	public void insertDeleteRouteInfo(TripPlansCommonForm form) {
+		this.insertRouteInfo(form);
+		this.deleteRouteInfo(form, form.getSpotList().get(0).getUpdDate());
+	}
+	
+	private void insertRouteInfo(TripPlansCommonForm form) {
 		// DB登録
 		try {
 			routeInfoDao.insert(form);
@@ -98,13 +106,8 @@ public class CreateRouteServiceImpl implements CreateRouteService {
 			e.printStackTrace();
 		}
 	}
-	
-	public void insertDeleteRouteInfo(TripPlansCommonForm form) {
-		insertRouteInfo(form);
-		deleteRouteInfo(form, form.getSpotList().get(0).getUpdDate());
-	}
-	
-	public void deleteRouteInfo(TripPlansCommonForm form, String updDateParam) {
+
+	private void deleteRouteInfo(TripPlansCommonForm form, String updDateParam) {
 		String condition = "UPD_DATE <= ? ";
 		try {
 			routeInfoDao.delete(form, condition, updDateParam);

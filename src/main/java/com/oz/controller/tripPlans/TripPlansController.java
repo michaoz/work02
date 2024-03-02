@@ -53,11 +53,11 @@ import com.oz.consts.CommonConstant;
 import com.oz.consts.CommonConstant.LUGGAGE_KEYWORD_ITEMS;
 import com.oz.entity.SpotInfoEntity;
 import com.oz.helper.TripPlansHelper;
+import com.oz.service.TripPlanService;
 import com.oz.service.CreateRouteService;
 import com.oz.service.PrepLuggageService;
-import com.oz.service.dao.RouteInfoDao;
 //import com.sun.org.apache.xml.internal.utils.URI;
-import com.sun.org.apache.xml.internal.utils.URI.MalformedURIException;
+//import com.sun.org.apache.xml.internal.utils.URI.MalformedURIException;
 
 @Controller
 @ComponentScan({"com.oz"})
@@ -75,6 +75,9 @@ public class TripPlansController {
 	@Autowired
 	TripPlansHelper tripPlansHelper;
 
+	@Autowired
+	TripPlanService tripPlanService;
+	
 	@Autowired
 	CreateRouteService createRouteService;
 //	@Autowired
@@ -106,7 +109,7 @@ public class TripPlansController {
     	form.setTripPlanName(!StringUtils.isEmpty(form.getNewTripPlanName()) ? form.getNewTripPlanName() : form.getExistedTripPlanName());
     	if (!StringUtils.isEmpty(form.getTripPlanName())) {
     		// search trip plan name for DB
-    		hasTripPlanNameFlg = createRouteService.searchTripPlanName(form.getTripPlanName());
+    		hasTripPlanNameFlg = tripPlanService.searchTripPlanName(form.getTripPlanName());
     	}
     	if (form.isNewPlanFlg() == hasTripPlanNameFlg) {
     		// either both are true or both are false, then rise an error.
@@ -118,6 +121,9 @@ public class TripPlansController {
     	if (hasTripPlanNameFlg) {
     		// get the previous data from db
         	form.setSpotList(createRouteService.selectRouteInfo(form));
+    	} else {
+    		// register the new trip plan name
+    		tripPlanService.insertTripPlan(form);  
     	}
 
     	if (ObjectUtils.isNotEmpty(form.getSpotList())) {
@@ -181,38 +187,35 @@ public class TripPlansController {
 //    		return CommonConstant.CREATEROUTE_URL;
     	}
 
-    	/* 相関チェック */
-    	this.checkRouteInfo(form, result);
-    	if (result.hasErrors()) {
-//    		attr.addFlashAttribute("tripPlansCommonForm", form);
-//    		attr.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "tripPlansCommonForm", result);
-//    		attr.addFlashAttribute("errors", result.getAllErrors());
+    	if (ObjectUtils.isNotEmpty(form.getSpotList())) {
+	    	/* 相関チェック */
+	    	this.checkRouteInfo(form, result);
+	    	if (result.hasErrors()) {
+	//    		attr.addFlashAttribute("tripPlansCommonForm", form);
+	//    		attr.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "tripPlansCommonForm", result);
+	//    		attr.addFlashAttribute("errors", result.getAllErrors());
+	
+	    		// validation error 時にurlが元の画面のものになるようにするための設定
+	    		// - 関数の引数にUriComponentsBuilderを追加する
+	    		URI location = builder.path("/travel/" + CommonConstant.REDIRECT_CREATEROUTE_URL).build().toUri();
+	//    		return "redirect:" + location.toString();
+	    		return redirectBindingResult(form, attr, result, location);
+	    	}
+	//    	if (result.hasErrors()) {
+	//    		tripPlansHelper.setPrepLuggageModel(form);
+	//    		return CommonConstant.CREATEROUTE_URL;
+	//    	}
 
-    		// validation error 時にurlが元の画面のものになるようにするための設定
-    		// - 関数の引数にUriComponentsBuilderを追加する
-    		URI location = builder.path("/travel/" + CommonConstant.REDIRECT_CREATEROUTE_URL).build().toUri();
-//    		return "redirect:" + location.toString();
-    		return redirectBindingResult(form, attr, result, location);
-    	}
-//    	if (result.hasErrors()) {
-//    		tripPlansHelper.setPrepLuggageModel(form);
-//    		return CommonConstant.CREATEROUTE_URL;
-//    	}
-
-    	tripPlansHelper.editCreateRouteForm(form);
+	    	tripPlansHelper.editCreateRouteForm(form);
 
     	// register the create-route data and delete the old data
     	// not register if the spot list is empty
-    	if (ObjectUtils.isNotEmpty(form.getSpotList())) {
-        	createRouteService.insertDeleteRouteInfo(form);    		
-    	}
-//    	if (form.isNewPlanFlg()) {
-//        	createRouteService.insertRouteInfo(form);
-//    	} else {
-//    		createRouteService.updateRouteInfo(form);
+//    	if (ObjectUtils.isNotEmpty(form.getSpotList())) {
+//        	createRouteService.insertDeleteRouteInfo(form);    		
 //    	}
-
-		// fetch the previous prep-luggage data from db
+    		createRouteService.insertDeleteRouteInfo(form);    		
+    	}
+        	// fetch the previous prep-luggage data from db
     	form.setLuggageInfoList(prepLuggageService.selectLuggageInfo(form));
 
     	setPrepLuggageView(req);
@@ -261,20 +264,19 @@ public class TripPlansController {
     		return redirectBindingResult(form, attr, result, location);
     	}
 
-    	this.checkPrepLuggage(form, result);
-    	if (result.hasErrors()) {
-    		setPrepLuggageView(req);
-    		
-    		URI location = builder.path("/travel/" + CommonConstant.REDIRECT_PREPLUGGAGE_URL).build().toUri();
-    		return redirectBindingResult(form, attr, result, location);
-    	}
-
-    	tripPlansHelper.editPrepLuggageForm(form);
-
-    	// not register if the luggage info list is empty
     	if (ObjectUtils.isNotEmpty(form.getLuggageInfoList())) {
-        	prepLuggageService.insertDeleteLuggageInfo(form);    		
+        	this.checkPrepLuggage(form, result);
+        	if (result.hasErrors()) {
+        		setPrepLuggageView(req);
+        		
+        		URI location = builder.path("/travel/" + CommonConstant.REDIRECT_PREPLUGGAGE_URL).build().toUri();
+        		return redirectBindingResult(form, attr, result, location);
+        	}
+
+        	tripPlansHelper.editPrepLuggageForm(form);
     	}
+    	// not register if the luggage info list is empty
+    	prepLuggageService.insertDeleteLuggageInfo(form);    		
 //    	if (form.isNewPlanFlg()) {
 //        	prepLuggageService.insertLuggageInfo(form);
 //    	}
