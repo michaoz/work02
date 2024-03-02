@@ -146,13 +146,15 @@ td, th {
 /** Trip Plan Summary */
 div.body-trip-plan-summary {
 	margin: 0 70px;
-/*	border: 1px solid var(--lightGrayColor01); */
-	background-color: var(--lightYellowColor);
+	border: 1px solid var(--lightGrayColor01);
+/*	background-color: var(--lightYellowColor); */
 }
 /** Trip Plan Summary end*/
 
 /** Trip Plan Name */
 div.body-trip-plan-name {
+	background-color: var(--lightYellowColor);
+	padding-bottom: 20px;
 }
 div.body-trip-plan-name p {
 	padding: 7px 20px;
@@ -165,6 +167,7 @@ div.body-trip-plan-name input {
 	padding: 7px 15px;
 	margin: 0 20px;
 	min-width: 300px;
+	border: 1px solid var(--lightGrayColor01);
 }
 
 /** Trip Plan Name end*/
@@ -174,8 +177,8 @@ div.body-route-luggage-summary {
 	position: relative;
 	display: flex;
 	justify-content: flex-start;
-	padding: 15px 70px;
-	padding-bottom: 90px;
+	padding: 0px 70px;
+	padding-bottom: 130px;
 	/* flex-direction: column; */ /* 子要素を縦に並べる */
 }
 

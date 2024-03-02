@@ -37,12 +37,51 @@
 		<%-- DIV: body --%>
 		<div class="body-trip-plan-summary">
 		<div class="body-trip-plan-name">
-		  <p>Trip Plan </p>
+		  <p>Your Trip Plan </p>
 		  <form:input path="tripPlanName" readonly="true" />
 		</div>
 		<div class="body-route-luggage-summary">
 		    <%-- DIV: Trip Plan Summary --%>
-			<div id="luggage-list-area">
+		    <%-- DIV: confirm pane --%>
+		    <div class="body-create-route">
+			    <div id="page-title">
+			      <p>The Created Route</p>
+		    	</div>
+	    	    <table>
+    		        <thead>
+	    	            <tr>
+	   	                  <th>No</th>
+			    	      <th>Spot Name</th>
+				          <th>City</th>
+				          <th>Address</th>
+		                </tr>
+	    	        </thead>
+	    	        <tbody>
+	    	        <c:forEach items="${tripPlansCommonForm.spotList}" var="spotInfo" varStatus="spotInfoStatus">
+  			            <tr id="${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}">
+			    	          <td id="spot-list-record-no-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000" >
+					            <form:hidden path="spotList[${spotInfoStatus.index}].recordNum" />
+					            ${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}
+					          </td>
+					          <td id="spot-list-record-content-spotName-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
+					            <form:hidden path="spotList[${spotInfoStatus.index}].spotName" />
+					            ${tripPlansCommonForm.spotList[spotInfoStatus.index].spotName}
+					          </td>
+					          <td id="spot-list-record-content-city-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
+					            <form:hidden path="spotList[${spotInfoStatus.index}].city" />
+					            ${tripPlansCommonForm.spotList[spotInfoStatus.index].city}
+					          </td>
+					          <td id="spot-list-record-content-address-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
+					            <form:hidden path="spotList[${spotInfoStatus.index}].address" />
+					            ${tripPlansCommonForm.spotList[spotInfoStatus.index].address}
+					          </td>
+					      </tr>
+	    	        </c:forEach>
+	    	        </tbody>
+    		    </table>
+    		</div>
+    		
+    		<div id="luggage-list-area">
 			  <div id="page-title">
 			    <p>The Luggage List</p>
 			  </div>
@@ -64,15 +103,6 @@
 				    </c:forEach>
 				  </c:forEach>
 			  </div>
-
-
-			  <button type="button" class="js-add-record-btn css-add-recode-btn">add a record</button>
-			  <button type="button" class="js-to-sort-spot-list css-luggage-list-table-btn">sort Spot List</button>
-
-			  <div>
-
-			  </div>
-
 		      <table id="luggage-list-table">
 		        <thead>
 		          <tr id="header-table">
@@ -116,44 +146,6 @@
 		      </table>
 		    </div>
 
-		    <%-- DIV: confirm pane --%>
-		    <div class="body-create-route">
-			    <div id="page-title">
-			      <p>The Created Route</p>
-		    	</div>
-	    	    <table>
-    		        <thead>
-	    	            <tr>
-	   	                  <th>No</th>
-			    	      <th>Spot Name</th>
-				          <th>City</th>
-				          <th>Address</th>
-		                </tr>
-	    	        </thead>
-	    	        <tbody>
-	    	        <c:forEach items="${tripPlansCommonForm.spotList}" var="spotInfo" varStatus="spotInfoStatus">
-  			            <tr id="${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}">
-			    	          <td id="spot-list-record-no-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000" >
-					            <form:hidden path="spotList[${spotInfoStatus.index}].recordNum" />
-					            ${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}
-					          </td>
-					          <td id="spot-list-record-content-spotName-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
-					            <form:hidden path="spotList[${spotInfoStatus.index}].spotName" />
-					            ${tripPlansCommonForm.spotList[spotInfoStatus.index].spotName}
-					          </td>
-					          <td id="spot-list-record-content-city-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
-					            <form:hidden path="spotList[${spotInfoStatus.index}].city" />
-					            ${tripPlansCommonForm.spotList[spotInfoStatus.index].city}
-					          </td>
-					          <td id="spot-list-record-content-address-${tripPlansCommonForm.spotList[spotInfoStatus.index].recordNum}:00000">
-					            <form:hidden path="spotList[${spotInfoStatus.index}].address" />
-					            ${tripPlansCommonForm.spotList[spotInfoStatus.index].address}
-					          </td>
-					      </tr>
-	    	        </c:forEach>
-	    	        </tbody>
-    		    </table>
-    		</div>
 		</div>
 		</div>
 
