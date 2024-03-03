@@ -116,7 +116,6 @@ public class PrepLuggageServiceImpl implements PrepLuggageService {
 		for (LuggageInfoEntity lie : luggageInfoEntityList) {
 			LuggageInfo li = new LuggageInfo();
 			li.setTripPlanName(lie.getTripPlanName());
-			li.setLuggageNo(lie.getLuggageNo());
 			li.setLuggageCount(lie.getLuggageCount());
 			li.setBagNo(lie.getBagNo());
 			li.setLuggagePrepaedFlg(lie.isLuggagePrepaedFlg());
@@ -131,7 +130,7 @@ public class PrepLuggageServiceImpl implements PrepLuggageService {
 				if (StringUtils.equals(li.getBagNo(), slime.getBagNo())) {
 					LuggageItem lim = new LuggageItem();
 					lim.setTripPlanName(slime.getTripPlanName());
-					lim.setLuggageNo(slime.getLuggageNo());
+					lim.setItemNo(slime.getItemNo());
 					lim.setBagNo(slime.getBagNo());
 					lim.setItemNo(slime.getItemNo());
 					lim.setItemName(slime.getItemName());

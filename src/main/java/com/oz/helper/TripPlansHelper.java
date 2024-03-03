@@ -147,7 +147,6 @@ public class TripPlansHelper {
     	limList.add(lim2);
     	
     	LuggageInfo li = new LuggageInfo();
-    	li.setLuggageNo(1);
     	li.setLuggageCount(1);
     	li.setBagNo("01");
     	li.setLuggageItemList(limList);

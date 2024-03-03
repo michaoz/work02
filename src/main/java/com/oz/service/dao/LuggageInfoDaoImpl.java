@@ -93,7 +93,6 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 				LuggageInfoEntity resultEntity = new LuggageInfoEntity();
 				
 			    resultEntity.setTripPlanName(rs.getString("TRIP_PLAN_NAME"));
-			    resultEntity.setLuggageNo(rs.getInt("LUGGAGE_NO"));
 				resultEntity.setLuggageCount(rs.getInt("LUGGAGE_COUNT"));
 				resultEntity.setBagNo(rs.getString("BAG_NO"));
 				resultEntity.setLuggagePrepaedFlg(rs.getBoolean("LUGGAGE_PREPARED_FLG"));
@@ -162,7 +161,6 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 				
 				LuggageItemEntity resultEntity = new LuggageItemEntity();
 				resultEntity.setTripPlanName(rs.getString("TRIP_PLAN_NAME"));
-			    resultEntity.setLuggageNo(rs.getInt("LUGGAGE_NO"));
 				resultEntity.setBagNo(rs.getString("BAG_NO"));
 				resultEntity.setItemNo(rs.getInt("ITEM_NO"));
 				resultEntity.setItemName(rs.getString("ITEM_NAME"));
@@ -198,7 +196,6 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 		
 		sqlLuggageInfo.append("INSERT INTO T_LUGGAGE_INFO");
 		sqlLuggageInfo.append("( TRIP_PLAN_NAME ");
-		sqlLuggageInfo.append(", LUGGAGE_NO ");
 		sqlLuggageInfo.append(", LUGGAGE_COUNT ");
 		sqlLuggageInfo.append(", BAG_NO ");
 		sqlLuggageInfo.append(", LUGGAGE_PREPARED_FLG ");
@@ -207,12 +204,11 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 		sqlLuggageInfo.append(", UPD_USER_ID ");
 		sqlLuggageInfo.append(", UPD_DATE ");
 		sqlLuggageInfo.append(") VALUES ");
-		sqlLuggageInfo.append("(?, ?, ?, ?, ?, ?, ?, ?, ? ) ");
+		sqlLuggageInfo.append("(?, ?, ?, ?, ?, ?, ?, ? ) ");
 		sqlLuggageInfo.append(";");
 		
 		sqlLuggageItem.append("INSERT INTO T_LUGGAGE_ITEM");
 		sqlLuggageItem.append("( TRIP_PLAN_NAME ");
-		sqlLuggageItem.append(", LUGGAGE_NO ");
 		sqlLuggageItem.append(", BAG_NO ");
 		sqlLuggageItem.append(", ITEM_NO ");
 		sqlLuggageItem.append(", ITEM_NAME ");
@@ -224,7 +220,7 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 		sqlLuggageItem.append(", UPD_USER_ID ");
 		sqlLuggageItem.append(", UPD_DATE ");
 		sqlLuggageItem.append(") VALUES ");
-		sqlLuggageItem.append("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ");
+		sqlLuggageItem.append("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ");
 		sqlLuggageItem.append(";");
 		
 		Object[][] params = new Object[form.getLuggageInfoList().size()][];
@@ -243,7 +239,6 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 			for (LuggageInfo luggageInfo : luggageInfoList) {
 				int i = 0;
 				pstmt.setString(++i, form.getTripPlanName());
-				pstmt.setInt(++i, luggageInfo.getLuggageNo());
 				pstmt.setInt(++i, luggageInfo.getLuggageCount());
 				pstmt.setString(++i, luggageInfo.getBagNo());
 				pstmt.setBoolean(++i, luggageInfo.isLuggagePrepaedFlg());
@@ -278,7 +273,6 @@ public class LuggageInfoDaoImpl implements LuggageInfoDao {
 				for (LuggageItem luggageItem : luggageInfo.getLuggageItemList()) {
 					int i = 0;
 					pstmt.setString(++i, form.getTripPlanName());
-					pstmt.setInt(++i, luggageInfo.getLuggageNo());
 					pstmt.setString(++i, luggageInfo.getBagNo());
 					pstmt.setInt(++i, luggageItem.getItemNo());
 					pstmt.setString(++i, luggageItem.getItemName());

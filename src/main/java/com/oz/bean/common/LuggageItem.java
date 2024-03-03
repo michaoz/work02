@@ -23,9 +23,6 @@ public class LuggageItem implements Serializable {
 	/** trip plan name */
 	private String tripPlanName;
 
-	/** luggage number */
-	private int luggageNo;
-
 	/** bag No */
 	@NotEmpty(message="{errors.bagNo.empty}", groups={ValidLuggageInfo.class})
 	private String bagNo;
@@ -70,14 +67,6 @@ public class LuggageItem implements Serializable {
 
 	public void setTripPlanName(String tripPlanName) {
 		this.tripPlanName = tripPlanName;
-	}
-
-	public int getLuggageNo() {
-		return luggageNo;
-	}
-
-	public void setLuggageNo(int luggageNo) {
-		this.luggageNo = luggageNo;
 	}
 
 	public String getBagNo() {

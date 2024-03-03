@@ -20,9 +20,6 @@ public final class LuggageInfo implements Serializable {
 	/** trip plan name */
 	private String tripPlanName;
 
-	/** luggage number */
-	private int luggageNo;
-
 	/** the number of the luggage */
 	private int luggageCount;
 
@@ -56,14 +53,6 @@ public final class LuggageInfo implements Serializable {
 
 	public void setTripPlanName(String tripPlanName) {
 		this.tripPlanName = tripPlanName;
-	}
-
-	public int getLuggageNo() {
-		return luggageNo;
-	}
-
-	public void setLuggageNo(int luggageNo) {
-		this.luggageNo = luggageNo;
 	}
 
 	public int getLuggageCount() {

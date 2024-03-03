@@ -1,9 +1,7 @@
 # ToDo
 
 - General
- - nullリストどうするか 1
- 	- js側で、nullの場合は何か値を入れるようにする？又は
- 	- prepliggageが、レコードを削除した場合、emptyentermodalが表示されない。
+ - prepluggage画面で、delete cehckをつけてもitem countの背景色が変更できない 	
  - test 3
    	- 英語版でできるか試す
  	- junit

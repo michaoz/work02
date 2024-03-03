@@ -10,9 +10,6 @@ public class LuggageItemEntity implements Serializable {
 	/** trip plan name */
 	private String tripPlanName;
 	
-	/** luggage number */
-	private Integer luggageNo;
-
 	/** bag No */
 	private String bagNo;
 	
@@ -51,14 +48,6 @@ public class LuggageItemEntity implements Serializable {
 
 	public void setTripPlanName(String tripPlanName) {
 		this.tripPlanName = tripPlanName;
-	}
-
-	public Integer getLuggageNo() {
-		return luggageNo;
-	}
-
-	public void setLuggageNo(Integer luggageNo) {
-		this.luggageNo = luggageNo;
 	}
 
 	public String getBagNo() {
