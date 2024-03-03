@@ -85,24 +85,6 @@
 			  <div id="page-title">
 			    <p>The Luggage List</p>
 			  </div>
-			  <div class="css-luggage-keyword-list">
-			      <c:forEach items="${luggageKeywordList}" var="luggageKeyword" varStatus="status">
-  				    <div class="js-luggage-keyword_${status.index} css-luggage-keyword">
-  				      <input type="checkbox" name="check" id="luggage-keyword-${status.index}" />
-  				      <label for="luggage-keyword-${status.index}">${luggageKeyword}</label>
-  				    </div>
-				  </c:forEach>
-			  </div>
-			  <div class="js-luggage-keyword-items css-luggage-keyword-items">
-				  <c:forEach items="${luggageKeywordList}" var="luggageKeyword" varStatus="status">
-				    <c:forEach items="${luggageKeyword.getItems()}" var="item" varStatus="item_status">
-				      <div id="item-${status.index}-${item_status.index}">
-				        <input type="button" id="item-btn-${status.index}-${item_status.index}" />
-				        <label for="item-btn-${status.index}-${item_status.index}"><c:out value="${item}" /></label>
-				      </div>
-				    </c:forEach>
-				  </c:forEach>
-			  </div>
 		      <table id="luggage-list-table">
 		        <thead>
 		          <tr id="header-table">

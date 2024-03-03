@@ -706,7 +706,7 @@ const createRoute = (function () {
 		// Gray out the record if the delete check was checked.
 		$('#luggage-list-table').find('.css-list-chbox').change(function() {
 			var parentSiblings = parentSiblings = $(this).parent('td').siblings('td');
-			var parentSiblingsChildren = parentSiblingsChildren = $(this).parent('td').siblings('td').children();
+			var parentSiblingsChildren = $(this).parent('td').siblings('td').children();
 			if ($(this).prop('checked')) {
 				$(this).parent('td').css('background-color', '#ccc8c8');
 				parentSiblings.css('background-color', '#ccc8c8');

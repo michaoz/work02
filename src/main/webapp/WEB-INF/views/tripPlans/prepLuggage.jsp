@@ -38,7 +38,6 @@
 		<%-- error messages area --%>
 		<div class="css-error-message">
 		  <c:forEach items="${tripPlansCommonForm.luggageInfoList}" var="luggageInfo" varStatus="luggageInfoStatus">
-		    <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggageNo" />
 		    <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggageCount" />
 		    <form:errors path="luggageInfoList[${luggageInfoStatus.index}].bagNo" />
 		    <form:errors path="luggageInfoList[${luggageInfoStatus.index}].luggagePrepaedFlg" />
@@ -107,30 +106,23 @@
 		          <c:forEach items="${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList}" var="luggageItem" varStatus="luggageItemStatus">
 		            <tr id="${luggageInfoStatus.index}">
 		              <td><span></span></td>
-			          <%--<td id="luggage-record-no-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" > --%>
 			          <td id="luggage-record-no" >
-			            <input type="hidden" value="${luggageInfoStatus.index + (luggageItemStatus.index + 1)}">
+			            <%-- <input type="hidden" value="${luggageInfoStatus.index + (luggageItemStatus.index + 1)}"> --%>
 			            ${luggageInfoStatus.index + (luggageItemStatus.index + 1)}
 			          </td>
-			          <%-- <td id="luggage-bag-no-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" > --%>
 			          <td id="luggage-bag-no" >
-			            <%--<form:hidden path="luggageInfoList[${luggageInfoStatus.index}].bagNo" />
-			            ${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].bagNo} --%>
 			            <form:select path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].bagNo" multiple="false" >
 			              <%--<form:option value="" /> --%>
 			              <form:options items="${bagNoArry}" />
 			            </form:select>
 			          </td>
-		              <%--<td id="luggage-item-no-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" > --%>
 		              <td id="luggage-item-no" >
 		                <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemNo" />
 			            ${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList[luggageItemStatus.index].itemNo}
 			          </td>
-		              <%-- <td id="luggage-item-name-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" > --%>
 		              <td id="luggage-item-name" >
 			            <form:input path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemName" />
 			          </td>
-		              <%--<td id="luggage-item-count-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" > --%>
 		              <td id="luggage-item-count" >
 			            <form:input path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemCount" />
 			          </td>
