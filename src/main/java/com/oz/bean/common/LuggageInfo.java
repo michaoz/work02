@@ -11,6 +11,9 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.oz.bean.common.LuggageInfo.ValidLuggageInfo;
+import com.oz.bean.common.LuggageItem.ValidLuggageItem;
+
 public final class LuggageInfo implements Serializable {
 
 	public static interface ValidLuggageInfo{}

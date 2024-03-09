@@ -24,7 +24,7 @@ public class LuggageItem implements Serializable {
 	private String tripPlanName;
 
 	/** bag No */
-	@NotEmpty(message="{errors.bagNo.empty}", groups={ValidLuggageInfo.class})
+	@NotEmpty(message="{errors.bagNo.empty}", groups={ValidLuggageItem.class})
 	private String bagNo;
 
 	/** item number */
