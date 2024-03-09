@@ -83,14 +83,21 @@ public class TripPlansHelper {
     	List<LuggageInfo> luggageInfoList = form.getLuggageInfoList();
     	
     	for (LuggageInfo li : luggageInfoList) {
-    		List<LuggageItem> lim = li.getLuggageItemList();
+        	int itemsCount = 0;
+    		List<LuggageItem> luggageItemList = li.getLuggageItemList();
+    		
+    		for (LuggageItem lim : luggageItemList) {
+    			itemsCount += lim.getItemCount();
+    		}
+    		li.setLuggageCount(itemsCount);
+    		
 //    		for (LuggageItem lim :luggageItemList) {
 //    			if ("-".equals(lim.getBagNo())) {
 //    				lim.setBagNo("00");
 //    			}
 //    		}
     		// Set Bag No from the first Luggage Item
-    		li.setBagNo(lim.get(0).getBagNo());    		
+    		li.setBagNo(luggageItemList.get(0).getBagNo());    		
     	}
     }
 

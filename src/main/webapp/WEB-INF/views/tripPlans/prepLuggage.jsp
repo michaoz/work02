@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -103,39 +104,38 @@
 		        </thead>
 		        <tbody>
 		          <c:forEach items="${tripPlansCommonForm.luggageInfoList}" var="luggageInfo" varStatus="luggageInfoStatus">
-		          <c:forEach items="${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList}" var="luggageItem" varStatus="luggageItemStatus">
-		            <tr id="${luggageInfoStatus.index}">
-		              <td><span></span></td>
-			          <td id="luggage-record-no" >
-			            <%-- <input type="hidden" value="${luggageInfoStatus.index + (luggageItemStatus.index + 1)}"> --%>
-			            ${luggageInfoStatus.index + (luggageItemStatus.index + 1)}
-			          </td>
-			          <td id="luggage-bag-no" >
-			            <form:select path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].bagNo" multiple="false" >
-			              <%--<form:option value="" /> --%>
-			              <form:options items="${bagNoArry}" />
-			            </form:select>
-			          </td>
-		              <td id="luggage-item-no" >
-		                <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemNo" />
-			            ${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList[luggageItemStatus.index].itemNo}
-			          </td>
-		              <td id="luggage-item-name" >
-			            <form:input path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemName" />
-			          </td>
-		              <td id="luggage-item-count" >
-			            <form:input path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemCount" />
-			          </td>
-			          <td id="luggage-item-emit">
-			            <input type="checkbox" id="luggage-item-count-emit-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" class="css-list-chbox">
-			            <label for="luggage-item-count-emit-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" class="css-list-chbox-label">✓</label>
-			          </td>
-		            </tr>
-		            <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].insDate" />
-		            <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].updDate" />
-		            <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].insDate" />
-  		            <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].updDate" />
-		          </c:forEach>
+		            <c:forEach items="${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList}" var="luggageItem" varStatus="luggageItemStatus">
+			            <tr>
+			              <td><span></span></td>
+				          <td class="luggage-record-no" >
+				            ${luggageInfoStatus.index + (luggageItemStatus.index + 1)}
+				          </td>
+				          <td class="luggage-bag-no" >
+				            <form:select path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].bagNo" multiple="false" >
+				              <%--<form:option value="" /> --%>
+				              <form:options items="${bagNoArry}" />
+				            </form:select>
+				          </td>
+			              <td class="luggage-item-no" >
+			                <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemNo" value="${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList[luggageItemStatus.index].itemNo}" />
+				          </td>
+			              <td class="luggage-item-name" >
+				            <form:input path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemName" />
+				          </td>
+			              <td class="luggage-item-count" >
+				            <form:input path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemCount" />
+				          </td>
+				          <td class="luggage-item-emit">
+				            <input type="checkbox" id="luggage-item-count-emit-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" class="css-list-chbox">
+				            <label for="luggage-item-count-emit-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" class="css-list-chbox-label">✓</label>
+				          </td>
+			            </tr>
+				        <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].bagNo" />
+			            <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].insDate" />
+	  		            <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].updDate" />
+		            </c:forEach>
+	                <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].insDate" />
+	                <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].updDate" />
 		          </c:forEach>
 		        </tbody>
 		      </table>

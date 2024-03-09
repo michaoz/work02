@@ -11,7 +11,7 @@ const createRoute = (function () {
 	const VIEW_ZOOM_LEVEL = 15;
 	
 	// Bag No List
-	const BAG_NO_ARRY = ["-", "01", "02"];
+	const BAG_NO_ARRY = ["01", "02", "03"];
 	
 	const HIDE_SORT_TRUE = true;
 	const CLEAR_ROUTE_TRUE = true;
@@ -50,7 +50,7 @@ const createRoute = (function () {
 		$('[id$=".bagNo"]').each(function() {
 			if ($(this).val() == bagNo) {
 				// get the curreent target's luggage info index
-				var target = $(this).parent().next('[id^="luggage-item-no"]').children('[id^="luggageInfoList"]');
+				var target = $(this).parent().next('[class^="luggage-item-no"]').children('[id^="luggageInfoList"]');
 				let luggageInfoIndex = Number(target.attr('id').slice(target.attr('id').indexOf('.') - 1, target.attr('id').indexOf('.')));				
 				let luggageItemIndex = Number(target.attr('id').slice(target.attr('id').lastIndexOf('.') - 1, target.attr('id').lastIndexOf('.')));				
 				// update the current luggage info index and luggage item index
@@ -67,18 +67,19 @@ const createRoute = (function () {
 			}
 		})
 		
-		var itemNo = thisLuggageItemListIndex + 1;
+		var itemNo = Number(thisLuggageItemListIndex) + 1;
 		
 //		var tdNo = '<td id="luggage-record-no-' + recordNum + '" >'
-		var tdNo = '<td id="luggage-record-no" >'
+		var tdNo = '<td class="luggage-record-no" >'
 		           + '<input type="hidden" value="' + recordNum + '">'
                    + recordNum
                    + '</td>';
 //		var tdBagNo = '<td id="luggage-bag-no-' + 0 + '" >'
-		var tdBagNo = '<td id="luggage-bag-no" >'
+		var tdBagNo = '<td class="luggage-bag-no" >'
                       //+ '<input id="luggageInfoList' + thisLuggageInfoListIndex + '.bagNo" name="luggageInfoList[' + thisLuggageInfoListIndex + '].bagNo"'
                       //+ ' type="hidden" value="' + bagNo + '">'
 		              + '<select id="luggageInfoList' + thisLuggageInfoListIndex + '.luggageItemList' + thisLuggageItemListIndex + '.bagNo" name="luggageInfoList[' + thisLuggageInfoListIndex + '].luggageItemList[' + thisLuggageItemListIndex + '].bagNo" >';
+//                      + '<input type="hidden" id="luggageInfoList' + thisLuggageInfoListIndex + '.luggageItemList' + thisLuggageItemListIndex + '.bagNo" name="luggageInfoList[' + thisLuggageInfoListIndex + '].luggageItemList[' + thisLuggageItemListIndex + '].bagNo" >';
         //for (let BAG_NO of BAG_NO_ARRY) {
         for (let i = 0; i < BAG_NO_ARRY.length; i++) {
         	if (i == 0) {
@@ -88,33 +89,34 @@ const createRoute = (function () {
         	}
         }             
         tdBagNo = tdBagNo + '</select></td>';
-//		var tdItemNo = '<td id="luggage-item-no-' + luggageCntNo + '" >'
-		var tdItemNo = '<td id="luggage-item-no" >'
+//		var tdItemNo = '<td class="luggage-item-no-' + luggageCntNo + '" >'
+		var tdItemNo = '<td class="luggage-item-no" >'
                    + '<input id="luggageInfoList' + thisLuggageInfoListIndex + '.luggageItemList' + thisLuggageItemListIndex + '.itemNo" name="luggageInfoList[' + thisLuggageInfoListIndex + '].luggageItemList[' + thisLuggageItemListIndex + '].itemNo"'
                    + ' type="hidden" value="' + itemNo + '">'
-		           + itemNo 
+//		           + itemNo 
 		           + '</td>';
 		var tdSortLeader = '<td><span></span>' + '</td>';
-//		var tdItemName = '<td id="luggage-item-name-' + luggageCntNo + '">' 
-		var tdItemName = '<td id="luggage-item-name">' 
+//		var tdItemName = '<td class="luggage-item-name-' + luggageCntNo + '">' 
+		var tdItemName = '<td class="luggage-item-name">' 
              		     + '<input id="luggageInfoList' + thisLuggageInfoListIndex + '.luggageItemList' + thisLuggageItemListIndex + '.itemName" name="luggageInfoList[' + thisLuggageInfoListIndex + '].luggageItemList[' + thisLuggageItemListIndex + '].itemName"'
                          + ' type="text" value="' + itemName + '">'
                          //+ itemName
                          + '</td>';
-//		var tdItemCount = '<td id="luggage-item-count-' + luggageCntNo + '">'
-		var tdItemCount = '<td id="luggage-item-count">'
+//		var tdItemCount = '<td class="luggage-item-count-' + luggageCntNo + '">'
+		var tdItemCount = '<td class="luggage-item-count">'
 		                  + '<input id="luggageInfoList' + thisLuggageInfoListIndex + '.luggageItemList' + thisLuggageItemListIndex + '.itemCount" name="luggageInfoList[' + thisLuggageInfoListIndex + '].luggageItemList[' + thisLuggageItemListIndex + '].itemCount"'
                           + ' type="text" value="' + itemCount + '">'
                           //+ itemCount
 		                  + '</td>';
 //		var tdLeafletId = '<td style="display: none" id="luggage-record-content-leafletid">' + searchedLeafletId + '_' + pointLeafletId + '_' + placeId + '</td>';		
-        var tdEmitChbox = '<td id="luggage-item-emit">' 
+        var tdEmitChbox = '<td class="luggage-item-emit">' 
         	              + '<input type="checkbox" id="luggage-item-count-emit-' + recordNum + '" '
                           + 'class="css-list-chbox" >'
                           + '<label for="luggage-item-count-emit-' + recordNum + '" class="css-list-chbox-label">✓</label>'
                           + '</td>';
 
-		var tr = '<tr id="' +  recordNum + '">'  
+//		var tr = '<tr id="' +  recordNum + '">' 
+		var tr = '<tr>'  
 			+ tdSortLeader
 			+ tdNo 
 			+ tdBagNo
@@ -132,8 +134,8 @@ const createRoute = (function () {
 	const getMaxLuggageInfoItemListIndex = (function(targetElm) {
 		var maxLuggageInfoListIndex = 0;
 		var maxLuggageInfoListIndex = 0;
-		var r = targetElm.parent().children('[id^="luggage-item-no"]').children('[id^="luggageInfoList"]');
-		var targetElms = $('[id^="luggage-item-no"]').children('[id^="luggageInfoList"]');
+		var r = targetElm.parent().children('[class^="luggage-item-no"]').children('[id^="luggageInfoList"]');
+		var targetElms = $('[class^="luggage-item-no"]').children('[id^="luggageInfoList"]');
 		for (let i = 0; i < targetElms.size(); i++) {
 			if (i > 0) {
 				var preInfoIndex = Number(
@@ -155,7 +157,7 @@ const createRoute = (function () {
 	const getOtherMaxLuggageInfoListIndex = (function(targetElm) {
 		var otherMaxLuggageInfoIndex = -1;
 		
-		var target = targetElm.parent().children('[id^="luggage-item-no"]').children('[id^="luggageInfoList"]');
+		var target = targetElm.parent().children('[class^="luggage-item-no"]').children('[id^="luggageInfoList"]');
 		target.attr('id').substring(target.attr('id').indexOf('.') - 1, target.attr('id').indexOf('.'));
 		
 		
@@ -215,7 +217,7 @@ const createRoute = (function () {
 	// add a record to the spot list when the button's clicked
 	const addLuggageListRecode = (function() {
 		$('.js-add-recode').click(function() {
-			var spotListRecordNo = $('td[id^="luggage-item-no"]').last().text();
+			var spotListRecordNo = $('td[class^="luggage-item-no"]').last().text();
 			if (!spotListRecordNo) {
 				spotListRecordNo = 0;
 			}
@@ -259,8 +261,8 @@ const createRoute = (function () {
 		$('#luggage-list-table').find('tbody').sortable({
 			disabled: false,
 			update: function() {
-				//$('td[id^="luggage-item-no-"]').each(function(idx) {
-				$('td[id^="luggage-record-no"]').each(function(idx) {
+				//$('td[class^="luggage-item-no-"]').each(function(idx) {
+				$('td[class^="luggage-record-no"]').each(function(idx) {
 					$(this).val(idx + 1);
 					$(this)[0].textContent = idx + 1;  // rewrite td.textContent
 					idx++;
@@ -309,7 +311,7 @@ const createRoute = (function () {
 			var placeId = luggageCntNo + ':' + $(this).attr('name');
 			var latLonText = $(this).parent().prevAll('.js-search-result-lanlon').text();
 			var sLeafletId = $(this).parent().prevAll('.js-search-result-leafletid').text().split("_")[0];			
-			var spotListRecordNo = $('td[id^="luggage-item-no"]').last().text();
+			var spotListRecordNo = $('td[class^="luggage-item-no"]').last().text();
 			if (!spotListRecordNo) {
 				spotListRecordNo = 0;
 			}
@@ -653,8 +655,8 @@ const createRoute = (function () {
 		// hide the sort pane and clear the route on map
 		commonClear(HIDE_SORT_TRUE, CLEAR_ROUTE_TRUE);
 		
-		//var luggageListRecordNo = $('td[id^="luggage-item-no"]').last().text();
-		var luggageListRecordNo = $('td[id^="luggage-record-no"]').last().text();
+		//var luggageListRecordNo = $('td[class^="luggage-item-no"]').last().text();
+		var luggageListRecordNo = $('td[class^="luggage-record-no"]').last().text();
 		if (!luggageListRecordNo) {
 			luggageListRecordNo = 0;
 		}
@@ -675,6 +677,7 @@ const createRoute = (function () {
 			
 			var a = $(this).parent('td');
 			var b = a.next();
+			setLuggageInfoItem();
 		});
 	})
 	
@@ -686,7 +689,7 @@ const createRoute = (function () {
 			var idFirstPt = id.substring(0, id.indexOf('.') - 1);
 			var idSecondPt = id.substring(id.indexOf('.') + 1, id.length);
 			var idThirdPt = null;
-			if (idSecondPt.indexOf('.') != 0) {
+			if (idSecondPt.indexOf('.') > 0) {
 				idThirdPt = idSecondPt.substring(idSecondPt.indexOf('.') + 1, idSecondPt.length);
 				idSecondPt = idSecondPt.substring(0, idSecondPt.indexOf('.') - 1);
 			}
@@ -699,6 +702,12 @@ const createRoute = (function () {
 			
 			$(this).attr('id', newId);
 			$(this).attr('name', newName);
+			
+			// edit itemNo
+			var formItem = id.substring(id.lastIndexOf('.') + 1, id.length);
+			if (formItem == 'itemNo') {
+				$(this).val(itemIndex + 1);
+			}
 		});
 	});
 	
@@ -723,6 +732,20 @@ const createRoute = (function () {
 		});
 	});
 	
+	const modifyLuggageRecordNo = (function() {
+		var recordCnt = 1;
+		$('#luggage-list-table tbody').find('.luggage-record-no').each(function() {
+			$(this).children('input').val(recordCnt);
+			$(this).text(recordCnt);
+			
+			var emitId = $(this).nextAll('.luggage-item-emit').children('input').attr('id');
+			var targetEmitId = emitId.substring(0, emitId.lastIndexOf('-') + 1); 
+			$(this).nextAll('.luggage-item-emit').children('input').attr('id', targetEmitId + recordCnt);
+			$(this).nextAll('.luggage-item-emit').children('label').attr('for', targetEmitId + recordCnt);
+			recordCnt++;
+		});
+	});
+	
 	const setLuggageInfoItem = (function() {
 		// All bagNo element list
 		var bagNoElmList = new Array();
@@ -732,7 +755,7 @@ const createRoute = (function () {
 		var uniqueBagNoElmList = new Array();
 		
 		$('#luggage-list-table tbody tr').find('[id$=".bagNo"]').each(function() {
-			if ($(this).parent('td').nextAll('#luggage-item-emit').children('input').prop('checked')) {
+			if ($(this).parent('td').nextAll('.luggage-item-emit').children('input').prop('checked')) {
 				delHtml($(this).parents('tr'));
 			}
 		});
@@ -742,7 +765,7 @@ const createRoute = (function () {
 			uniqueBagNoElmList.push($(this).val());
 		});
 		// create unique bagNo list and sort by bagNo asc
-		uniqueBagNoElmList = $.unique(uniqueBagNoElmList);
+		uniqueBagNoElmList = Array.from(new Set(uniqueBagNoElmList));
 		uniqueBagNoElmList = uniqueBagNoElmList.sort(function(x, y) {
 			// sort by asc
 			return (x > y) ? 1 : -1;
@@ -829,6 +852,7 @@ const createRoute = (function () {
 	// method right before submit
 	const beforeSubmit = (function() {
 		$('input[id^="submit"]').click(function() {
+			modifyLuggageRecordNo();
 			var url = '';
 			
 			// set luggage info and item
@@ -871,6 +895,7 @@ const createRoute = (function () {
 	
 	const setEvent = (function() {
 		//addLuggageListRecode();
+		modifyLuggageRecordNo();
 		addRecordBtn();
 		handleSortPane();
 		selectLuggageKeyword();

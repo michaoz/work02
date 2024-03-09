@@ -89,40 +89,38 @@
 		        <thead>
 		          <tr id="header-table">
 				    <th style="display: none"></th>
-		            <th>No</th>
 		            <th>BagNo</th>
+		            <th>No</th>
 				    <th colspan="2">Luggage</th>
 		          </tr>
 		        </thead>
 		        <tbody>
 		          <c:forEach items="${tripPlansCommonForm.luggageInfoList}" var="luggageInfo" varStatus="luggageInfoStatus">
-		            <tr id="${luggageInfoStatus.index}">
-		              <td><span></span></td>
-			          <%--<td id="luggage-record-no-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" > --%>
-			          <td id="luggage-record-no" >
-			            <input type="hidden" value="${luggageInfoStatus.index + (luggageItemStatus.index + 1)}">
-			            ${luggageInfoStatus.index + (luggageItemStatus.index + 1)}
-			          </td>
-			          <%-- <td id="luggage-bag-no-${luggageInfoStatus.index + (luggageItemStatus.index + 1)}" > --%>
-			          <td id="luggage-bag-no" >
-			            <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].bagNo" />
-			            ${luggageInfo.bagNo}
-			          </td>
-		              <td id="luggage-item-name" >
-			          <c:forEach items="${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList}" var="luggageItem" varStatus="luggageItemStatus">
+			        <c:forEach items="${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList}" end="${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList.size()}" var="luggageItem" varStatus="luggageItemStatus">
+		              <tr>
+		                <td><span></span></td>
+			            <c:if test="${luggageItemStatus.index == 0}">
+			              <td class="css-luggage-bag-no" rowspan=${luggageItemStatus.end}>
+			                <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].bagNo" />
+			                ${luggageInfo.bagNo}
+			              </td>
+			            </c:if>
+			            <td class="luggage-record-no" >
+			              <input type="hidden" value="${luggageInfoStatus.index},${(luggageItemStatus.index)}">
+			              ${luggageInfoStatus.index},${(luggageItemStatus.index)}
+		  	            </td>
+		                <td class="css-luggage-item-name" >
 				          <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemName" />
 				          ${luggageItem.itemName}
 				          <br>
-			          </c:forEach>
-			          </td>
-			          <td>
-			          <c:forEach items="${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList}" var="luggageItem" varStatus="luggageItemStatus">
+			            </td>
+			            <td class="css-luggage-item-count">
 				          <form:hidden path="luggageInfoList[${luggageInfoStatus.index}].luggageItemList[${luggageItemStatus.index}].itemCount" />
 				          ${luggageItem.itemCount}&nbsp;&nbsp;
 				          <br>
-			          </c:forEach>
-			          </td>
-		            </tr>
+  			            </td>
+		              </tr>
+		            </c:forEach>
 		          </c:forEach>
 		        </tbody>
 		      </table>

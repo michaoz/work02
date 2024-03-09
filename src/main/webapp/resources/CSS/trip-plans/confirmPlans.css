@@ -331,7 +331,10 @@ div.body-route-luggage-summary {
 }
 */
 /* Bag No */
-[id^=luggage-bag-no] select {
+#luggage-list-table tbody .css-luggage-bag-no {
+	text-align: center;
+}
+.css-luggage-bag-no select {
 	margin: -7px -17px;
 	width: 150%;
 	height: 40px;
@@ -339,12 +342,12 @@ div.body-route-luggage-summary {
 	text-align: center;
 	border: none;
 }
-/* Bag No */
-#luggage-list-table tbody td:nth-of-type(3) {
-	text-align: center;
+/* item name */
+#luggage-list-table tbody .css-luggage-item-name {
+	text-align: start;
 }
 [id^=luggage-record-content-name] input,
-[id^=luggage-item-name] input,
+[class^=css-luggage-item-name] input,
 [id^=luggage-record-content-num] input,
 [id^=luggage-item-count] input {
 	margin: -7px -17px;
@@ -355,10 +358,10 @@ div.body-route-luggage-summary {
 	outline: none;
 }
 [id^=luggage-record-content-name] input,
-[id^=luggage-item-name] input {
+[class^=css-luggage-item-name] input {
 	width: 104%;
 }
-#luggage-list-table tbody td:nth-of-type(5) {
+#luggage-list-table tbody .css-luggage-item-count {
 	text-align: end
 }
 /* luggage-list-table end ******************/

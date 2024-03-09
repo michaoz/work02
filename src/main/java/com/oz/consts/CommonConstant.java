@@ -52,9 +52,9 @@ public class CommonConstant {
 	
 	// bag No 
 	public static final String[] BAG_NO_ARRY = {
-			"-",
 			"01",
-			"02"
+			"02",
+			"03"
 	};
 	
 	/** Date Format */

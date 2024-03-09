@@ -399,7 +399,7 @@ div.body-prep-luggage {
 }
 */
 /* Bag No */
-[id^=luggage-bag-no] select {
+[class^=luggage-bag-no] select {
 	margin: -7px -17px;
 	width: 150%;
 	height: 40px;
@@ -418,9 +418,9 @@ div.body-prep-luggage {
 }
 
 [id^=luggage-record-content-name] input,
-[id^=luggage-item-name] input,
+[class^=luggage-item-name] input,
 [id^=luggage-record-content-num] input,
-[id^=luggage-item-count] input {
+[class^=luggage-item-count] input {
 	margin: -7px -17px;
 	display: inline-block;
 	height: 40px;
@@ -430,17 +430,17 @@ div.body-prep-luggage {
 	/* background-color: var(--whiteColor); */
 }
 [id^=luggage-record-content-name] input:-webkit-autofill,
-[id^=luggage-item-name] input:-webkit-autofill,
+[class^=luggage-item-name] input:-webkit-autofill,
 [id^=luggage-record-content-num] input:-webkit-autofill,
-[id^=luggage-item-count] input:-webkit-autofill {
+[class^=luggage-item-count] input:-webkit-autofill {
 	box-shadow: 0 0 0 1000px white inset;
 }
 [id^=luggage-record-content-name] input,
-[id^=luggage-item-name] input {
+[class^=luggage-item-name] input {
 	width: 104%;
 }
 [id^=luggage-record-content-num] input,
-[id^=luggage-item-count] input {
+[class^=luggage-item-count] input {
 	text-align: end;
 }
 

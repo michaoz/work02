@@ -28,6 +28,15 @@ const confirmPlans = (function () {
 
 	/** global variable end****************/
 	
+	const modifyLuggageRecordNo = (function() {
+		var recordCnt = 1;
+		$('#luggage-list-table tbody').find('.luggage-record-no').each(function() {
+			$(this).children('input').val(recordCnt);
+			$(this).text(recordCnt);
+			recordCnt++;
+		});
+	});
+	
 	// method right before submit
 	const beforeSubmit = (function() {
 		$('input[id^="submit"]').click(function() {
@@ -49,6 +58,7 @@ const confirmPlans = (function () {
 	});
 	
 	const setEvent = (function() {
+		modifyLuggageRecordNo();
 		beforeSubmit();
 	});
 	
