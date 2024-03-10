@@ -31,10 +31,9 @@
 			  <div id="blog"><p>Blog</p></div>
 		  </div>
 		</div>
-<%-- 	<div class="page-main-image">
-		</div>  --%>
 
 		<%-- DIV: body --%>
+		<p id="css-confirm-plan-intro">Please confirm your trip plan and push "Save All" button to complete.</p>
 		<div class="body-trip-plan-summary">
 		<div class="body-trip-plan-name">
 		  <p>Your Trip Plan </p>
