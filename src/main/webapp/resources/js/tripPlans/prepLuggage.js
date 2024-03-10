@@ -753,8 +753,12 @@ const createRoute = (function () {
 		// Unique bagNo list
 		var uniqueBagNoElmList = new Array();
 		
+		// delete html if the delete check is checked
 		$('#luggage-list-table tbody tr').find('[id$=".bagNo"]').each(function() {
-			if ($(this).parent('td').nextAll('.luggage-item-emit').children('input').prop('checked')) {
+			if ($(this).parent('td.luggage-bag-no').nextAll('.luggage-item-emit').children('input').prop('checked')) {
+				$(this).parents('tr').nextAll('input').each(function() {
+					delHtml($(this));					
+				});
 				delHtml($(this).parents('tr'));
 			}
 		});
