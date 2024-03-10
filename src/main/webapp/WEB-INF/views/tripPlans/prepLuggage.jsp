@@ -104,7 +104,7 @@
 		        </thead>
 		        <tbody>
 		          <c:forEach items="${tripPlansCommonForm.luggageInfoList}" var="luggageInfo" varStatus="luggageInfoStatus">
-		            <c:forEach items="${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList}" var="luggageItem" varStatus="luggageItemStatus">
+		            <c:forEach items="${tripPlansCommonForm.luggageInfoList[luggageInfoStatus.index].luggageItemList}" var="luggageItem" varStatus="luggageItemStatus" end="${luggageInfoItemCountMap.get(luggageInfoStatus.index) - 1}">
 			            <tr>
 			              <td><span></span></td>
 				          <td class="luggage-record-no" >

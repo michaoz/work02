@@ -134,7 +134,6 @@ const createRoute = (function () {
 	const getMaxLuggageInfoItemListIndex = (function(targetElm) {
 		var maxLuggageInfoListIndex = 0;
 		var maxLuggageInfoListIndex = 0;
-		var r = targetElm.parent().children('[class^="luggage-item-no"]').children('[id^="luggageInfoList"]');
 		var targetElms = $('[class^="luggage-item-no"]').children('[id^="luggageInfoList"]');
 		for (let i = 0; i < targetElms.size(); i++) {
 			if (i > 0) {
@@ -683,7 +682,7 @@ const createRoute = (function () {
 	
 	// - param : trElm  TR element 
 	const rewriteFormIndexes = (function(trElm, infoIndex, itemIndex) {
-		var targetTdElms = trElm.children('[id^="luggage-"]').children('[id^="luggageInfoList"]');
+		var targetTdElms = trElm.children('[class^="luggage-"]').children('[id^="luggageInfoList"]');
 		targetTdElms.each(function() {
 			var id = $(this).attr('id');
 			var idFirstPt = id.substring(0, id.indexOf('.') - 1);
@@ -773,8 +772,8 @@ const createRoute = (function () {
 		
 		// sort item by its record number
 		var sortedLuggageItemElmList = bagNoElmList.sort(function(x, y) {
-			var xRecordNo = x.parentElement.previousElementSibling.firstElementChild.value;
-			var yRecordNo = y.parentElement.previousElementSibling.firstElementChild.value;
+			var xRecordNo = Number(x.parentElement.previousElementSibling.textContent);
+			var yRecordNo = Number(y.parentElement.previousElementSibling.textContent);
 			
 			// sort by Bag No string asc
 			var sortResult = $(x).val() > $(y).val() ? 1 : -1;

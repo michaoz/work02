@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -218,15 +220,15 @@ public class TripPlansController {
         	// fetch the previous prep-luggage data from db
     	form.setLuggageInfoList(prepLuggageService.selectLuggageInfo(form));
 
-    	setPrepLuggageView(req);
-    	
+    	setPrepLuggageView(req, form.getLuggageInfoList());
+
     	return CommonConstant.PREPLUGGAGE_URL;
     }
 
     @RequestMapping(value = "/createRoute/prepLuggage", params="back", method = RequestMethod.POST)
     public String prepLuggageBack(@ModelAttribute("tripPlansCommonForm") TripPlansCommonForm form, BindingResult result,
     		HttpServletRequest req, HttpServletResponse res, Model model) {
-    	setPrepLuggageView(req);
+    	setPrepLuggageView(req, form.getLuggageInfoList());
     	return CommonConstant.PREPLUGGAGE_URL;
     }
 
@@ -242,7 +244,7 @@ public class TripPlansController {
     	}
     	
     	// set parameters to request
-		setPrepLuggageView(req);
+		setPrepLuggageView(req, form.getLuggageInfoList());
 
     	return CommonConstant.PREPLUGGAGE_URL;
     }
@@ -257,7 +259,7 @@ public class TripPlansController {
 
     	/* prep luggage info */
     	/* todo: 単項目チェック  */
-    	if (result.hasErrors()) {    		
+    	if (result.hasErrors()) {   		
     		// validation error 時にurlが元の画面のものになるようにするための設定
     		// - 関数の引数にUriComponentsBuilderを追加する
     		URI location = builder.path("/travel/" + CommonConstant.REDIRECT_PREPLUGGAGE_URL).build().toUri();
@@ -267,7 +269,7 @@ public class TripPlansController {
     	if (ObjectUtils.isNotEmpty(form.getLuggageInfoList())) {
         	this.checkPrepLuggage(form, result);
         	if (result.hasErrors()) {
-        		setPrepLuggageView(req);
+        		setPrepLuggageView(req, form.getLuggageInfoList());
         		
         		URI location = builder.path("/travel/" + CommonConstant.REDIRECT_PREPLUGGAGE_URL).build().toUri();
         		return redirectBindingResult(form, attr, result, location);
@@ -297,10 +299,10 @@ public class TripPlansController {
     	return CommonConstant.RESULT_TRIP_PLANS_URL;
     }
 
-    private void setPrepLuggageView(HttpServletRequest req) {
+    private void setPrepLuggageView(HttpServletRequest req, List<LuggageInfo> luggageInfoList) {
     	/* luggageKeywordList */
     	LUGGAGE_KEYWORD_ITEMS a =  CommonConstant.LUGGAGE_KEYWORD_ITEMS.Travel_Items;
-    	String[] s = a.getItems();
+    	String[] b = a.getItems();
     	LUGGAGE_KEYWORD_ITEMS[] luggageKeywordItems
     	= {CommonConstant.LUGGAGE_KEYWORD_ITEMS.Travel_Items,
 				CommonConstant.LUGGAGE_KEYWORD_ITEMS.Morning,
@@ -311,6 +313,18 @@ public class TripPlansController {
 
     	/* Bag No List */
     	req.setAttribute("bagNoArry", CommonConstant.BAG_NO_ARRY);
+    	
+    	/* the number of elms of luggageInfo and luggageItem */
+    	Map<Integer, Integer> luggageInfoItemCountMap = new HashMap<>();
+    	for (int luggageInfoIdx = 0; luggageInfoIdx < luggageInfoList.size(); luggageInfoIdx++) {
+    		int luggageItemSize = 0;
+    		if (ObjectUtils.isNotEmpty(luggageInfoList.get(luggageInfoIdx)) && 
+    				ObjectUtils.isNotEmpty(luggageInfoList.get(luggageInfoIdx).getLuggageItemList())) {
+    			luggageItemSize = luggageInfoList.get(luggageInfoIdx).getLuggageItemList().size();
+    		}
+    		luggageInfoItemCountMap.put(luggageInfoIdx, luggageItemSize);
+    	}
+    	req.setAttribute("luggageInfoItemCountMap", luggageInfoItemCountMap);
     }
     
     private String redirectBindingResult(TripPlansCommonForm form, RedirectAttributes attr, BindingResult result, URI location) {
