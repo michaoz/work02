@@ -184,8 +184,8 @@
 	</form:form>
 
 	<jsp:include page = "../common/footer.jsp"/>
-<!-- to import read external js file -->
-<!-- <script type="text/javascript" src="../../../resources/js/tripPlans/prepLuggage.js" defer></script> -->
+    <!-- to import read external js file, change type of js to module -->
+    <!-- <script type="text/javascript" src="../../../resources/js/tripPlans/prepLuggage.js" defer></script> -->
 	<script type="module" src="../../../resources/js/tripPlans/prepLuggage.js" defer></script>
 	</body>
 </html>

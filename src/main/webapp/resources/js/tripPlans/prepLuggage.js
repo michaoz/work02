@@ -1,11 +1,11 @@
-import {modalConfirmEmptyEnter} from "../modalConfirmEmptyEnter.js"
+import {modalConfirmEmptyEnter} from '../modalConfirmEmptyEnter.js'
 
 //const createRoute = (function() {
 const createRoute = (function () {
 	/** global variable *******************/
 
 	// The default address when the page is read.
-	const DEFAULT_ADDRESS = "6 Southwark St, London SE1 1TQ Ingland";
+	const DEFAULT_ADDRESS = '6 Southwark St, London SE1 1TQ Ingland';
 	const LATITUDE = 51.505;
 	const LONGITUDE = -0.09;
 	const VIEW_ZOOM_LEVEL = 15;
